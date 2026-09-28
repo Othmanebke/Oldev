@@ -157,16 +157,6 @@ export const PROJECTS: Project[] = [
     image: "/portfolio/eclat.webp",
   },
   {
-    id: "food-lover",
-    name: "Food Lover",
-    category: "Restaurant · HTML",
-    tag: "html",
-    tagline: "Site de restaurant : histoire de la maison, offres spéciales, carte complète, galerie photo et formulaire de contact.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/food-lover.webp",
-    concept: true,
-  },
-  {
     id: "montres",
     name: "Watch Store",
     category: "E-commerce · HTML",
