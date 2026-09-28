@@ -8,8 +8,11 @@ import { PROJECTS, PROJECT_FILTERS, type Project, type ProjectTag } from "@/lib/
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** Hero concepts shown only in the "Tous" marquee (public/defil-travaux). */
+const MARQUEE_HEROES = Array.from({ length: 10 }, (_, i) => `/defil-travaux/hero-${pad(i + 1)}.jpg`);
+
 /** Thumbnails only — decorative, no text, no interaction. */
-function MarqueeRow({ items, animation }: { items: Project[]; animation: string }) {
+function MarqueeRow({ items, animation }: { items: string[]; animation: string }) {
   return (
     <div
       className="overflow-hidden"
@@ -19,13 +22,13 @@ function MarqueeRow({ items, animation }: { items: Project[]; animation: string 
       }}
     >
       <div className="flex w-max gap-3 will-change-transform" style={{ animation }}>
-        {[...items, ...items].map((p, i) => (
+        {[...items, ...items].map((src, i) => (
           <div
-            key={`${p.id}-${i}`}
+            key={`${src}-${i}`}
             className="relative aspect-[14/9] shrink-0 overflow-hidden rounded-2xl border border-[#222] bg-[#1A1A1A]"
             style={{ width: "clamp(300px,32vw,420px)" }}
           >
-            <Image src={p.image} alt="" fill sizes="420px" className="object-cover object-top" />
+            <Image src={src} alt="" fill sizes="420px" className="object-cover object-top" />
           </div>
         ))}
       </div>
@@ -147,8 +150,8 @@ export default function WorkSection() {
               className="pointer-events-none flex select-none flex-col gap-3"
               style={{ margin: "0 calc(-1 * clamp(20px,5vw,72px))" }}
             >
-              <MarqueeRow items={PROJECTS} animation="mq-l 40s linear infinite" />
-              <MarqueeRow items={[...PROJECTS].reverse()} animation="mq-r 46s linear infinite" />
+              <MarqueeRow items={MARQUEE_HEROES} animation="mq-l 40s linear infinite" />
+              <MarqueeRow items={[...MARQUEE_HEROES].reverse()} animation="mq-r 46s linear infinite" />
             </div>
             <p className="m-0 text-center text-[15px] text-white/60">Choisis une techno pour voir le détail des projets.</p>
           </>
