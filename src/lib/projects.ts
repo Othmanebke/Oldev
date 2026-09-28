@@ -11,11 +11,12 @@ export type Project = {
   concept?: boolean;
 };
 
-export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string }[] = [
+/** `lead` = project shown first in that tab's carousel. */
+export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string }[] = [
   { tag: "all",       label: "Tous" },
-  { tag: "nextjs",    label: "React / Next.js" },
-  { tag: "wordpress", label: "WordPress" },
-  { tag: "html",      label: "HTML" },
+  { tag: "nextjs",    label: "React / Next.js", lead: "parfumerie" },
+  { tag: "wordpress", label: "WordPress",       lead: "brows" },
+  { tag: "html",      label: "HTML",            lead: "sora" },
 ];
 
 export const PROJECTS: Project[] = [
@@ -55,6 +56,42 @@ export const PROJECTS: Project[] = [
     tagline: "Boutique WooCommerce pour salon de beauté : catalogue soins, réservations en ligne et boutique intégrée.",
     stack: ["WordPress", "WooCommerce", "Elementor"],
     image: "/portfolio/brows.webp",
+  },
+  {
+    id: "ajc",
+    name: "AJC Ingénierie",
+    category: "Formation · WordPress",
+    tag: "wordpress",
+    tagline: "Site d’un organisme de formation certifié Qualiopi : catalogue de formations, dispositifs de financement et espaces entreprise / candidat.",
+    stack: ["WordPress", "Responsive", "SEO"],
+    image: "/portfolio/ajc.webp",
+  },
+  {
+    id: "papillon-dor",
+    name: "Papillon d’Or",
+    category: "Transport adapté · WordPress",
+    tag: "wordpress",
+    tagline: "Site vitrine pour un service de transport de personnes à mobilité réduite : missions, engagements et contact disponible 7j/7.",
+    stack: ["WordPress", "Responsive", "SEO"],
+    image: "/portfolio/papillon-dor.webp",
+  },
+  {
+    id: "auxitrol",
+    name: "Auxitrol Weston",
+    category: "Industrie · WordPress",
+    tag: "wordpress",
+    tagline: "Site corporate d’un fabricant international de capteurs aéronautiques : catalogue produits, marchés, carrières et support.",
+    stack: ["WordPress", "Responsive", "SEO"],
+    image: "/portfolio/auxitrol.webp",
+  },
+  {
+    id: "tennis-bry",
+    name: "Tennis Club Bry",
+    category: "Club sportif · WordPress",
+    tag: "wordpress",
+    tagline: "Site du Tennis Club de Bry-sur-Marne : installations, adhésions, enseignement, actualités du club et réservation de courts.",
+    stack: ["WordPress", "Responsive", "SEO"],
+    image: "/portfolio/tennis-bry.webp",
   },
   {
     id: "verdure",

@@ -100,9 +100,59 @@ function ProjectCard({ project, featured }: { project: Project; featured: boolea
   );
 }
 
+const arrowBtn =
+  "grid size-12 place-items-center rounded-full border border-white/20 text-white/80 transition-all duration-200 hover:border-abcs-red hover:bg-abcs-red hover:text-white";
+
+/** One project at a time, with prev / next buttons and dots. */
+function ProjectCarousel({ items }: { items: Project[] }) {
+  const [index, setIndex] = useState(0);
+  const go = (step: number) => setIndex((i) => (i + step + items.length) % items.length);
+  const current = items[index];
+
+  return (
+    <div className="flex flex-col gap-5" role="region" aria-roledescription="carrousel" aria-label="Projets">
+      <div className="flex">
+        <ProjectCard key={current.id} project={current} featured />
+      </div>
+
+      {items.length > 1 && (
+        <div className="flex items-center justify-between gap-4">
+          <button onClick={() => go(-1)} aria-label="Projet précédent" className={arrowBtn}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          <div className="flex items-center gap-2">
+            {items.map((p, i) => (
+              <button
+                key={p.id}
+                onClick={() => setIndex(i)}
+                aria-label={`Voir ${p.name}`}
+                aria-current={i === index}
+                className={`h-2 rounded-full transition-all duration-300 ${i === index ? "w-7 bg-abcs-red" : "w-2 bg-white/25 hover:bg-white/50"}`}
+              />
+            ))}
+            <span className="ml-2 font-mono text-[13px] tracking-[0.16em] text-white/60" aria-live="polite">
+              {pad(index + 1)} / {pad(items.length)}
+            </span>
+          </div>
+
+          <button onClick={() => go(1)} aria-label="Projet suivant" className={arrowBtn}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function WorkSection() {
   const [filter, setFilter] = useState<ProjectTag | "all">("all");
-  const list = filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.tag === filter);
+  const lead = PROJECT_FILTERS.find((f) => f.tag === filter)?.lead;
+  const list = PROJECTS.filter((p) => p.tag === filter).sort((a, b) => Number(b.id === lead) - Number(a.id === lead));
 
   return (
     <section
@@ -156,11 +206,7 @@ export default function WorkSection() {
             <p className="m-0 text-center text-[15px] text-white/60">Choisis une techno pour voir le détail des projets.</p>
           </>
         ) : (
-          <div className="flex flex-wrap gap-4">
-            {list.map((p, i) => (
-              <ProjectCard key={p.id} project={p} featured={i === 0} />
-            ))}
-          </div>
+          <ProjectCarousel key={filter} items={list} />
         )}
       </div>
     </section>
