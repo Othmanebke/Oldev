@@ -16,7 +16,7 @@ export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: s
   { tag: "all",       label: "Tous" },
   { tag: "nextjs",    label: "React / Next.js", lead: "parfumerie" },
   { tag: "wordpress", label: "WordPress",       lead: "brows" },
-  { tag: "html",      label: "HTML",            lead: "sora" },
+  { tag: "html",      label: "HTML",            lead: "eclat" },
 ];
 
 export const PROJECTS: Project[] = [
@@ -146,6 +146,35 @@ export const PROJECTS: Project[] = [
     tagline: "Site élégant pour restaurant thaïlandais : carte animée, galerie immersive et module de réservation en ligne.",
     stack: ["HTML", "CSS", "JavaScript"],
     image: "/portfolio/sora.webp",
+  },
+  {
+    id: "eclat",
+    name: "Éclat",
+    category: "Institut beauté · HTML",
+    tag: "html",
+    tagline: "Site d’un institut du regard à Paris : prestations, conseils, boutique en ligne et réservation, dans une direction artistique éditoriale.",
+    stack: ["HTML", "CSS", "JavaScript"],
+    image: "/portfolio/eclat.webp",
+  },
+  {
+    id: "food-lover",
+    name: "Food Lover",
+    category: "Restaurant · HTML",
+    tag: "html",
+    tagline: "Site de restaurant : histoire de la maison, offres spéciales, carte complète, galerie photo et formulaire de contact.",
+    stack: ["HTML", "CSS", "JavaScript"],
+    image: "/portfolio/food-lover.webp",
+    concept: true,
+  },
+  {
+    id: "montres",
+    name: "Watch Store",
+    category: "E-commerce · HTML",
+    tag: "html",
+    tagline: "Boutique de montres de luxe : collections, produits vedettes, nouveautés, avis clients et inscription à la newsletter.",
+    stack: ["HTML", "CSS", "JavaScript"],
+    image: "/portfolio/montres.webp",
+    concept: true,
   },
   {
     id: "ajt",
