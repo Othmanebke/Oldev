@@ -30,6 +30,14 @@ const PROOF = [
 
 const NAME = ["Othmane", "B."];
 
+// Aurora blobs: [color, center x, center y, diameter, animation]
+const BLOBS: [string, string, string, string, string][] = [
+  ["rgba(255,59,0,0.42)",    "56%", "62%", "min(980px,150vw)", "aurora-a 22s ease-in-out infinite alternate"],
+  ["rgba(255,170,120,0.55)", "78%", "28%", "min(760px,120vw)", "aurora-b 26s ease-in-out infinite alternate"],
+  ["rgba(255,205,180,0.6)",  "18%", "78%", "min(700px,110vw)", "aurora-c 30s ease-in-out infinite alternate"],
+  ["rgba(214,200,186,0.7)",  "22%", "16%", "min(620px,100vw)", "aurora-b 34s ease-in-out infinite alternate-reverse"],
+];
+
 /** Roles cycling under the name — one per offer. */
 const ROLES = ["Développeur web", "Web designer", "Expert WordPress", "Dev Next.js", "Créateur de sites"];
 
@@ -103,31 +111,35 @@ export default function HeroSection() {
       className="hero relative flex min-h-screen flex-col justify-between overflow-hidden bg-abcs-bg text-abcs-black"
       style={{ padding: "clamp(28px,4vw,48px) clamp(20px,4vw,48px) 160px" }}
     >
-      {/* Grid, faded out by a radial mask */}
+      {/* Aurora: soft color blobs drifting slowly behind the photo (they bloom in with the intro) */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        {BLOBS.map(([color, left, top, size, anim], i) => (
+          <span
+            key={i}
+            data-hero="ring"
+            className="absolute aspect-square rounded-full will-change-transform"
+            style={{
+              ...idx(i),
+              left,
+              top,
+              width: size,
+              translate: "-50% -50%",
+              background: `radial-gradient(circle, ${color} 0%, transparent 68%)`,
+              animation: anim,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Film grain over the aurora */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0 z-[1] opacity-[0.35] mix-blend-multiply"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(17,17,17,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(17,17,17,0.07) 1px, transparent 1px)",
-          backgroundSize: "72px 72px",
-          maskImage: "radial-gradient(ellipse 70% 65% at 50% 55%, black 20%, transparent 80%)",
-          WebkitMaskImage: "radial-gradient(ellipse 70% 65% at 50% 55%, black 20%, transparent 80%)",
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")",
+          backgroundSize: "160px",
         }}
-      />
-
-      {/* Orange circles behind the photo */}
-      <div
-        aria-hidden
-        data-hero="ring"
-        className="pointer-events-none absolute left-1/2 z-[1] aspect-square -translate-x-1/2 rounded-full border-[1.5px] border-[rgba(255,59,0,0.35)]"
-        style={{ ...idx(0), bottom: "-38%", width: "min(1000px,110vw)" }}
-      />
-      <div
-        aria-hidden
-        data-hero="ring"
-        className="pointer-events-none absolute left-1/2 z-[1] aspect-square -translate-x-1/2 rounded-full border-[1.5px] border-dashed border-[rgba(255,59,0,0.25)]"
-        style={{ ...idx(1), bottom: "-22%", width: "min(720px,80vw)" }}
       />
 
       {/* Floating stack logos */}
