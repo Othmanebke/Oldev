@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import {
   siReact, siNextdotjs, siTypescript, siTailwindcss, siWordpress, siFigma,
@@ -27,7 +28,57 @@ const PROOF = [
   { v: "48 h", l: "délai de réponse max" },
 ];
 
-const NAME = ["Othmane", "Bouakline"];
+const NAME = ["Othmane", "B."];
+
+/** Roles cycling under the name — one per offer. */
+const ROLES = ["Développeur web", "Web designer", "Expert WordPress", "Dev Next.js", "Créateur de sites"];
+
+/** Cycles through ROLES: letters roll up out of a mask, the next word rolls in. Static under reduced motion. */
+function RoleRotator() {
+  const [i, setI] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let timer: ReturnType<typeof setInterval>;
+    // First switch once the intro has played
+    const start = setTimeout(() => {
+      setI(1);
+      timer = setInterval(() => setI((v) => (v + 1) % ROLES.length), 2600);
+    }, LOADER_INTRO_DELAY + 2600);
+    return () => {
+      clearTimeout(start);
+      clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <p
+      aria-hidden
+      className="m-0 flex items-center gap-[0.4em] font-heading uppercase leading-none tracking-[-0.02em]"
+      style={{ fontSize: "clamp(1.4rem,2.7vw,2.7rem)" }}
+    >
+      <span className="h-[0.14em] w-[1.1em] shrink-0 rounded-full bg-abcs-black/25" />
+      <span className="relative block h-[1.08em] overflow-hidden">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span key={ROLES[i]} className="flex whitespace-pre text-abcs-red">
+            {ROLES[i].split("").map((ch, k) => (
+              <motion.span
+                key={k}
+                className="inline-block"
+                initial={{ y: "110%", rotate: 6 }}
+                animate={{ y: "0%", rotate: 0 }}
+                exit={{ y: "-110%", rotate: -4, transition: { duration: 0.32, ease: [0.64, 0, 0.78, 0], delay: k * 0.01 } }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.38 + k * 0.025 }}
+              >
+                {ch}
+              </motion.span>
+            ))}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </p>
+  );
+}
 
 const idx = (i: number) => ({ "--i": i }) as CSSProperties;
 
@@ -115,7 +166,7 @@ export default function HeroSection() {
 
       {/* Name — behind the photo */}
       <h1
-        className="relative z-[4] order-2 flex flex-wrap justify-between gap-x-6 font-heading font-normal uppercase leading-[0.82] tracking-[-0.04em]"
+        className="relative z-[4] order-2 flex flex-wrap gap-x-[0.3em] font-heading font-normal uppercase leading-[0.82] tracking-[-0.04em]"
         style={{ margin: "clamp(40px,8vh,96px) 0 0", fontSize: "clamp(3.2rem,10.5vw,11rem)" }}
       >
         <span className="sr-only">Othmane Bouakline, développeur web freelance</span>
@@ -130,9 +181,14 @@ export default function HeroSection() {
         ))}
       </h1>
 
+      {/* Rotating roles — in front of the photo so they stay readable */}
+      <div data-hero="fade-late" className="relative z-[6] order-2 mt-[clamp(10px,1.6vw,22px)]">
+        <RoleRotator />
+      </div>
+
       {/* Photo — in front of the name. Phones: in the flow under the name; ≥ md: anchored at the bottom */}
       <div
-        className="pointer-events-none relative z-[5] order-3 mx-auto -mt-[12vw] h-[62svh] max-h-[640px] md:absolute md:bottom-0 md:left-1/2 md:order-none md:mt-0 md:h-[84%] md:max-h-none md:-translate-x-1/2"
+        className="pointer-events-none relative z-[5] order-3 mx-auto mt-4 h-[62svh] max-h-[640px] md:absolute md:bottom-0 md:left-1/2 md:order-none md:mt-0 md:h-[84%] md:max-h-none md:-translate-x-1/2"
         style={{ aspectRatio: `${heroPhoto.width} / ${heroPhoto.height}` }}
       >
         <Image
@@ -149,7 +205,6 @@ export default function HeroSection() {
       {/* Bottom blocks */}
       <div data-hero="fade-late" className="relative z-[6] order-4 -mt-16 flex flex-wrap items-end justify-between gap-4 sm:gap-7 md:mt-auto">
         <div className="flex max-w-[360px] flex-col gap-[18px] rounded-[20px] bg-[rgba(240,240,238,0.86)] p-5 backdrop-blur-[8px]">
-          <p className="text-[13px] font-bold uppercase tracking-[0.2em] text-abcs-red-text">Développeur web freelance</p>
           <p className="text-[19px] font-semibold leading-[1.4] text-pretty">
             Je crée des sites rapides pour les indépendants et PME qui veulent plus de clients, pas juste un joli site.
           </p>
