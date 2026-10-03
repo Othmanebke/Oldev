@@ -74,3 +74,37 @@ export function homeJsonLd() {
     ],
   };
 }
+
+/** schema.org BreadcrumbList, starting from the home page. */
+export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [{ name: "Accueil", path: "" }, ...items].map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.path}`,
+    })),
+  };
+}
+
+/** schema.org Service offered by the business declared in homeJsonLd(). */
+export function serviceJsonLd({ key, name, description, path }: { key: ServiceKey; name: string; description: string; path: string }) {
+  const min = minPrice(SERVICES[key].price);
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name,
+    description,
+    url: `${SITE_URL}${path}`,
+    provider: { "@id": `${SITE_URL}/#business` },
+    areaServed: [
+      { "@type": "Country", name: "France" },
+      { "@type": "AdministrativeArea", name: LOCATION.region },
+    ],
+    ...(min !== undefined && {
+      offers: { "@type": "Offer", priceSpecification: { "@type": "PriceSpecification", minPrice: min, priceCurrency: "EUR" } },
+    }),
+  };
+}

@@ -4,22 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import SectionHeader from "@/components/fx/SectionHeader";
 import Watermark from "@/components/fx/Watermark";
 import { useContactModal } from "@/components/ContactModalProvider";
-import { SERVICES, type ServiceKey } from "@/lib/services";
-
-/** "Dès 1 200€" → "1 200€" — prices always come from lib/services.ts */
-const startPrice = (key: ServiceKey) => SERVICES[key].price.replace(/^dès\s*/i, "");
-
-const PLANS: {
-  key: ServiceKey; num: string; name: string; for: string; delay: string; revisions: string;
-  included: string[]; excluded: string[]; featured?: boolean;
-}[] = [
-  { key: "vitrine", num: "01", name: "Site vitrine", for: "Artisans · indépendants", delay: "1–2 sem.", revisions: "2 tours",
-    included: ["One-page responsive", "Formulaire de contact", "SEO de base + Google Maps", "Mise en ligne"], excluded: ["Hébergement & domaine"] },
-  { key: "webapp", num: "02", name: "Site sur-mesure", for: "PME · startups", delay: "3–4 sem.", revisions: "3 tours", featured: true,
-    included: ["Design exclusif multi-pages", "Next.js / React, Lighthouse 90+", "SEO technique avancé", "1 mois de maintenance offert"], excluded: ["Rédaction des contenus"] },
-  { key: "wordpress", num: "03", name: "WordPress clé en main", for: "Blog · e-commerce", delay: "3–5 sem.", revisions: "3 tours",
-    included: ["Site 100 % administrable", "Boutique WooCommerce", "Formation à l’admin (1 h)", "Paiement en ligne"], excluded: ["Licences premium"] },
-];
+import { FAQ, PLANS, SERVICES, startPrice, type ServiceKey } from "@/lib/services";
 
 const EXTRAS: { key: ServiceKey; name: string; desc: string }[] = [
   { key: "branding_canva", name: "Logo & flyer", desc: "Canva ou Adobe, prêt à imprimer" },
@@ -27,12 +12,6 @@ const EXTRAS: { key: ServiceKey; name: string; desc: string }[] = [
   { key: "chatbot_ia",     name: "Chatbot IA",   desc: "Agent connecté à vos données" },
 ];
 
-const FAQ = [
-  { q: "L’hébergement est-il inclus ?", a: "Non, mais je m’en occupe : je vous conseille une offre adaptée et je fais la mise en ligne." },
-  { q: "Puis-je payer en plusieurs fois ?", a: "Oui : en une seule fois ou en plusieurs fois, jusqu’à 3 versements." },
-  { q: "Le site m’appartient-il ?", a: "Oui, entièrement. Code, contenus et accès vous sont transmis à la livraison." },
-  { q: "Et après la livraison ?", a: "Maintenance mensuelle optionnelle : mises à jour, sauvegardes et petites modifications." },
-];
 
 /** Price rolling from 0 to its value (1.2s) once `start` is true. */
 function CountPrice({ value, start, delay }: { value: string; start: boolean; delay: number }) {

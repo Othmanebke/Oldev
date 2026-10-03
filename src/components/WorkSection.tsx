@@ -4,7 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import SectionHeader from "@/components/fx/SectionHeader";
 import Watermark from "@/components/fx/Watermark";
-import { PROJECTS, PROJECT_FILTERS, type Project, type ProjectTag } from "@/lib/projects";
+import Link from "next/link";
+import { PROJECTS, PROJECT_FILTERS, projectsForTag, type Project, type ProjectTag } from "@/lib/projects";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -152,9 +153,7 @@ function ProjectCarousel({ items }: { items: Project[] }) {
 
 export default function WorkSection() {
   const [filter, setFilter] = useState<ProjectTag | "all">("all");
-  const lead = PROJECT_FILTERS.find((f) => f.tag === filter)?.lead ?? [];
-  const rank = (p: Project) => (lead.includes(p.id) ? lead.indexOf(p.id) : lead.length);
-  const list = PROJECTS.filter((p) => p.tag === filter).sort((a, b) => rank(a) - rank(b));
+  const list = filter === "all" ? [] : projectsForTag(filter);
 
   return (
     <section
@@ -210,6 +209,13 @@ export default function WorkSection() {
         ) : (
           <ProjectCarousel key={filter} items={list} />
         )}
+
+        <Link
+          href="/realisations"
+          className="self-center text-[13px] font-bold uppercase tracking-[0.14em] text-white/70 underline-offset-4 transition-colors hover:text-abcs-red hover:underline"
+        >
+          Voir toutes les réalisations →
+        </Link>
       </div>
     </section>
   );

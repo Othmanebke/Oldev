@@ -4,6 +4,7 @@ import Link from "next/link";
 import SplitTitle from "@/components/fx/SplitTitle";
 import Watermark from "@/components/fx/Watermark";
 import { useContactModal } from "@/components/ContactModalProvider";
+import { SERVICE_PAGES } from "@/lib/seoPages";
 import { EMAIL, LOCATION, SOCIALS } from "@/lib/site";
 
 /** Contact card + footer, last card of the stack (not sticky itself). */
@@ -44,6 +45,18 @@ export default function Footer() {
             </a>
           </div>
         </div>
+
+        <nav aria-label="Services" className="flex flex-wrap justify-center gap-x-6 gap-y-3 border-t border-white/12 pt-7">
+          {[
+            ...SERVICE_PAGES.map((p) => ({ href: `/services/${p.slug}`, label: p.h1 })),
+            { href: "/creation-site-internet-seine-et-marne", label: "Site internet en Seine-et-Marne" },
+            { href: "/realisations", label: "Réalisations" },
+          ].map((l) => (
+            <Link key={l.href} href={l.href} className="text-[14px] text-white/70 transition-colors hover:text-abcs-red">
+              {l.label}
+            </Link>
+          ))}
+        </nav>
 
         <div className="flex flex-wrap items-center justify-between gap-5 border-t border-white/12 pt-7">
           <div className="flex flex-wrap gap-5">

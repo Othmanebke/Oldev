@@ -238,3 +238,10 @@ export const PROJECTS: Project[] = [
     image: "/portfolio/mosa.webp",
   },
 ];
+
+/** Projects of one tab, in carousel order (the tab's `lead` projects first). */
+export function projectsForTag(tag: ProjectTag) {
+  const lead = PROJECT_FILTERS.find((f) => f.tag === tag)?.lead ?? [];
+  const rank = (p: Project) => (lead.includes(p.id) ? lead.indexOf(p.id) : lead.length);
+  return PROJECTS.filter((p) => p.tag === tag).sort((a, b) => rank(a) - rank(b));
+}

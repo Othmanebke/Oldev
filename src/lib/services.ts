@@ -59,6 +59,29 @@ export const SERVICES: Record<ServiceKey, Service> = {
   },
 };
 
+/** "Dès 1 200€" → "1 200€" */
+export const startPrice = (key: ServiceKey) => SERVICES[key].price.replace(/^dès\s*/i, "");
+
+/** The three main offers, shown on the home page and on /services/*. */
+export const PLANS: {
+  key: ServiceKey; num: string; name: string; for: string; delay: string; revisions: string;
+  included: string[]; excluded: string[]; featured?: boolean;
+}[] = [
+  { key: "vitrine", num: "01", name: "Site vitrine", for: "Artisans · indépendants", delay: "1–2 sem.", revisions: "2 tours",
+    included: ["One-page responsive", "Formulaire de contact", "SEO de base + Google Maps", "Mise en ligne"], excluded: ["Hébergement & domaine"] },
+  { key: "webapp", num: "02", name: "Site sur-mesure", for: "PME · startups", delay: "3–4 sem.", revisions: "3 tours", featured: true,
+    included: ["Design exclusif multi-pages", "Next.js / React, Lighthouse 90+", "SEO technique avancé", "1 mois de maintenance offert"], excluded: ["Rédaction des contenus"] },
+  { key: "wordpress", num: "03", name: "WordPress clé en main", for: "Blog · e-commerce", delay: "3–5 sem.", revisions: "3 tours",
+    included: ["Site 100 % administrable", "Boutique WooCommerce", "Formation à l’admin (1 h)", "Paiement en ligne"], excluded: ["Licences premium"] },
+];
+
+export const FAQ = [
+  { q: "L’hébergement est-il inclus ?", a: "Non, mais je m’en occupe : je vous conseille une offre adaptée et je fais la mise en ligne." },
+  { q: "Puis-je payer en plusieurs fois ?", a: "Oui : en une seule fois ou en plusieurs fois, jusqu’à 3 versements." },
+  { q: "Le site m’appartient-il ?", a: "Oui, entièrement. Code, contenus et accès vous sont transmis à la livraison." },
+  { q: "Et après la livraison ?", a: "Maintenance mensuelle optionnelle : mises à jour, sauvegardes et petites modifications." },
+];
+
 export const SERVICE_GROUPS: { label: string; keys: ServiceKey[] }[] = [
   { label: "Création Web", keys: ["vitrine", "webapp", "wordpress", "refonte"] },
   { label: "Design & Identité Visuelle", keys: ["branding_canva", "branding_adobe"] },
