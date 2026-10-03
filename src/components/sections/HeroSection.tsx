@@ -30,13 +30,8 @@ const PROOF = [
 
 const NAME = ["Othmane", "B."];
 
-// Aurora blobs: [color, center x, center y, diameter, animation]
-const BLOBS: [string, string, string, string, string][] = [
-  ["rgba(255,59,0,0.42)",    "56%", "62%", "min(980px,150vw)", "aurora-a 22s ease-in-out infinite alternate"],
-  ["rgba(255,170,120,0.55)", "78%", "28%", "min(760px,120vw)", "aurora-b 26s ease-in-out infinite alternate"],
-  ["rgba(255,205,180,0.6)",  "18%", "78%", "min(700px,110vw)", "aurora-c 30s ease-in-out infinite alternate"],
-  ["rgba(214,200,186,0.7)",  "22%", "16%", "min(620px,100vw)", "aurora-b 34s ease-in-out infinite alternate-reverse"],
-];
+/** Where the glow rests (fraction of the hero), behind the photo. */
+const GLOW_REST = { x: 0.52, y: 0.58 };
 
 /** Roles cycling under the name — one per offer. */
 const ROLES = ["Développeur web", "Web designer", "Expert WordPress", "Dev Next.js", "Créateur de sites"];
@@ -91,6 +86,7 @@ const idx = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
+  const glowRef = useRef<HTMLSpanElement>(null);
   const { openModal } = useContactModal();
   const scrollToSection = useScrollToSection();
 
@@ -99,6 +95,40 @@ export default function HeroSection() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timer = setTimeout(() => ref.current?.classList.add("is-in"), reduce ? 0 : LOADER_INTRO_DELAY);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Glow eases towards the pointer (fine pointers, motion allowed); stays at rest otherwise
+  useEffect(() => {
+    const section = ref.current;
+    const glow = glowRef.current;
+    if (!section || !glow) return;
+    if (!window.matchMedia("(pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+    const tick = () => {
+      x += (tx - x) * 0.08;
+      y += (ty - y) * 0.08;
+      glow.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(tick) : 0;
+    };
+    const aim = (dx: number, dy: number) => {
+      tx = dx;
+      ty = dy;
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const onMove = (e: PointerEvent) => {
+      const r = section.getBoundingClientRect();
+      aim(e.clientX - r.left - r.width * GLOW_REST.x, e.clientY - r.top - r.height * GLOW_REST.y);
+    };
+    const onLeave = () => aim(0, 0);
+
+    section.addEventListener("pointermove", onMove);
+    section.addEventListener("pointerleave", onLeave);
+    return () => {
+      cancelAnimationFrame(raf);
+      section.removeEventListener("pointermove", onMove);
+      section.removeEventListener("pointerleave", onLeave);
+    };
   }, []);
 
   let letter = 0;
@@ -111,27 +141,27 @@ export default function HeroSection() {
       className="hero relative flex min-h-screen flex-col justify-between overflow-hidden bg-abcs-bg text-abcs-black"
       style={{ padding: "clamp(28px,4vw,48px) clamp(20px,4vw,48px) 160px" }}
     >
-      {/* Aurora: soft color blobs drifting slowly behind the photo (they bloom in with the intro) */}
+      {/* Spotlight: soft orange glow following the pointer, resting behind the photo (blooms in with the intro) */}
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        {BLOBS.map(([color, left, top, size, anim], i) => (
+        <span
+          ref={glowRef}
+          className="absolute block will-change-transform"
+          style={{ left: `${GLOW_REST.x * 100}%`, top: `${GLOW_REST.y * 100}%` }}
+        >
           <span
-            key={i}
             data-hero="ring"
-            className="absolute aspect-square rounded-full will-change-transform"
+            className="absolute block aspect-square rounded-full"
             style={{
-              ...idx(i),
-              left,
-              top,
-              width: size,
+              ...idx(0),
+              width: "min(860px,130vw)",
               translate: "-50% -50%",
-              background: `radial-gradient(circle, ${color} 0%, transparent 68%)`,
-              animation: anim,
+              background: "radial-gradient(circle, rgba(255,59,0,0.46) 0%, rgba(255,140,90,0.26) 32%, transparent 66%)",
             }}
           />
-        ))}
+        </span>
       </div>
 
-      {/* Film grain over the aurora */}
+      {/* Film grain */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] opacity-[0.35] mix-blend-multiply"
