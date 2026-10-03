@@ -9,7 +9,6 @@ import {
   type SimpleIcon,
 } from "simple-icons";
 import { useContactModal } from "@/components/ContactModalProvider";
-import Watermark from "@/components/fx/Watermark";
 import { LOADER_INTRO_DELAY } from "@/components/Preloader";
 import { useScrollToSection } from "@/lib/useScrollToSection";
 import heroPhoto from "@/img/hero.webp";
@@ -30,6 +29,14 @@ const PROOF = [
 ];
 
 const NAME = ["Othmane", "B."];
+
+// Aurora blobs: [color, center x, center y, diameter, animation]
+const BLOBS: [string, string, string, string, string][] = [
+  ["rgba(255,59,0,0.42)",    "56%", "62%", "min(980px,150vw)", "aurora-a 22s ease-in-out infinite alternate"],
+  ["rgba(255,170,120,0.55)", "78%", "28%", "min(760px,120vw)", "aurora-b 26s ease-in-out infinite alternate"],
+  ["rgba(255,205,180,0.6)",  "18%", "78%", "min(700px,110vw)", "aurora-c 30s ease-in-out infinite alternate"],
+  ["rgba(214,200,186,0.7)",  "22%", "16%", "min(620px,100vw)", "aurora-b 34s ease-in-out infinite alternate-reverse"],
+];
 
 /** Roles cycling under the name — one per offer. */
 const ROLES = ["Développeur web", "Web designer", "Expert WordPress", "Dev Next.js", "Créateur de sites"];
@@ -104,11 +111,27 @@ export default function HeroSection() {
       className="hero relative flex min-h-screen flex-col justify-between overflow-hidden bg-abcs-bg text-abcs-black"
       style={{ padding: "clamp(28px,4vw,48px) clamp(20px,4vw,48px) 160px" }}
     >
-      {/* Giant outline words drifting with the scroll (driven by StackEffect) */}
-      <Watermark text="Développeur web · Web designer · Développeur web ·" stroke="rgba(17,17,17,0.1)" top="30%" className="z-0" />
-      <Watermark variant="2" text="WordPress · Next.js · Sites vitrines · WordPress · Next.js ·" stroke="rgba(255,59,0,0.3)" className="z-0" />
+      {/* Aurora: soft color blobs drifting slowly behind the photo (they bloom in with the intro) */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        {BLOBS.map(([color, left, top, size, anim], i) => (
+          <span
+            key={i}
+            data-hero="ring"
+            className="absolute aspect-square rounded-full will-change-transform"
+            style={{
+              ...idx(i),
+              left,
+              top,
+              width: size,
+              translate: "-50% -50%",
+              background: `radial-gradient(circle, ${color} 0%, transparent 68%)`,
+              animation: anim,
+            }}
+          />
+        ))}
+      </div>
 
-      {/* Film grain */}
+      {/* Film grain over the aurora */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] opacity-[0.35] mix-blend-multiply"
