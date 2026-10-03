@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
+import SectionHeader from "@/components/fx/SectionHeader";
+import StackEffect from "@/components/fx/StackEffect";
 import ContactCta from "@/components/seo/ContactCta";
-import { JsonLd, PageHero, ProjectGrid, Section, SeoMain } from "@/components/seo/SeoBlocks";
+import JsonLd from "@/components/seo/JsonLd";
+import OfferCards from "@/components/seo/OfferCards";
+import ProjectShowcase from "@/components/seo/ProjectShowcase";
+import SeoHero from "@/components/seo/SeoHero";
+import StackCard from "@/components/seo/StackCard";
 import { breadcrumbJsonLd } from "@/lib/jsonLd";
 import { PROJECT_FILTERS, projectsForTag, type ProjectTag } from "@/lib/projects";
+import { SERVICE_PAGES } from "@/lib/seoPages";
+import { SERVICES } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 const TITLE = "Réalisations : sites vitrines, WordPress et Next.js";
@@ -17,39 +25,50 @@ export const metadata: Metadata = {
   openGraph: { type: "website", locale: "fr_FR", siteName: SITE_NAME, url: "/realisations", title: `${TITLE} | ${SITE_NAME}`, description: DESCRIPTION },
 };
 
-/** Section title per tab — more descriptive than the short tab labels. */
-const GROUP_TITLES: Record<ProjectTag, string> = {
-  nextjs: "Sites React & Next.js",
-  wordpress: "Sites WordPress",
-  html: "Sites HTML / CSS",
-};
-
 export default function RealisationsPage() {
-  const groups = PROJECT_FILTERS.filter((f) => f.tag !== "all") as { tag: ProjectTag; label: string }[];
+  // Same order as the home tabs: React / Next.js, WordPress, HTML
+  const projects = PROJECT_FILTERS.filter((f) => f.tag !== "all").flatMap((f) => projectsForTag(f.tag as ProjectTag));
 
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Réalisations", path: "/realisations" }])} />
-      <SeoMain>
-        <PageHero
+      <StackEffect />
+      <main className="flex flex-col bg-abcs-bg" style={{ overflowX: "clip" }}>
+        <SeoHero
           crumbs={[{ name: "Réalisations" }]}
           label="Portfolio"
           title="Mes réalisations"
           intro={[
-            "Une sélection de sites créés pour des clients et de projets personnels : sites vitrines, sites corporate WordPress, boutiques en ligne et applications web en Next.js / React.",
-            "Les projets marqués « Concept » sont des créations personnelles réalisées pour explorer un secteur ou une technique.",
+            "Sites vitrines, sites corporate WordPress, boutiques en ligne et applications web en Next.js / React : une sélection de projets clients et personnels.",
+            "Cliquez sur un projet pour parcourir le site en entier. Les projets « Concept » sont des créations personnelles.",
           ]}
-        >
-          <div className="pt-2"><ContactCta label="Parlons de votre projet" /></div>
-        </PageHero>
+          stats={[
+            { v: String(projects.length), l: "projets présentés" },
+            { v: "3", l: "technologies" },
+            { v: "5 ans", l: "d’expérience" },
+          ]}
+          icons={["next", "wordpress", "react", "html", "woo", "figma"]}
+          ctaLabel="Parlons de votre projet"
+        />
 
-        {groups.map((g) => (
-          <Section key={g.tag} title={GROUP_TITLES[g.tag]}>
-            <ProjectGrid projects={projectsForTag(g.tag)} />
-          </Section>
-        ))}
-      </SeoMain>
-      <Footer />
+        <StackCard tone="dark" z={2} watermark="Travaux · Projets · Travaux · Projets ·" watermark2="Next.js · WordPress · React · HTML ·">
+          <SectionHeader tone="dark" label="01 · Portfolio" title="Tous les projets" intro="Filtrez par technologie, puis cliquez pour voir le site en entier." />
+          <ProjectShowcase projects={projects} filters tone="dark" />
+        </StackCard>
+
+        <StackCard tone="bg" z={3} watermark="Votre site · Prochain · Votre site ·">
+          <SectionHeader tone="light" label="02 · Et vous ?" title="Le prochain, c’est le vôtre" intro="Choisissez la formule qui vous correspond, ou parlons-en directement." />
+          <OfferCards
+            tone="light"
+            items={SERVICE_PAGES.map((o) => ({ href: `/services/${o.slug}`, eyebrow: SERVICES[o.key].price, title: o.h1, text: o.intro[0] }))}
+          />
+          <div className="self-center">
+            <ContactCta label="Démarrer mon projet" />
+          </div>
+        </StackCard>
+
+        <Footer />
+      </main>
     </>
   );
 }

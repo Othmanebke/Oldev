@@ -4,6 +4,9 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import SectionHeader from "@/components/fx/SectionHeader";
 import Watermark from "@/components/fx/Watermark";
 import { useContactModal } from "@/components/ContactModalProvider";
+import CountPrice from "@/components/fx/CountPrice";
+import FaqAccordion from "@/components/fx/FaqAccordion";
+import { tiltLeave, tiltMove } from "@/components/fx/tilt";
 import { FAQ, PLANS, SERVICES, startPrice, type ServiceKey } from "@/lib/services";
 
 const EXTRAS: { key: ServiceKey; name: string; desc: string }[] = [
@@ -12,70 +15,10 @@ const EXTRAS: { key: ServiceKey; name: string; desc: string }[] = [
   { key: "chatbot_ia",     name: "Chatbot IA",   desc: "Agent connecté à vos données" },
 ];
 
-
-/** Price rolling from 0 to its value (1.2s) once `start` is true. */
-function CountPrice({ value, start, delay }: { value: string; start: boolean; delay: number }) {
-  const [text, setText] = useState(value);
-
-  useEffect(() => {
-    if (!start || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const n = parseInt(value.replace(/\D/g, ""), 10);
-    if (!n) return;
-    const fmt = (v: number) => (v >= 1000 ? `${Math.floor(v / 1000)} ${String(v % 1000).padStart(3, "0")}€` : `${v}€`);
-    let raf = 0;
-    const timer = setTimeout(() => {
-      const t0 = performance.now();
-      const step = (now: number) => {
-        const k = Math.min(1, (now - t0) / 1200);
-        const e = 1 - Math.pow(1 - k, 3);
-        setText(k < 1 ? fmt(Math.round((n * e) / 10) * 10) : value);
-        if (k < 1) raf = requestAnimationFrame(step);
-      };
-      setText(fmt(0));
-      raf = requestAnimationFrame(step);
-    }, delay);
-    return () => {
-      clearTimeout(timer);
-      cancelAnimationFrame(raf);
-    };
-  }, [start, value, delay]);
-
-  return <>{text}</>;
-}
-
-/** 3D tilt following the mouse + orange glare (fine pointers, motion allowed). */
-const canTilt = () =>
-  window.matchMedia("(pointer: fine)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function tiltMove(e: React.MouseEvent<HTMLElement>) {
-  if (!canTilt()) return;
-  const el = e.currentTarget;
-  const r = el.getBoundingClientRect();
-  const x = (e.clientX - r.left) / r.width;
-  const y = (e.clientY - r.top) / r.height;
-  el.style.transition = "transform .15s ease-out";
-  el.style.transform = `perspective(900px) rotateX(${(0.5 - y) * 8}deg) rotateY(${(x - 0.5) * 10}deg) translateY(-6px)`;
-  const g = el.querySelector<HTMLElement>("[data-glare]");
-  if (g) {
-    g.style.opacity = "1";
-    g.style.background = `radial-gradient(420px circle at ${x * 100}% ${y * 100}%, rgba(255,59,0,0.16), transparent 60%)`;
-  }
-}
-
-function tiltLeave(e: React.MouseEvent<HTMLElement>) {
-  const el = e.currentTarget;
-  if (!el.style.transform) return;
-  el.style.transition = "transform .6s cubic-bezier(.22,1,.36,1)";
-  el.style.transform = "";
-  const g = el.querySelector<HTMLElement>("[data-glare]");
-  if (g) g.style.opacity = "0";
-}
-
 export function ServicesSection() {
   const { openModal } = useContactModal();
   const plansRef = useRef<HTMLDivElement>(null);
   const [plansIn, setPlansIn] = useState(false);
-  const [open, setOpen] = useState(0);
 
   const choose = (key: ServiceKey) => openModal({ type: SERVICES[key].label, budget: SERVICES[key].budgets[0] });
 
@@ -250,40 +193,7 @@ export function ServicesSection() {
             </h3>
             <p className="m-0 text-[16px] leading-[1.6] text-abcs-black/70">Une autre question ? Réponse sous 48 h maximum.</p>
           </div>
-          <div className="flex flex-col border-t border-abcs-black/15">
-            {FAQ.map((f, i) => {
-              const isOpen = open === i;
-              return (
-                <div key={f.q} className="border-b border-abcs-black/15">
-                  <button
-                    onClick={() => setOpen(isOpen ? -1 : i)}
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-${i}`}
-                    className="flex w-full items-center justify-between gap-4 py-5 text-left text-[17px] font-bold text-abcs-black"
-                  >
-                    <span>{f.q}</span>
-                    <span
-                      aria-hidden
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[18px] transition-colors ${
-                        isOpen ? "bg-abcs-red text-white" : "bg-abcs-black/6 text-abcs-black"
-                      }`}
-                    >
-                      {isOpen ? "−" : "+"}
-                    </span>
-                  </button>
-                  <div
-                    id={`faq-${i}`}
-                    aria-hidden={!isOpen}
-                    className={`grid transition-[grid-template-rows] duration-300 ease-out-expo ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
-                  >
-                    <p className="m-0 max-w-[560px] overflow-hidden text-[16px] leading-[1.6] text-abcs-black/72">
-                      <span className="block pb-5">{f.a}</span>
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <FaqAccordion items={FAQ} />
         </div>
       </div>
     </section>

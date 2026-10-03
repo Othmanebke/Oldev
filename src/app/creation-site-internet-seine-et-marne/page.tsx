@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import ContactCta from "@/components/seo/ContactCta";
-import { FaqList, JsonLd, PageHero, ProjectGrid, Section, SeoMain } from "@/components/seo/SeoBlocks";
+import FaqAccordion from "@/components/fx/FaqAccordion";
+import SectionHeader from "@/components/fx/SectionHeader";
+import StackEffect from "@/components/fx/StackEffect";
+import JsonLd from "@/components/seo/JsonLd";
+import OfferCards from "@/components/seo/OfferCards";
+import ProjectShowcase from "@/components/seo/ProjectShowcase";
+import SeoHero from "@/components/seo/SeoHero";
+import StackCard from "@/components/seo/StackCard";
+import Steps from "@/components/seo/Steps";
+import TownsRadar from "@/components/seo/TownsRadar";
 import { breadcrumbJsonLd } from "@/lib/jsonLd";
 import { PROJECTS } from "@/lib/projects";
-import { LOCAL_FAQ, LOCAL_TOWNS, SERVICE_PAGES, STEPS } from "@/lib/seoPages";
+import { LOCAL_FAQ, SERVICE_PAGES } from "@/lib/seoPages";
 import { SERVICES } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
@@ -21,77 +29,82 @@ export const metadata: Metadata = {
   openGraph: { type: "website", locale: "fr_FR", siteName: SITE_NAME, url: PATH, title: `${TITLE} | ${SITE_NAME}`, description: DESCRIPTION },
 };
 
-/** A mix of client work from each stack. */
-const SHOWCASE = ["cfi", "tennis-bry", "parfumerie"];
+/** Client work from each stack. */
+const SHOWCASE = ["cfi", "elior", "idemia", "tennis-bry", "papillon-dor", "parfumerie"];
 
 export default function LocalPage() {
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Seine-et-Marne", path: PATH }])} />
-      <SeoMain>
-        <PageHero
+      <StackEffect />
+      <main className="flex flex-col bg-abcs-bg" style={{ overflowX: "clip" }}>
+        <SeoHero
           crumbs={[{ name: "Seine-et-Marne" }]}
-          label="Brie-Comte-Robert · Seine-et-Marne · Île-de-France"
+          label="Brie-Comte-Robert · Seine-et-Marne (77)"
           title="Création de site internet en Seine-et-Marne"
           intro={[
-            "Je suis Othmane Bouakline, développeur web freelance basé à Brie-Comte-Robert. J’accompagne les artisans, commerçants, indépendants et PME de Seine-et-Marne dans la création de leur site internet, de l’idée à la mise en ligne.",
-            "Avec 5 ans d’expérience en développement web (Inetum, Fujitsu, AJC) et un Bac+5 en informatique web, je vous propose un interlocuteur unique, des tarifs transparents et une réponse sous 48 h.",
+            "Je suis Othmane Bouakline, développeur web freelance basé à Brie-Comte-Robert. J’accompagne les artisans, commerçants, indépendants et PME de Seine-et-Marne, de l’idée à la mise en ligne.",
+            "5 ans d’expérience (Inetum, Fujitsu, AJC), un Bac+5 en informatique web, un interlocuteur unique et une réponse sous 48 h.",
           ]}
-        >
-          <div className="pt-2"><ContactCta label="Demander un devis gratuit" /></div>
-        </PageHero>
+          stats={[
+            { v: "dès 300€", l: "le site vitrine" },
+            { v: "48 h", l: "délai de réponse max" },
+            { v: "5 ans", l: "d’expérience" },
+          ]}
+          icons={["maps", "wordpress", "next", "html", "react", "figma"]}
+          ctaLabel="Demander un devis gratuit"
+          secondary={{ href: "/realisations", label: "Voir mes réalisations" }}
+        />
 
-        <Section label="Offres" title="Quel site pour votre entreprise ?">
-          <div className="grid gap-5 md:grid-cols-3">
-            {SERVICE_PAGES.map((s) => (
-              <Link key={s.slug} href={`/services/${s.slug}`} className="group flex flex-col gap-3 rounded-[24px] bg-white p-7 transition-colors hover:bg-abcs-black hover:text-white">
-                <span className="text-[13px] font-bold uppercase tracking-[0.14em] text-abcs-red-text group-hover:text-abcs-red">{SERVICES[s.key].price}</span>
-                <h3 className="m-0 text-[21px] font-bold">{s.h1}</h3>
-                <p className="m-0 text-[15px] leading-[1.55] opacity-75">{s.intro[0]}</p>
-                <span className="mt-auto pt-2 text-[13px] font-bold uppercase tracking-[0.14em]">En savoir plus →</span>
-              </Link>
-            ))}
-          </div>
-        </Section>
+        <StackCard tone="dark" z={2} watermark="Offres · Sites · Offres · Sites · Offres ·" watermark2="Vitrine · Sur-mesure · WordPress ·">
+          <SectionHeader tone="dark" label="01 · Offres" title="Quel site pour vous ?" intro="Trois formules claires, avec un prix de départ et un délai annoncés dès le départ." />
+          <OfferCards
+            items={SERVICE_PAGES.map((s) => ({ href: `/services/${s.slug}`, eyebrow: SERVICES[s.key].price, title: s.h1, text: s.intro[0] }))}
+          />
+        </StackCard>
 
-        <Section label="Proximité" title="Un développeur web près de chez vous">
-          <div className="flex flex-col gap-6 text-[17px] leading-[1.6] text-abcs-black/75">
-            <p className="m-0 max-w-[760px]">
-              Basé à Brie-Comte-Robert, je travaille avec des entreprises de toute la Seine-et-Marne et du sud-est de l’Île-de-France,
-              ainsi qu’avec des clients partout en France. Tout le projet peut se faire à distance, par téléphone ou en visio.
-            </p>
-            <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-              {LOCAL_TOWNS.map((t) => (
-                <li key={t} className="rounded-full bg-white px-4 py-2 text-[14px] font-bold text-abcs-black">{t}</li>
-              ))}
-            </ul>
-          </div>
-        </Section>
+        <StackCard tone="light" z={3} watermark="Seine-et-Marne · 77 · Île-de-France ·" watermark2="Près de chez vous · Près de chez vous ·">
+          <SectionHeader
+            tone="light"
+            label="02 · Proximité"
+            title="Près de chez vous"
+            intro="Basé à Brie-Comte-Robert, je travaille avec les entreprises de toute la Seine-et-Marne et du sud-est de l’Île-de-France, et avec des clients partout en France. Tout peut se faire à distance, par téléphone ou en visio."
+          />
+          <TownsRadar />
+        </StackCard>
 
-        <Section label="Méthode" title="De l’appel à la mise en ligne">
-          <ol className="m-0 grid list-none gap-5 p-0 md:grid-cols-5">
-            {STEPS.map((s, i) => (
-              <li key={s.title} className="flex flex-col gap-2 rounded-[24px] bg-white p-6">
-                <span className="font-heading text-[28px] text-abcs-red">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="m-0 text-[17px] font-bold">{s.title}</h3>
-                <p className="m-0 text-[15px] leading-[1.55] text-abcs-black/75">{s.text}</p>
-              </li>
-            ))}
-          </ol>
-        </Section>
+        <StackCard tone="dark" z={4} watermark="Méthode · Étapes · Méthode · Étapes ·" watermark2="Appel · Devis · Design · Code · En ligne ·">
+          <SectionHeader tone="dark" label="03 · Méthode" title="De l’appel à la mise en ligne" intro="Cinq étapes claires, sans jargon, avec un prix fixé dès le devis." />
+          <Steps />
+        </StackCard>
 
-        <Section label="Exemples" title="Quelques réalisations">
-          <ProjectGrid projects={PROJECTS.filter((p) => SHOWCASE.includes(p.id))} />
-          <Link href="/realisations" className="self-start text-[14px] font-bold uppercase tracking-[0.14em] text-abcs-red-text underline-offset-4 hover:underline">
+        <StackCard tone="bg" z={5} watermark="Réalisations · Projets · Réalisations ·" watermark2="Cliquez · Explorez · Cliquez · Explorez ·">
+          <SectionHeader tone="light" label="04 · Exemples" title="Quelques réalisations" intro="Cliquez sur un projet pour parcourir le site en entier." />
+          <ProjectShowcase projects={PROJECTS.filter((p) => SHOWCASE.includes(p.id))} />
+          <Link
+            href="/realisations"
+            className="self-center inline-flex items-center gap-2 rounded-full border border-abcs-black/25 px-[26px] py-[16px] text-[13px] font-bold uppercase tracking-[0.14em] transition-colors hover:border-abcs-red hover:text-abcs-red-text"
+          >
             Toutes les réalisations →
           </Link>
-        </Section>
+        </StackCard>
 
-        <Section label="FAQ" title="Questions fréquentes">
-          <FaqList items={LOCAL_FAQ} />
-        </Section>
-      </SeoMain>
-      <Footer />
+        <StackCard tone="light" z={6} watermark="FAQ · Questions · FAQ · Questions ·">
+          <div className="grid items-start" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,400px),1fr))", gap: "clamp(24px,4vw,56px)" }}>
+            <SectionHeader
+              tone="light"
+              label="05 · FAQ"
+              title="Questions fréquentes"
+              titleSize="clamp(2.4rem,6vw,5rem)"
+              intro="Une autre question ? Réponse sous 48 h maximum."
+              className="md:items-start md:text-left"
+            />
+            <FaqAccordion items={LOCAL_FAQ} />
+          </div>
+        </StackCard>
+
+        <Footer />
+      </main>
     </>
   );
 }
