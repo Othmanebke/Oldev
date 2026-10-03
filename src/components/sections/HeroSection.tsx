@@ -9,6 +9,7 @@ import {
   type SimpleIcon,
 } from "simple-icons";
 import { useContactModal } from "@/components/ContactModalProvider";
+import Watermark from "@/components/fx/Watermark";
 import { LOADER_INTRO_DELAY } from "@/components/Preloader";
 import { useScrollToSection } from "@/lib/useScrollToSection";
 import heroPhoto from "@/img/hero.webp";
@@ -29,9 +30,6 @@ const PROOF = [
 ];
 
 const NAME = ["Othmane", "B."];
-
-/** Where the glow rests (fraction of the hero), behind the photo. */
-const GLOW_REST = { x: 0.52, y: 0.58 };
 
 /** Roles cycling under the name — one per offer. */
 const ROLES = ["Développeur web", "Web designer", "Expert WordPress", "Dev Next.js", "Créateur de sites"];
@@ -86,7 +84,6 @@ const idx = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
-  const glowRef = useRef<HTMLSpanElement>(null);
   const { openModal } = useContactModal();
   const scrollToSection = useScrollToSection();
 
@@ -95,40 +92,6 @@ export default function HeroSection() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timer = setTimeout(() => ref.current?.classList.add("is-in"), reduce ? 0 : LOADER_INTRO_DELAY);
     return () => clearTimeout(timer);
-  }, []);
-
-  // Glow eases towards the pointer (fine pointers, motion allowed); stays at rest otherwise
-  useEffect(() => {
-    const section = ref.current;
-    const glow = glowRef.current;
-    if (!section || !glow) return;
-    if (!window.matchMedia("(pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
-    const tick = () => {
-      x += (tx - x) * 0.08;
-      y += (ty - y) * 0.08;
-      glow.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(tick) : 0;
-    };
-    const aim = (dx: number, dy: number) => {
-      tx = dx;
-      ty = dy;
-      if (!raf) raf = requestAnimationFrame(tick);
-    };
-    const onMove = (e: PointerEvent) => {
-      const r = section.getBoundingClientRect();
-      aim(e.clientX - r.left - r.width * GLOW_REST.x, e.clientY - r.top - r.height * GLOW_REST.y);
-    };
-    const onLeave = () => aim(0, 0);
-
-    section.addEventListener("pointermove", onMove);
-    section.addEventListener("pointerleave", onLeave);
-    return () => {
-      cancelAnimationFrame(raf);
-      section.removeEventListener("pointermove", onMove);
-      section.removeEventListener("pointerleave", onLeave);
-    };
   }, []);
 
   let letter = 0;
@@ -141,25 +104,9 @@ export default function HeroSection() {
       className="hero relative flex min-h-screen flex-col justify-between overflow-hidden bg-abcs-bg text-abcs-black"
       style={{ padding: "clamp(28px,4vw,48px) clamp(20px,4vw,48px) 160px" }}
     >
-      {/* Spotlight: soft orange glow following the pointer, resting behind the photo (blooms in with the intro) */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <span
-          ref={glowRef}
-          className="absolute block will-change-transform"
-          style={{ left: `${GLOW_REST.x * 100}%`, top: `${GLOW_REST.y * 100}%` }}
-        >
-          <span
-            data-hero="ring"
-            className="absolute block aspect-square rounded-full"
-            style={{
-              ...idx(0),
-              width: "min(860px,130vw)",
-              translate: "-50% -50%",
-              background: "radial-gradient(circle, rgba(255,59,0,0.46) 0%, rgba(255,140,90,0.26) 32%, transparent 66%)",
-            }}
-          />
-        </span>
-      </div>
+      {/* Giant outline words drifting with the scroll (driven by StackEffect) */}
+      <Watermark text="Développeur web · Web designer · Développeur web ·" stroke="rgba(17,17,17,0.1)" top="30%" className="z-0" />
+      <Watermark variant="2" text="WordPress · Next.js · Sites vitrines · WordPress · Next.js ·" stroke="rgba(255,59,0,0.3)" className="z-0" />
 
       {/* Film grain */}
       <div

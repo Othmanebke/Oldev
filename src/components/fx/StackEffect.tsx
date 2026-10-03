@@ -38,7 +38,8 @@ export default function StackEffect() {
       const vh = window.innerHeight;
       wms.forEach(({ el, dir, sec }) => {
         if (!sec) return;
-        const t = sec.getBoundingClientRect().top;
+        // The first card starts at the top and sticks right away, so its rect never moves: use the scroll instead
+        const t = sec === cards[0] ? -window.scrollY : sec.getBoundingClientRect().top;
         el.style.transform = dir === "1" ? `translateX(${t * 0.35 - 200}px)` : `translateX(${-t * 0.3 - 600}px)`;
       });
       cards.forEach((c, i) => {
