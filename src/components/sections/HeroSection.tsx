@@ -54,10 +54,9 @@ function RoleRotator() {
   return (
     <p
       aria-hidden
-      className="m-0 flex items-center gap-[0.4em] font-heading uppercase leading-none tracking-[-0.02em]"
+      className="m-0 flex items-center font-heading uppercase leading-none tracking-[-0.02em]"
       style={{ fontSize: "clamp(1.4rem,2.7vw,2.7rem)" }}
     >
-      <span className="h-[0.14em] w-[1.1em] shrink-0 rounded-full bg-abcs-black/25" />
       <span className="relative block h-[1.08em] overflow-hidden">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span key={ROLES[i]} className="flex whitespace-pre text-abcs-red">
@@ -204,7 +203,7 @@ export default function HeroSection() {
 
       {/* Bottom blocks */}
       <div data-hero="fade-late" className="relative z-[6] order-4 -mt-16 flex flex-wrap items-end justify-between gap-4 sm:gap-7 md:mt-auto">
-        <div className="flex max-w-[360px] flex-col gap-[18px] rounded-[20px] bg-[rgba(240,240,238,0.86)] p-5 backdrop-blur-[8px]">
+        <div className="flex max-w-[360px] flex-col gap-[18px] rounded-[20px] border border-white/70 bg-white/35 shadow-[0_10px_40px_-12px_rgba(17,17,17,0.18),inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-150 p-5">
           <p className="text-[19px] font-semibold leading-[1.4] text-pretty">
             Je crée des sites rapides pour les indépendants et PME qui veulent plus de clients, pas juste un joli site.
           </p>
@@ -227,7 +226,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-1.5 rounded-[20px] bg-[rgba(240,240,238,0.86)] px-5 py-[18px] backdrop-blur-[8px]">
+        <div className="flex flex-col gap-1.5 rounded-[20px] border border-white/70 bg-white/35 shadow-[0_10px_40px_-12px_rgba(17,17,17,0.18),inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-150 px-5 py-[18px]">
           {PROOF.map((p) => (
             <div key={p.l} className="flex items-baseline gap-2.5">
               <span className="font-heading text-[22px]">{p.v}</span>
