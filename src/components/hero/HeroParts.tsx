@@ -30,8 +30,8 @@ const SOCIALS = [
 export function useHeroMotion(refs: {
   root: RefObject<HTMLElement | null>;
   layers: RefObject<HTMLElement | null>[];
-  caps: RefObject<HTMLElement | null>;
-  photo: RefObject<HTMLElement | null>;
+  caps?: RefObject<HTMLElement | null>;
+  photo?: RefObject<HTMLElement | null>;
   light: RefObject<HTMLElement | null>;
 }) {
   useEffect(() => {
@@ -53,11 +53,11 @@ export function useHeroMotion(refs: {
       const sy = window.scrollY;
       const t = `translate(${-mx * 22}px,${-my * 12 + sy * 0.35}px)`;
       for (const l of layers) if (l.current) l.current.style.transform = t;
-      if (caps.current) {
+      if (caps?.current) {
         caps.current.style.transform = t;
         caps.current.style.opacity = String(Math.max(0, 1 - sy / 400));
       }
-      if (photo.current) photo.current.style.transform = `translate(${mx * 16}px,${sy * 0.12}px)`;
+      if (photo?.current) photo.current.style.transform = `translate(${mx * 16}px,${sy * 0.12}px)`;
       if (light.current) {
         light.current.style.left = `${50 + mx * 50}%`;
         light.current.style.top = `${35 + my * 40}%`;

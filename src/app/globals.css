@@ -87,7 +87,6 @@ html.has-custom-cursor * {
 /* ─── Hero (home + landing pages): phones ───────────────────────────────── */
 @media (max-width: 700px) {
   .hero-name  { top: 22% !important; }
-  .hero-title { top: 16% !important; }
   .hero-photo { height: 68% !important; }
 }
 
