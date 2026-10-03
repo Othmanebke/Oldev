@@ -88,8 +88,8 @@ export const PLANS: {
     included: ["Design exclusif multi-pages", "Next.js / React, Lighthouse 90+", "SEO technique avancé", "1 mois de maintenance offert"], excluded: ["Rédaction des contenus"],
     options: ["Pages supplémentaires", "Animations avancées", "Espace client / connexion", "Paiement en ligne", "Intégrations (API, CRM)", "Chatbot IA"] },
   { key: "wordpress", num: "03", name: "WordPress clé en main", for: "Blog · e-commerce", delay: "3–5 sem.", revisions: "3 tours",
-    included: ["Site 100 % administrable", "Blog & actualités", "Formation à l’admin (1 h)", "Mise en ligne"], excluded: ["Licences premium"],
-    options: ["Boutique WooCommerce + paiement en ligne", "Intégration de produits", "Réservation en ligne", "Site multilingue", "Design sur-mesure"] },
+    included: ["Jusqu’à 5 pages 100 % administrables", "Thème personnalisé à votre image", "Blog, formulaire de contact, SEO de base", "Formation à l’admin (1 h) + mise en ligne"], excluded: ["Licences premium"],
+    options: ["Boutique WooCommerce + paiement en ligne", "Pages supplémentaires", "Intégration de produits", "Réservation en ligne", "Site multilingue", "Design 100 % sur-mesure"] },
 ];
 
 export const FAQ = [

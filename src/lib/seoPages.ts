@@ -84,7 +84,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     key: "wordpress",
     metaTitle: "Création de site WordPress et boutique WooCommerce",
     metaDescription:
-      "Création de site WordPress clé en main de 1 200 à 2 500 € selon les options : site 100 % administrable, formation à l’administration incluse, boutique WooCommerce et paiement en ligne en option.",
+      "Création de site WordPress clé en main de 1 200 à 2 500 € selon les options : jusqu’à 5 pages administrables, thème à votre image, blog, SEO de base et formation incluse. Boutique WooCommerce en option.",
     name: "Site WordPress",
     h1: "Création de site WordPress",
     intro: [
@@ -100,7 +100,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     faq: [
       { q: "Pourrai-je modifier mon site moi-même ?", a: "Oui, c’est tout l’intérêt de WordPress : le site est 100 % administrable et une formation d’une heure à l’administration est incluse." },
       { q: "Pouvez-vous créer une boutique en ligne ?", a: "Oui, en option, avec WooCommerce : catalogue produits, panier, paiement en ligne et gestion des commandes." },
-      { q: "Combien coûte un site WordPress ?", a: "De 1 200 à 2 500 €, pour un délai de 3 à 5 semaines avec 3 tours de révision. Le prix monte selon les options : boutique WooCommerce, intégration de produits, réservation en ligne, multilingue, design sur-mesure. Les licences premium éventuelles (thèmes, extensions) ne sont pas incluses." },
+      { q: "Combien coûte un site WordPress ?", a: "De 1 200 à 2 500 €, pour un délai de 3 à 5 semaines avec 3 tours de révision. La formule de base à 1 200 € comprend jusqu’à 5 pages administrables, un thème personnalisé à votre image, un blog, un formulaire de contact, le SEO de base, la formation et la mise en ligne. Le prix monte selon les options : boutique WooCommerce, pages supplémentaires, intégration de produits, réservation en ligne, multilingue, design 100 % sur-mesure. Les licences premium éventuelles (thèmes, extensions) ne sont pas incluses." },
     ],
   },
 ];
