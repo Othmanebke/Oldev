@@ -12,6 +12,36 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+/** Escapes user input before it goes into the email HTML. */
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
+const EMAIL_RE = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']{2,}$/;
+
+/** Max length per field; anything longer is rejected. */
+const LIMITS = { name: 100, email: 254, phone: 30, type: 100, budget: 100, message: 5000 } as const;
+
+/** Best-effort per-IP limit (in memory, so per server instance): 3 sends / 10 min. */
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 3;
+const hits = new Map<string, number[]>();
+
+function rateLimited(ip: string) {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  if (recent.length >= RATE_MAX) return true;
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 1000) for (const [k, v] of hits) if (v.every((t) => now - t >= RATE_WINDOW_MS)) hits.delete(k);
+  return false;
+}
+
+/** Trims a field; single-line fields also lose line breaks. */
+const field = (v: unknown, multiline = false) => {
+  const s = typeof v === "string" ? v.trim() : "";
+  return multiline ? s : s.replace(/[\r\n]+/g, " ");
+};
+
 function notificationHtml(name: string, email: string, phone: string, type: string, budget: string, message: string) {
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -24,7 +54,7 @@ function notificationHtml(name: string, email: string, phone: string, type: stri
         <!-- Header -->
         <tr>
           <td style="background:#111111;padding:32px 40px;">
-            <span style="font-size:36px;font-weight:900;color:#FF3B00;letter-spacing:-1px;text-transform:uppercase;">O'DEV</span>
+            <span style="font-size:36px;font-weight:900;color:#FF3B00;letter-spacing:-1px;text-transform:uppercase;">O'LDEV</span>
             <span style="display:block;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:4px;text-transform:uppercase;margin-top:4px;">Nouveau message entrant</span>
           </td>
         </tr>
@@ -41,9 +71,9 @@ function notificationHtml(name: string, email: string, phone: string, type: stri
           <td style="background:#ffffff;padding:40px;">
 
             <h2 style="font-size:28px;font-weight:900;text-transform:uppercase;color:#111;margin:0 0 8px 0;letter-spacing:-0.5px;">
-              ${name}
+              ${esc(name)}
             </h2>
-            <p style="font-size:12px;font-weight:700;color:#FF3B00;letter-spacing:3px;text-transform:uppercase;margin:0 0 32px 0;">${type}</p>
+            <p style="font-size:12px;font-weight:700;color:#FF3B00;letter-spacing:3px;text-transform:uppercase;margin:0 0 32px 0;">${esc(type)}</p>
 
             <!-- Info grid -->
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
@@ -51,21 +81,21 @@ function notificationHtml(name: string, email: string, phone: string, type: stri
                 <td width="50%" style="padding:0 8px 0 0;vertical-align:top;">
                   <div style="border-left:3px solid #FF3B00;padding-left:12px;margin-bottom:20px;">
                     <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Email</span>
-                    <a href="mailto:${email}" style="font-size:14px;font-weight:700;color:#111;text-decoration:none;">${email}</a>
+                    <a href="mailto:${esc(email)}" style="font-size:14px;font-weight:700;color:#111;text-decoration:none;">${esc(email)}</a>
                   </div>
                   <div style="border-left:3px solid #FF3B00;padding-left:12px;margin-bottom:20px;">
                     <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Téléphone</span>
-                    <span style="font-size:14px;font-weight:700;color:#111;">${phone || "Non renseigné"}</span>
+                    <span style="font-size:14px;font-weight:700;color:#111;">${esc(phone || "Non renseigné")}</span>
                   </div>
                 </td>
                 <td width="50%" style="padding:0 0 0 8px;vertical-align:top;">
                   <div style="border-left:3px solid #111;padding-left:12px;margin-bottom:20px;">
                     <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Type de projet</span>
-                    <span style="font-size:14px;font-weight:700;color:#111;">${type}</span>
+                    <span style="font-size:14px;font-weight:700;color:#111;">${esc(type)}</span>
                   </div>
                   <div style="border-left:3px solid #111;padding-left:12px;margin-bottom:20px;">
                     <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Budget estimé</span>
-                    <span style="font-size:14px;font-weight:700;color:#111;">${budget}</span>
+                    <span style="font-size:14px;font-weight:700;color:#111;">${esc(budget)}</span>
                   </div>
                 </td>
               </tr>
@@ -74,12 +104,12 @@ function notificationHtml(name: string, email: string, phone: string, type: stri
             <!-- Message -->
             <div style="background:#f0f0ee;border-left:4px solid #FF3B00;padding:20px 24px;margin-bottom:32px;">
               <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;">Message</span>
-              <p style="font-size:15px;font-weight:600;color:#111;margin:0;line-height:1.7;">${message.replace(/\n/g, "<br>")}</p>
+              <p style="font-size:15px;font-weight:600;color:#111;margin:0;line-height:1.7;">${esc(message).replace(/\n/g, "<br>")}</p>
             </div>
 
             <!-- CTA -->
-            <a href="mailto:${email}?subject=Re: Votre projet ${type}" style="display:inline-block;background:#FF3B00;color:#fff;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:16px 32px;text-decoration:none;">
-              Répondre à ${name} →
+            <a href="mailto:${esc(email)}?subject=${esc(encodeURIComponent(`Re: Votre projet ${type}`))}" style="display:inline-block;background:#FF3B00;color:#fff;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:16px 32px;text-decoration:none;">
+              Répondre à ${esc(name)} →
             </a>
           </td>
         </tr>
@@ -111,7 +141,7 @@ function confirmationHtml(name: string, type: string, budget: string) {
         <!-- Header -->
         <tr>
           <td style="background:#111111;padding:48px 40px 32px;border-bottom:3px solid #FF3B00;">
-            <span style="font-size:48px;font-weight:900;color:#FF3B00;letter-spacing:-2px;text-transform:uppercase;line-height:1;">O'DEV</span>
+            <span style="font-size:48px;font-weight:900;color:#FF3B00;letter-spacing:-2px;text-transform:uppercase;line-height:1;">O'LDEV</span>
             <span style="display:block;font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:4px;text-transform:uppercase;margin-top:8px;">FREELANCE WEB · FULL STACK</span>
           </td>
         </tr>
@@ -129,7 +159,7 @@ function confirmationHtml(name: string, type: string, budget: string) {
         <tr>
           <td style="background:#111111;padding:32px 40px 0;">
             <p style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7);margin:0;line-height:1.7;">
-              Salut <strong style="color:#fff;">${firstName}</strong> 👋<br>
+              Salut <strong style="color:#fff;">${esc(firstName)}</strong> 👋<br>
               Ton message est arrivé. Je prends connaissance de ton projet et je te reviens personnellement <strong style="color:#FF3B00;">sous 48h maximum</strong>.
             </p>
           </td>
@@ -150,11 +180,11 @@ function confirmationHtml(name: string, type: string, budget: string) {
                     <tr>
                       <td width="50%" style="padding-bottom:20px;vertical-align:top;">
                         <span style="display:block;font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Projet</span>
-                        <span style="font-size:14px;font-weight:700;color:#fff;">${type}</span>
+                        <span style="font-size:14px;font-weight:700;color:#fff;">${esc(type)}</span>
                       </td>
                       <td width="50%" style="padding-bottom:20px;vertical-align:top;">
                         <span style="display:block;font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Budget</span>
-                        <span style="font-size:14px;font-weight:700;color:#FF3B00;">${budget}</span>
+                        <span style="font-size:14px;font-weight:700;color:#FF3B00;">${esc(budget)}</span>
                       </td>
                     </tr>
                   </table>
@@ -223,7 +253,7 @@ function confirmationHtml(name: string, type: string, budget: string) {
         <!-- Footer -->
         <tr>
           <td style="background:#0a0a0a;padding:20px 40px;text-align:center;">
-            <span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;">© 2025 O'LDEV · OTHMANE BOUAKLINE · FREELANCE WEB</span>
+            <span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;">© ${new Date().getFullYear()} O'LDEV · OTHMANE BOUAKLINE · FREELANCE WEB</span>
           </td>
         </tr>
 
@@ -236,10 +266,31 @@ function confirmationHtml(name: string, type: string, budget: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, phone, type, budget, message } = await req.json();
+    const body = await req.json().catch(() => null);
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
+    }
+    const name = field(body.name);
+    const email = field(body.email);
+    const phone = field(body.phone);
+    const type = field(body.type);
+    const budget = field(body.budget);
+    const message = field(body.message, true);
 
     if (!name || !email || !type) {
       return NextResponse.json({ error: "Veuillez remplir votre nom, email et type de projet." }, { status: 400 });
+    }
+    if (!EMAIL_RE.test(email)) {
+      return NextResponse.json({ error: "Adresse email invalide." }, { status: 400 });
+    }
+    const fields = { name, email, phone, type, budget, message };
+    if ((Object.keys(LIMITS) as (keyof typeof LIMITS)[]).some((k) => fields[k].length > LIMITS[k])) {
+      return NextResponse.json({ error: "Un des champs est trop long." }, { status: 400 });
+    }
+
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+    if (rateLimited(ip)) {
+      return NextResponse.json({ error: "Trop de messages envoyés. Réessaie dans quelques minutes." }, { status: 429 });
     }
 
     const finalBudget = budget || "Non précisé";
@@ -268,6 +319,9 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[Contact API]", msg);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return NextResponse.json(
+      { error: `L’envoi a échoué. Réessaie plus tard ou écris-moi directement à ${OWNER_EMAIL}.` },
+      { status: 500 },
+    );
   }
 }
