@@ -48,9 +48,9 @@ export function useHeroMotion(refs: {
       raf = requestAnimationFrame(loop);
       mx += (tx - mx) * 0.06;
       my += (ty - my) * 0.06;
-      const r = root.current;
-      if (!r) return;
-      const sy = Math.max(0, -r.getBoundingClientRect().top);
+      if (!root.current) return;
+      // The hero is sticky (StackEffect), so its rect barely moves: drive the drift with the page scroll (it is the first section)
+      const sy = window.scrollY;
       const t = `translate(${-mx * 22}px,${-my * 12 + sy * 0.35}px)`;
       for (const l of layers) if (l.current) l.current.style.transform = t;
       if (caps.current) {
