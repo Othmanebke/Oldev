@@ -60,14 +60,18 @@ html.has-custom-cursor * {
 @keyframes loader-op-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes loader-op-out { from { opacity: 1; } to { opacity: 0; } }
 @keyframes loader-up { to { transform: translateY(-100%); border-radius: 0 0 50% 50% / 0 0 12vh 12vh; } }
-@keyframes hero-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -14px; } }
-@keyframes aurora-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(-9%, -7%) scale(1.15); } }
-@keyframes aurora-b { from { transform: translate(0, 0) scale(1.05); } to { transform: translate(-12%, 10%) scale(0.9); } }
-@keyframes aurora-c { from { transform: translate(0, 0) scale(0.95); } to { transform: translate(14%, -9%) scale(1.12); } }
+@keyframes h-rise  { from { transform: translateY(110%); } to { transform: none; } }
+@keyframes h-photo { from { opacity: 0; transform: translateY(70px) scale(.96); filter: blur(12px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes h-fade  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes h-light { from { opacity: 0; } to { opacity: 1; } }
+@keyframes h-ping  { 75%, 100% { transform: scale(2); opacity: 0; } }
+@keyframes h-blink { 50% { opacity: 0; } }
+@keyframes word-in  { from { transform: translateY(100%); opacity: 0; filter: blur(6px); } to { transform: none; opacity: 1; filter: blur(0); } }
+@keyframes word-out { from { transform: none; opacity: 1; filter: blur(0); } to { transform: translateY(-100%); opacity: 0; filter: blur(6px); } }
 @keyframes mq-l { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes mq-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
-/* ─── Masked reveal (H2 words, hero letters) ─────────────────────────────── */
+/* ─── Masked reveal (H2 words) ───────────────────────────────────────────── */
 .split-mask {
   display: inline-block;
   overflow: hidden;
@@ -78,6 +82,13 @@ html.has-custom-cursor * {
 .split-unit {
   display: inline-block;
   transform-origin: 0 100%;
+}
+
+/* ─── Hero (home + landing pages): phones ───────────────────────────────── */
+@media (max-width: 700px) {
+  .hero-name  { top: 22% !important; }
+  .hero-title { top: 16% !important; }
+  .hero-photo { height: 68% !important; }
 }
 
 /* ─── Outline watermark text ─────────────────────────────────────────────── */
@@ -98,32 +109,12 @@ html.has-custom-cursor * {
 
 /* ─── Motion (only when the user accepts it) ─────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
-  .split-title:not(.is-in) .split-unit,
-  .hero:not(.is-in) .split-unit {
+  .split-title:not(.is-in) .split-unit {
     transform: translateY(110%) rotate(6deg);
   }
   .split-title .split-unit {
     transition: transform 1s var(--ease-out-expo) calc(var(--i) * 90ms);
   }
-  .hero .split-unit {
-    transition: transform 1s var(--ease-out-expo) calc(var(--i) * 45ms);
-  }
-
-  /* Hero intro */
-  .hero [data-hero] {
-    transition-property: opacity, transform, scale, filter;
-    transition-timing-function: var(--ease-out-expo);
-  }
-  .hero:not(.is-in) [data-hero="photo"] { opacity: 0; transform: translateY(80px) scale(0.94); filter: blur(8px); }
-  .hero [data-hero="photo"] { transition-duration: 1400ms; transition-delay: 150ms; }
-  .hero:not(.is-in) [data-hero="ring"] { opacity: 0; scale: 0.6; }
-  .hero [data-hero="ring"] { transition-duration: 1600ms; transition-delay: calc(var(--i) * 150ms); }
-  .hero:not(.is-in) [data-hero="icon"] { opacity: 0; scale: 0.4; }
-  .hero [data-hero="icon"] { transition-duration: 900ms; transition-delay: calc(500ms + var(--i) * 70ms); }
-  .hero:not(.is-in) [data-hero="fade"] { opacity: 0; transform: translateY(-16px); }
-  .hero [data-hero="fade"] { transition-duration: 900ms; transition-delay: 300ms; }
-  .hero:not(.is-in) [data-hero="fade-late"] { opacity: 0; transform: translateY(30px); }
-  .hero [data-hero="fade-late"] { transition-duration: 1000ms; transition-delay: 900ms; }
 
   /* Service plans fan-in */
   .plans:not(.is-in) [data-plan] {

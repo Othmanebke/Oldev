@@ -26,6 +26,8 @@ export default function Navbar() {
   const [showHint, setShowHint] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [pastHero, setPastHero] = useState(false);
+  const visible = pastHero || chatOpen || menuOpen;
   const { openModal } = useContactModal();
   const scrollToSection = useScrollToSection();
 
@@ -37,7 +39,25 @@ export default function Navbar() {
     return () => clearTimeout(timer);
   }, []);
 
-  const dismissHint = (e: React.MouseEvent) => {
+  // Hidden over the hero: shows once the first section after it (#portfolio on the home page)
+  // reaches 60% of the viewport. Pages without a hero show it right away.
+  useEffect(() => {
+    const target = document.getElementById("portfolio") ?? document.getElementById("top")?.nextElementSibling;
+    if (!target) {
+      const id = requestAnimationFrame(() => setPastHero(true));
+      return () => cancelAnimationFrame(id);
+    }
+    const onScroll = () => setPastHero(target.getBoundingClientRect().top <= window.innerHeight * 0.6);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [pathname]);
+
+  const dismissHint =(e: React.MouseEvent) => {
     e.stopPropagation();
     setShowHint(false);
     localStorage.setItem("chat-hint-dismissed", "1");
@@ -51,9 +71,9 @@ export default function Navbar() {
   return (
     <motion.div
       initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.9, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] w-[calc(100vw-24px)] sm:w-auto sm:max-w-[calc(100vw-24px)]"
+      animate={visible ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] w-[calc(100vw-24px)] sm:w-auto sm:max-w-[calc(100vw-24px)] ${visible ? "" : "pointer-events-none"}`}
     >
       {/* Chat window — pops above the avatar */}
       {chatMounted && <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />}

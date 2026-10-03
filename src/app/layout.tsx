@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Archivo_Black, Caveat } from "next/font/google";
+import { Inter, Archivo_Black, Archivo, Caveat } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
 import Navbar from "@/components/Navbar";
@@ -17,6 +17,13 @@ const archivoBlack = Archivo_Black({
   weight: "400",
   variable: "--font-archivo",
   subsets: ["latin"],
+});
+
+// Variable width (wdth axis) for the condensed hero titles
+const archivoFlex = Archivo({
+  variable: "--font-archivo-flex",
+  subsets: ["latin"],
+  axes: ["wdth"],
 });
 
 // Only used on /legal — not preloaded on every page
@@ -89,7 +96,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${inter.variable} ${archivoBlack.variable} ${caveat.variable} h-full antialiased`}
+      className={`${inter.variable} ${archivoBlack.variable} ${archivoFlex.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-white text-black">
           <ContactModalProvider>

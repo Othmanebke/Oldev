@@ -51,7 +51,6 @@ export default function LocalPage() {
             { v: "48 h", l: "délai de réponse max" },
             { v: "5 ans", l: "d’expérience" },
           ]}
-          icons={["maps", "wordpress", "next", "html", "react", "figma"]}
           ctaLabel="Demander un devis gratuit"
           secondary={{ href: "/realisations", label: "Voir mes réalisations" }}
         />

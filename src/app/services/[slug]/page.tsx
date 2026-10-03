@@ -12,22 +12,16 @@ import OfferCards from "@/components/seo/OfferCards";
 import PlanSpotlight from "@/components/seo/PlanSpotlight";
 import PriceOptions from "@/components/seo/PriceOptions";
 import ProjectShowcase from "@/components/seo/ProjectShowcase";
-import SeoHero, { type HeroIcon } from "@/components/seo/SeoHero";
+import SeoHero from "@/components/seo/SeoHero";
 import StackCard from "@/components/seo/StackCard";
 import Steps from "@/components/seo/Steps";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/jsonLd";
 import { projectsForTag } from "@/lib/projects";
 import { getServicePage, SERVICE_PAGES } from "@/lib/seoPages";
-import { FAQ, PLANS, SERVICES, priceRange, startPrice, type ServiceKey } from "@/lib/services";
+import { FAQ, PLANS, SERVICES, priceRange, startPrice } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 export const dynamicParams = false;
-
-const HERO_ICONS: Partial<Record<ServiceKey, HeroIcon[]>> = {
-  vitrine: ["html", "maps", "css", "js", "figma", "vercel"],
-  webapp: ["next", "react", "ts", "tailwind", "node", "vercel"],
-  wordpress: ["wordpress", "woo", "elementor", "figma", "maps", "css"],
-};
 
 export function generateStaticParams() {
   return SERVICE_PAGES.map((p) => ({ slug: p.slug }));
@@ -68,7 +62,6 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             { v: plan.delay, l: "de délai" },
             { v: plan.revisions, l: "de révisions" },
           ]}
-          icons={HERO_ICONS[page.key] ?? []}
           service={page.key}
           secondary={{ href: "/realisations", label: "Voir mes réalisations" }}
         />

@@ -47,7 +47,6 @@ export default function RealisationsPage() {
             { v: "3", l: "technologies" },
             { v: "5 ans", l: "d’expérience" },
           ]}
-          icons={["next", "wordpress", "react", "html", "woo", "figma"]}
           ctaLabel="Parlons de votre projet"
         />
 

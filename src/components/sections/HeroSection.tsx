@@ -1,250 +1,145 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import {
-  siReact, siNextdotjs, siTypescript, siTailwindcss, siWordpress, siFigma,
-  siNodedotjs, siJavascript, siHtml5, siSupabase, siVercel, siPostgresql,
-  type SimpleIcon,
-} from "simple-icons";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { LOADER_INTRO_DELAY } from "@/components/Preloader";
-import { useScrollToSection } from "@/lib/useScrollToSection";
-import heroPhoto from "@/img/hero.webp";
+import {
+  cap, condensed, delay, fade, DispoBadge, HeroBackground, HeroOverlays, HeroPortrait, HeroSocials, ParisTime, useHeroMotion,
+} from "@/components/hero/HeroParts";
+import { EMAIL } from "@/lib/site";
 
-// [icon, left, top, size (px), rotation (deg)]
-// Phones only keep the side icons (indexes below) so the name and face stay clear
-const PHONE_ICONS = new Set([2, 3, 6, 7]);
-const ICONS: [SimpleIcon, string, string, number, number][] = [
-  [siReact, "6%", "16%", 68, -8], [siNextdotjs, "18%", "34%", 56, 6], [siTypescript, "4%", "58%", 60, 10], [siTailwindcss, "15%", "74%", 64, -6],
-  [siWordpress, "88%", "14%", 66, 8], [siFigma, "78%", "30%", 54, -10], [siNodedotjs, "91%", "50%", 62, -4], [siJavascript, "80%", "70%", 58, 12],
-  [siHtml5, "30%", "12%", 50, -12], [siSupabase, "66%", "10%", 52, 10], [siVercel, "34%", "60%", 46, 4], [siPostgresql, "62%", "56%", 48, -8],
-];
-
-const PROOF = [
-  { v: "10+", l: "projets livrés" },
-  { v: "5 ans", l: "d’expérience" },
-  { v: "48 h", l: "délai de réponse max" },
-];
-
-const NAME = ["Othmane", "B."];
-
-// Aurora blobs: [color, center x, center y, diameter, animation]
-const BLOBS: [string, string, string, string, string][] = [
-  ["rgba(255,59,0,0.42)",    "56%", "62%", "min(980px,150vw)", "aurora-a 22s ease-in-out infinite alternate"],
-  ["rgba(255,170,120,0.55)", "78%", "28%", "min(760px,120vw)", "aurora-b 26s ease-in-out infinite alternate"],
-  ["rgba(255,205,180,0.6)",  "18%", "78%", "min(700px,110vw)", "aurora-c 30s ease-in-out infinite alternate"],
-  ["rgba(214,200,186,0.7)",  "22%", "16%", "min(620px,100vw)", "aurora-b 34s ease-in-out infinite alternate-reverse"],
-];
-
-/** Roles cycling under the name — one per offer. */
+const NAME = "OTHMANE B.";
 const ROLES = ["Développeur web", "Web designer", "Expert WordPress", "Dev Next.js", "Créateur de sites"];
 
-/** Cycles through ROLES: letters roll up out of a mask, the next word rolls in. Static under reduced motion. */
-function RoleRotator() {
-  const [i, setI] = useState(0);
+const nameStyle: CSSProperties = {
+  ...condensed,
+  margin: 0,
+  padding: ".04em .02em 0",
+  overflow: "hidden",
+  lineHeight: 0.84,
+  letterSpacing: "-.01em",
+  fontSize: "clamp(4rem,19vw,22rem)",
+  whiteSpace: "nowrap",
+};
 
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let timer: ReturnType<typeof setInterval>;
-    // First switch once the intro has played
-    const start = setTimeout(() => {
-      setI(1);
-      timer = setInterval(() => setI((v) => (v + 1) % ROLES.length), 2600);
-    }, LOADER_INTRO_DELAY + 2600);
-    return () => {
-      clearTimeout(start);
-      clearInterval(timer);
-    };
-  }, []);
-
+function Letters() {
   return (
-    <p
-      aria-hidden
-      className="m-0 flex items-center font-heading uppercase leading-none tracking-[-0.02em]"
-      style={{ fontSize: "clamp(1.4rem,2.7vw,2.7rem)" }}
-    >
-      <span className="relative block h-[1.08em] overflow-hidden">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span key={ROLES[i]} className="flex whitespace-pre text-abcs-red">
-            {ROLES[i].split("").map((ch, k) => (
-              <motion.span
-                key={k}
-                className="inline-block"
-                initial={{ y: "110%", rotate: 6 }}
-                animate={{ y: "0%", rotate: 0 }}
-                exit={{ y: "-110%", rotate: -4, transition: { duration: 0.32, ease: [0.64, 0, 0.78, 0], delay: k * 0.01 } }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.38 + k * 0.025 }}
-              >
-                {ch}
-              </motion.span>
-            ))}
-          </motion.span>
-        </AnimatePresence>
-      </span>
-    </p>
+    <>
+      {NAME.split("").map((c, i) =>
+        c === " " ? (
+          <span key={i} className="inline-block w-[.22em]" />
+        ) : (
+          <span
+            key={i}
+            className="inline-block"
+            style={{
+              animation: `h-rise 1.1s cubic-bezier(.22,1,.36,1) ${delay(0.25 + i * 0.06)} both`,
+              ...(c === "." ? { color: "#FF3B00", WebkitTextStroke: 0 } : {}),
+            }}
+          >
+            {c}
+          </span>
+        )
+      )}
+    </>
   );
 }
 
-const idx = (i: number) => ({ "--i": i }) as CSSProperties;
+/** Whole word slides up and out, next one slides in from below. */
+function RoleRotator() {
+  const [{ role, prev, tick }, set] = useState({ role: 0, prev: -1, tick: 0 });
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = setInterval(() => set((s) => ({ prev: s.role, role: (s.role + 1) % ROLES.length, tick: s.tick + 1 })), 2600);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="relative grid h-[1.25em] overflow-hidden">
+      {prev >= 0 && (
+        <span key={`o${tick}`} className="whitespace-nowrap [grid-area:1/1]" style={{ animation: "word-out .6s cubic-bezier(.65,0,.35,1) both" }}>
+          {ROLES[prev]}
+        </span>
+      )}
+      <span key={`i${tick}`} className="whitespace-nowrap [grid-area:1/1]" style={{ animation: `word-in .7s cubic-bezier(.22,1,.36,1) ${prev >= 0 ? 0.12 : 0}s both` }}>
+        {ROLES[role]}
+      </span>
+    </span>
+  );
+}
 
 export default function HeroSection() {
-  const ref = useRef<HTMLElement>(null);
   const { openModal } = useContactModal();
-  const scrollToSection = useScrollToSection();
-
-  // Intro plays once the loader curtain is rising (immediately under reduced motion)
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = setTimeout(() => ref.current?.classList.add("is-in"), reduce ? 0 : LOADER_INTRO_DELAY);
-    return () => clearTimeout(timer);
-  }, []);
-
-  let letter = 0;
+  const root = useRef<HTMLDivElement>(null);
+  const nameA = useRef<HTMLDivElement>(null);
+  const nameB = useRef<HTMLDivElement>(null);
+  const caps = useRef<HTMLDivElement>(null);
+  const photo = useRef<HTMLDivElement>(null);
+  const light = useRef<HTMLDivElement>(null);
+  useHeroMotion({ root, layers: [nameA, nameB], caps, photo, light });
 
   return (
-    <section
-      ref={ref}
-      id="top"
-      data-stack
-      className="hero relative flex min-h-screen flex-col justify-between overflow-hidden bg-abcs-bg text-abcs-black"
-      style={{ padding: "clamp(28px,4vw,48px) clamp(20px,4vw,48px) 160px" }}
-    >
-      {/* Aurora: soft color blobs drifting slowly behind the photo (they bloom in with the intro) */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        {BLOBS.map(([color, left, top, size, anim], i) => (
-          <span
-            key={i}
-            data-hero="ring"
-            className="absolute aspect-square rounded-full will-change-transform"
-            style={{
-              ...idx(i),
-              left,
-              top,
-              width: size,
-              translate: "-50% -50%",
-              background: `radial-gradient(circle, ${color} 0%, transparent 68%)`,
-              animation: anim,
-            }}
-          />
-        ))}
-      </div>
+    <section id="top" data-stack className="relative bg-[#050505] pb-16 text-white">
+      {/* Intro waits for the preloader curtain */}
+      <div ref={root} className="relative h-screen min-h-[640px] overflow-hidden bg-[#050505]" style={{ "--hd": `${LOADER_INTRO_DELAY / 1000}s` } as CSSProperties}>
+        <HeroBackground lightRef={light} />
 
-      {/* Film grain over the aurora */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-[1] opacity-[0.35] mix-blend-multiply"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")",
-          backgroundSize: "160px",
-        }}
-      />
+        {/* Name — filled, behind the photo */}
+        <div ref={nameA} className="hero-name absolute left-1/2 top-[28%] z-[1] text-[#f4f4f2]" style={{ translate: "-50% 0", filter: "drop-shadow(0 0 40px rgba(255,255,255,.22))" }}>
+          <h1 style={nameStyle}>
+            <span className="sr-only">Othmane Bouakline, développeur web freelance</span>
+            <span aria-hidden><Letters /></span>
+          </h1>
+        </div>
 
-      {/* Floating stack logos */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-[1]">
-        {ICONS.map(([icon, x, y, size, rot], i) => (
-          <span
-            key={icon.slug}
-            data-hero="icon"
-            className={`absolute items-center justify-center rounded-[18px] ${PHONE_ICONS.has(i) ? "flex" : "hidden md:flex"} border border-[rgba(255,59,0,0.22)] bg-white/35`}
-            style={{
-              ...idx(i),
-              left: x,
-              top: y,
-              width: size,
-              height: size,
-              rotate: `${rot}deg`,
-              animation: `hero-float ${6 + (i % 4)}s ease-in-out ${(i * 0.37).toFixed(2)}s infinite`,
-            }}
-          >
-            <svg viewBox="0 0 24 24" className="h-[52%] w-[52%] opacity-55" fill="#FF3B00">
-              <path d={icon.path} />
-            </svg>
-          </span>
-        ))}
-      </div>
+        <HeroPortrait photoRef={photo} />
 
-      {/* Top bar */}
-      <div data-hero="fade" className="relative z-[6] order-1 flex items-center justify-between gap-4">
-        <span className="font-heading text-[20px] tracking-[-0.01em]">O&apos;LDEV</span>
-        <span className="inline-flex items-center gap-2 rounded-full bg-[rgba(34,160,90,0.12)] px-3.5 py-2 text-[13px] font-bold uppercase tracking-[0.14em] text-abcs-green-text">
-          <span className="h-2 w-2 rounded-full bg-abcs-green" />
-          Disponible
-        </span>
-      </div>
+        {/* Name — outline, in front of the photo */}
+        <div ref={nameB} aria-hidden className="hero-name pointer-events-none absolute left-1/2 top-[28%] z-[3]" style={{ translate: "-50% 0", color: "transparent", WebkitTextStroke: "1.2px rgba(244,244,242,.55)" }}>
+          <div style={nameStyle}><Letters /></div>
+        </div>
 
-      {/* Name — behind the photo */}
-      <h1
-        className="relative z-[4] order-2 flex flex-wrap gap-x-[0.3em] font-heading font-normal uppercase leading-[0.82] tracking-[-0.04em]"
-        style={{ margin: "clamp(40px,8vh,96px) 0 0", fontSize: "clamp(3.2rem,10.5vw,11rem)" }}
-      >
-        <span className="sr-only">Othmane Bouakline, développeur web freelance</span>
-        {NAME.map((word) => (
-          <span key={word} aria-hidden className="split-mask">
-            {word.split("").map((ch, i) => (
-              <span key={i} className="split-unit" style={idx(letter++)}>
-                {ch}
-              </span>
-            ))}
-          </span>
-        ))}
-      </h1>
+        <HeroOverlays />
 
-      {/* Rotating roles — in front of the photo so they stay readable */}
-      <div data-hero="fade-late" className="relative z-[6] order-2 mt-[clamp(10px,1.6vw,22px)]">
-        <RoleRotator />
-      </div>
-
-      {/* Photo — in front of the name. Phones: in the flow under the name; ≥ md: anchored at the bottom */}
-      <div
-        className="pointer-events-none relative z-[5] order-3 mx-auto mt-4 h-[62svh] max-h-[640px] md:absolute md:bottom-0 md:left-1/2 md:order-none md:mt-0 md:h-[84%] md:max-h-none md:-translate-x-1/2"
-        style={{ aspectRatio: `${heroPhoto.width} / ${heroPhoto.height}` }}
-      >
-        <Image
-          data-hero="photo"
-          src={heroPhoto}
-          alt="Othmane Bouakline"
-          fill
-          fetchPriority="low"
-          sizes="(max-width: 768px) 70vw, 45vw"
-          className="object-contain object-bottom"
-        />
-      </div>
-
-      {/* Bottom blocks */}
-      <div data-hero="fade-late" className="relative z-[6] order-4 -mt-16 flex flex-wrap items-end justify-between gap-4 sm:gap-7 md:mt-auto">
-        <div className="flex max-w-[360px] flex-col gap-[18px] rounded-[20px] border border-white/70 bg-white/35 shadow-[0_10px_40px_-12px_rgba(17,17,17,0.18),inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-150 p-5">
-          <p className="text-[19px] font-semibold leading-[1.4] text-pretty">
-            Je crée des sites rapides pour les indépendants et PME qui veulent plus de clients, pas juste un joli site.
-          </p>
-          <div className="flex flex-wrap gap-2.5">
-            <button
-              onClick={() => openModal()}
-              className="inline-flex items-center gap-2 rounded-full bg-abcs-black px-[22px] py-[15px] text-[13px] font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-abcs-red"
-            >
-              Réserver un appel <span aria-hidden>↗</span>
-            </button>
-            <a
-              href="#portfolio"
-              onClick={(e) => {
-                if (scrollToSection("portfolio")) e.preventDefault();
-              }}
-              className="inline-flex items-center gap-2 rounded-full border border-abcs-black/25 px-[22px] py-[15px] text-[13px] font-bold uppercase tracking-[0.14em] text-abcs-black transition-colors hover:border-abcs-red hover:text-abcs-red-text"
-            >
-              Voir mes projets
-            </a>
+        {/* Captions aligned to the name edges (invisible name copy sets the width) */}
+        <div ref={caps} className="hero-name pointer-events-none absolute left-1/2 top-[28%] z-[4] flex flex-col" style={{ translate: "-50% 0" }}>
+          <div aria-hidden style={{ ...nameStyle, visibility: "hidden" }}>{NAME}</div>
+          <div className={`mt-[clamp(14px,1.6vw,24px)] flex items-start justify-between gap-6 text-[#f4f4f2] ${cap}`} style={fade(1.3)}>
+            <span className="flex flex-col gap-0.5">
+              <span className="text-[#f4f4f2]/50">Sites web</span>
+              <span>qui ramènent des clients</span>
+            </span>
+            <span className="flex flex-col items-end gap-0.5 text-right">
+              <span className="text-[#f4f4f2]/50">Freelance</span>
+              <span className="text-abcs-red"><RoleRotator /></span>
+            </span>
           </div>
         </div>
 
-        <div className="flex flex-col gap-1.5 rounded-[20px] border border-white/70 bg-white/35 shadow-[0_10px_40px_-12px_rgba(17,17,17,0.18),inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-150 px-5 py-[18px]">
-          {PROOF.map((p) => (
-            <div key={p.l} className="flex items-baseline gap-2.5">
-              <span className="font-heading text-[22px]">{p.v}</span>
-              <span className="text-[14px] text-abcs-black/70">{p.l}</span>
-            </div>
-          ))}
+        {/* Top bar */}
+        <div className="absolute inset-x-0 top-0 z-[5] grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-[clamp(20px,3vw,44px)] py-[clamp(22px,3vw,40px)]" style={fade(0.2)}>
+          <span className="uppercase" style={{ ...condensed, fontSize: 24, letterSpacing: ".01em" }}>
+            O&apos;LDEV
+          </span>
+          <span className="hidden md:inline-flex"><ParisTime /></span>
+          <DispoBadge />
+        </div>
+
+        {/* Bottom bar */}
+        <div
+          className="absolute bottom-[clamp(28px,6vh,64px)] left-[clamp(20px,3vw,44px)] right-[clamp(20px,3vw,44px)] z-[5] grid grid-cols-1 items-center justify-items-center gap-4 md:grid-cols-[1fr_auto_1fr] md:justify-items-stretch"
+          style={fade(1.5)}
+        >
+          <HeroSocials className="order-2 md:order-none" />
+          <button
+            onClick={() => openModal()}
+            className="inline-flex items-center gap-3 whitespace-nowrap rounded-full bg-abcs-red py-[7px] pl-6 pr-[7px] text-[13px] font-bold uppercase tracking-[0.14em] text-white shadow-[0_10px_40px_-8px_rgba(255,59,0,0.6)] transition-all duration-200 hover:bg-white hover:text-abcs-black"
+          >
+            Réserver un appel
+            <span className="grid h-[38px] w-[38px] place-items-center rounded-full bg-abcs-black text-[15px] text-white">↗</span>
+          </button>
+          <a href={`mailto:${EMAIL}`} className={`hidden justify-self-end text-[#f4f4f2] transition-colors hover:text-abcs-red lg:block ${cap}`}>
+            {EMAIL}
+          </a>
         </div>
       </div>
     </section>
