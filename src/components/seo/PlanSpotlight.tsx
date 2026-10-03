@@ -7,7 +7,7 @@ import { useContactModal } from "@/components/ContactModalProvider";
 import { PLANS, SERVICES, startPrice, type ServiceKey } from "@/lib/services";
 
 const PROMISES = [
-  { t: "Prix ferme", d: "Le devis fixe le prix, le délai et le contenu. Pas de surprise sur la facture." },
+  { t: "Prix fixé au devis", d: "Le prix dépend des options choisies. Une fois le devis signé, il ne bouge plus : pas de surprise sur la facture." },
   { t: "Paiement en 3 fois", d: "En une seule fois ou en plusieurs fois, jusqu’à 3 versements." },
   { t: "Le site vous appartient", d: "Code, contenus et accès vous sont transmis à la livraison." },
 ];
@@ -68,6 +68,11 @@ export default function PlanSpotlight({ service }: { service: ServiceKey }) {
             <CountPrice value={startPrice(service)} start={inView} delay={300} />
           </span>
         </div>
+        {SERVICES[service].max && (
+          <p className="-mt-3 m-0 text-[15px] text-white/70">
+            jusqu’à <strong className="text-white">{SERVICES[service].max}</strong> selon les options
+          </p>
+        )}
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[14px] bg-white/14">
           {[
             ["Délai", plan.delay],

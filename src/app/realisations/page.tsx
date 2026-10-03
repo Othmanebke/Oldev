@@ -11,7 +11,7 @@ import StackCard from "@/components/seo/StackCard";
 import { breadcrumbJsonLd } from "@/lib/jsonLd";
 import { PROJECT_FILTERS, projectsForTag, type ProjectTag } from "@/lib/projects";
 import { SERVICE_PAGES } from "@/lib/seoPages";
-import { SERVICES } from "@/lib/services";
+import { priceRange } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 const TITLE = "Réalisations : sites vitrines, WordPress et Next.js";
@@ -60,7 +60,7 @@ export default function RealisationsPage() {
           <SectionHeader tone="light" label="02 · Et vous ?" title="Le prochain, c’est le vôtre" intro="Choisissez la formule qui vous correspond, ou parlons-en directement." />
           <OfferCards
             tone="light"
-            items={SERVICE_PAGES.map((o) => ({ href: `/services/${o.slug}`, eyebrow: SERVICES[o.key].price, title: o.h1, text: o.intro[0] }))}
+            items={SERVICE_PAGES.map((o) => ({ href: `/services/${o.slug}`, eyebrow: priceRange(o.key), title: o.h1, text: o.intro[0] }))}
           />
           <div className="self-center">
             <ContactCta label="Démarrer mon projet" />

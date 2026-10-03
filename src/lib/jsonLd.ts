@@ -3,7 +3,7 @@ import { EMAIL, LOCATION, OWNER, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SOCIALS 
 
 const OFFERS: ServiceKey[] = ["vitrine", "webapp", "wordpress", "branding_canva", "refonte", "chatbot_ia"];
 
-/** "Dès 1 200€" → 1200 ; "Sur devis" → undefined */
+/** "Dès 1 200€" or "2 500€" → the number ; "Sur devis" → undefined */
 const minPrice = (price: string) => {
   const n = parseInt(price.replace(/\D/g, ""), 10);
   return Number.isFinite(n) ? n : undefined;
@@ -54,11 +54,12 @@ export function homeJsonLd() {
         makesOffer: OFFERS.map((key) => {
           const s = SERVICES[key];
           const min = minPrice(s.price);
+          const max = s.max ? minPrice(s.max) : undefined;
           return {
             "@type": "Offer",
             itemOffered: { "@type": "Service", name: s.label },
             ...(min !== undefined && {
-              priceSpecification: { "@type": "PriceSpecification", minPrice: min, priceCurrency: "EUR" },
+              priceSpecification: { "@type": "PriceSpecification", minPrice: min, ...(max && { maxPrice: max }), priceCurrency: "EUR" },
             }),
           };
         }),
@@ -92,6 +93,7 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
 /** schema.org Service offered by the business declared in homeJsonLd(). */
 export function serviceJsonLd({ key, name, description, path }: { key: ServiceKey; name: string; description: string; path: string }) {
   const min = minPrice(SERVICES[key].price);
+  const max = SERVICES[key].max ? minPrice(SERVICES[key].max) : undefined;
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -104,7 +106,7 @@ export function serviceJsonLd({ key, name, description, path }: { key: ServiceKe
       { "@type": "AdministrativeArea", name: LOCATION.region },
     ],
     ...(min !== undefined && {
-      offers: { "@type": "Offer", priceSpecification: { "@type": "PriceSpecification", minPrice: min, priceCurrency: "EUR" } },
+      offers: { "@type": "Offer", priceSpecification: { "@type": "PriceSpecification", minPrice: min, ...(max && { maxPrice: max }), priceCurrency: "EUR" } },
     }),
   };
 }

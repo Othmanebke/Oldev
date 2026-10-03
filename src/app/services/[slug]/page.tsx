@@ -10,6 +10,7 @@ import StackEffect from "@/components/fx/StackEffect";
 import JsonLd from "@/components/seo/JsonLd";
 import OfferCards from "@/components/seo/OfferCards";
 import PlanSpotlight from "@/components/seo/PlanSpotlight";
+import PriceOptions from "@/components/seo/PriceOptions";
 import ProjectShowcase from "@/components/seo/ProjectShowcase";
 import SeoHero, { type HeroIcon } from "@/components/seo/SeoHero";
 import StackCard from "@/components/seo/StackCard";
@@ -17,7 +18,7 @@ import Steps from "@/components/seo/Steps";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/jsonLd";
 import { projectsForTag } from "@/lib/projects";
 import { getServicePage, SERVICE_PAGES } from "@/lib/seoPages";
-import { FAQ, PLANS, SERVICES, type ServiceKey } from "@/lib/services";
+import { FAQ, PLANS, SERVICES, priceRange, startPrice, type ServiceKey } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -59,11 +60,11 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
       <main className="flex flex-col bg-abcs-bg" style={{ overflowX: "clip" }}>
         <SeoHero
           crumbs={[{ name: "Services", href: "/#services" }, { name: page.name }]}
-          label={`${plan.for} · ${SERVICES[page.key].price.toLowerCase()}`}
+          label={`${plan.for} · ${priceRange(page.key)}`}
           title={page.h1}
           intro={page.intro}
           stats={[
-            { v: SERVICES[page.key].price.replace(/^dès\s*/i, ""), l: "prix de départ" },
+            { v: priceRange(page.key), l: "selon les options" },
             { v: plan.delay, l: "de délai" },
             { v: plan.revisions, l: "de révisions" },
           ]}
@@ -97,8 +98,14 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
         </StackCard>
 
         <StackCard tone="light" z={3} dots watermark="Tarif · Inclus · Tarif · Inclus · Tarif ·" watermark2="Transparent · Sans surprise · Transparent ·">
-          <SectionHeader tone="light" label="02 · Tarif transparent" title="Ce qui est inclus" intro="Un prix de départ, un délai et ce qui est inclus. Pas de surprise sur la facture." />
+          <SectionHeader
+            tone="light"
+            label="02 · Tarif transparent"
+            title="Tarif & options"
+            intro={`De ${startPrice(page.key)} pour la formule de base à ${SERVICES[page.key].max} avec toutes les options. Le prix final est fixé au devis.`}
+          />
           <PlanSpotlight service={page.key} />
+          <PriceOptions service={page.key} />
         </StackCard>
 
         <StackCard tone="dark" z={4} watermark="Méthode · Étapes · Méthode · Étapes ·" watermark2="Appel · Devis · Design · Code · En ligne ·">
@@ -138,7 +145,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             items={[
               ...SERVICE_PAGES.filter((p) => p.slug !== page.slug).map((o) => ({
                 href: `/services/${o.slug}`,
-                eyebrow: SERVICES[o.key].price,
+                eyebrow: priceRange(o.key),
                 title: o.h1,
                 text: o.intro[0],
               })),

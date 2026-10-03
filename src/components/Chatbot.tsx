@@ -33,9 +33,9 @@ const CHAT_LOGIC: Record<string, Step> = {
     question: "Super ! Quel type de site correspond à ton objectif ?",
     type: "options",
     options: [
-      { label: "Site Vitrine / One-Page — dès 300€",  value: "vitrine",   nextStep: "budget_web_vitrine" },
-      { label: "Site / App Web Sur-Mesure — dès 800€", value: "webapp",    nextStep: "budget_web_app" },
-      { label: "Site WordPress Administrable — dès 1 200€", value: "wordpress", nextStep: "budget_web_wordpress" },
+      { label: "Site Vitrine / One-Page — 300 à 600€",  value: "vitrine",   nextStep: "budget_web_vitrine" },
+      { label: "Site / App Web Sur-Mesure — 800 à 3 000€", value: "webapp",    nextStep: "budget_web_app" },
+      { label: "Site WordPress Administrable — 1 200 à 2 500€", value: "wordpress", nextStep: "budget_web_wordpress" },
     ],
   },
   refonte_type: {
@@ -47,9 +47,9 @@ const CHAT_LOGIC: Record<string, Step> = {
       { label: "Site codé / Autre CMS",    value: "refonte_code", nextStep: "budget_refonte" },
     ],
   },
-  budget_web_vitrine:   { id: "budget_web_vitrine",   question: "Site Vitrine dès 300€ — quelle est ta fourchette de budget ?", type: "options", options: SERVICES.vitrine.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
-  budget_web_app:       { id: "budget_web_app",       question: "Site & App sur-mesure dès 800€ — ton budget estimé ?",         type: "options", options: SERVICES.webapp.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
-  budget_web_wordpress: { id: "budget_web_wordpress", question: "WordPress dès 1 200€ — quelle fourchette de budget ?",        type: "options", options: SERVICES.wordpress.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
+  budget_web_vitrine:   { id: "budget_web_vitrine",   question: "Site Vitrine (300 à 600€ selon les options) — quelle est ta fourchette de budget ?", type: "options", options: SERVICES.vitrine.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
+  budget_web_app:       { id: "budget_web_app",       question: "Site & App sur-mesure (800 à 3 000€ selon les options) — ton budget estimé ?",         type: "options", options: SERVICES.webapp.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
+  budget_web_wordpress: { id: "budget_web_wordpress", question: "WordPress (1 200 à 2 500€ selon les options) — quelle fourchette de budget ?",        type: "options", options: SERVICES.wordpress.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
   budget_refonte:       { id: "budget_refonte",       question: "Refonte sur devis — quel budget souhaites-tu allouer ?",        type: "options", options: SERVICES.refonte.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
   budget_ia:            { id: "budget_ia",            question: "Chatbot IA & Automatisation — ton budget envisagé ?",           type: "options", options: SERVICES.chatbot_ia.budgets.map(b => ({ label: b, value: b, nextStep: "ask_name" })) },
   branding_type: {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SERVICES, SERVICE_GROUPS, getBudgets } from "@/lib/services";
+import { SERVICES, SERVICE_GROUPS, getBudgets, priceRange } from "@/lib/services";
 import type { ContactFormData } from "@/components/ContactModalProvider";
 
 const inputClass =
@@ -172,7 +172,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                           <optgroup key={g.label} label={g.label}>
                             {g.keys.map((k) => (
                               <option key={k} value={SERVICES[k].label}>
-                                {SERVICES[k].label} — {SERVICES[k].price}
+                                {SERVICES[k].label} — {priceRange(k)}
                               </option>
                             ))}
                           </optgroup>

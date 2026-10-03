@@ -64,7 +64,7 @@ export function ServicesSection() {
           label="02 · Tarifs transparents"
           title="Mes services"
           titleSize="clamp(2.8rem,9vw,120px)"
-          intro="Un prix de départ, un délai et ce qui est inclus. Pas de surprise sur la facture."
+          intro="Une fourchette de prix selon les options, un délai et ce qui est inclus. Le prix final est fixé au devis, sans surprise."
         />
 
         {/* Plans */}
@@ -111,6 +111,11 @@ export function ServicesSection() {
                     <CountPrice value={price} start={plansIn} delay={i * 140} />
                   </span>
                 </div>
+                {SERVICES[p.key].max && (
+                  <p className="-mt-3 m-0 text-[14px] leading-[1.45] opacity-70">
+                    jusqu’à <strong className="font-bold opacity-100">{SERVICES[p.key].max}</strong> selon les options
+                  </p>
+                )}
                 <div className={`grid grid-cols-2 gap-px overflow-hidden rounded-[14px] ${f ? "bg-white/14" : "bg-abcs-black/10"}`}>
                   {[
                     ["Délai", p.delay],

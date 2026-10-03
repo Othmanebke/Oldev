@@ -14,13 +14,13 @@ import TownsRadar from "@/components/seo/TownsRadar";
 import { breadcrumbJsonLd } from "@/lib/jsonLd";
 import { PROJECTS } from "@/lib/projects";
 import { LOCAL_FAQ, SERVICE_PAGES } from "@/lib/seoPages";
-import { SERVICES } from "@/lib/services";
+import { priceRange } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 const PATH = "/creation-site-internet-seine-et-marne";
 const TITLE = "Création de site internet en Seine-et-Marne (77)";
 const DESCRIPTION =
-  "Développeur web freelance à Brie-Comte-Robert : création de sites vitrines, WordPress et sur-mesure pour les entreprises de Seine-et-Marne et d’Île-de-France. Devis gratuit, dès 300 €.";
+  "Développeur web freelance à Brie-Comte-Robert : création de sites vitrines, WordPress et sur-mesure pour les entreprises de Seine-et-Marne et d’Île-de-France. Devis gratuit, site vitrine de 300 à 600 €.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -47,7 +47,7 @@ export default function LocalPage() {
             "5 ans d’expérience (Inetum, Fujitsu, AJC), un Bac+5 en informatique web, un interlocuteur unique et une réponse sous 48 h.",
           ]}
           stats={[
-            { v: "dès 300€", l: "le site vitrine" },
+            { v: "300 – 600€", l: "le site vitrine" },
             { v: "48 h", l: "délai de réponse max" },
             { v: "5 ans", l: "d’expérience" },
           ]}
@@ -57,9 +57,9 @@ export default function LocalPage() {
         />
 
         <StackCard tone="dark" z={2} watermark="Offres · Sites · Offres · Sites · Offres ·" watermark2="Vitrine · Sur-mesure · WordPress ·">
-          <SectionHeader tone="dark" label="01 · Offres" title="Quel site pour vous ?" intro="Trois formules claires, avec un prix de départ et un délai annoncés dès le départ." />
+          <SectionHeader tone="dark" label="01 · Offres" title="Quel site pour vous ?" intro="Trois formules claires, avec une fourchette de prix selon les options et un délai annoncés dès le départ." />
           <OfferCards
-            items={SERVICE_PAGES.map((s) => ({ href: `/services/${s.slug}`, eyebrow: SERVICES[s.key].price, title: s.h1, text: s.intro[0] }))}
+            items={SERVICE_PAGES.map((s) => ({ href: `/services/${s.slug}`, eyebrow: priceRange(s.key), title: s.h1, text: s.intro[0] }))}
           />
         </StackCard>
 
