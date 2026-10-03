@@ -152,8 +152,9 @@ function ProjectCarousel({ items }: { items: Project[] }) {
 
 export default function WorkSection() {
   const [filter, setFilter] = useState<ProjectTag | "all">("all");
-  const lead = PROJECT_FILTERS.find((f) => f.tag === filter)?.lead;
-  const list = PROJECTS.filter((p) => p.tag === filter).sort((a, b) => Number(b.id === lead) - Number(a.id === lead));
+  const lead = PROJECT_FILTERS.find((f) => f.tag === filter)?.lead ?? [];
+  const rank = (p: Project) => (lead.includes(p.id) ? lead.indexOf(p.id) : lead.length);
+  const list = PROJECTS.filter((p) => p.tag === filter).sort((a, b) => rank(a) - rank(b));
 
   return (
     <section

@@ -11,12 +11,12 @@ export type Project = {
   concept?: boolean;
 };
 
-/** `lead` = project shown first in that tab's carousel. */
-export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string }[] = [
+/** `lead` = projects shown first in that tab's carousel, in this order. */
+export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string[] }[] = [
   { tag: "all",       label: "Tous" },
-  { tag: "nextjs",    label: "React / Next.js", lead: "parfumerie" },
-  { tag: "wordpress", label: "WordPress",       lead: "brows" },
-  { tag: "html",      label: "HTML",            lead: "eclat" },
+  { tag: "nextjs",    label: "React / Next.js", lead: ["dental", "kinetik", "moon", "renova", "wonder", "parfumerie"] },
+  { tag: "wordpress", label: "WordPress",       lead: ["brows"] },
+  { tag: "html",      label: "HTML",            lead: ["eclat", "connect", "infini", "mosa"] },
 ];
 
 export const PROJECTS: Project[] = [
@@ -157,16 +157,6 @@ export const PROJECTS: Project[] = [
     image: "/portfolio/eclat.webp",
   },
   {
-    id: "montres",
-    name: "Watch Store",
-    category: "E-commerce · HTML",
-    tag: "html",
-    tagline: "Boutique de montres de luxe : collections, produits vedettes, nouveautés, avis clients et inscription à la newsletter.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/montres.webp",
-    concept: true,
-  },
-  {
     id: "ajt",
     name: "AJT Blog",
     category: "Blog · Next.js",
@@ -174,5 +164,77 @@ export const PROJECTS: Project[] = [
     tagline: "Blog moderne avec système de catégories, recherche plein texte, commentaires et tableau de bord auteur.",
     stack: ["React", "Next.js", "Tailwind"],
     image: "/portfolio/ajt-blog.webp",
+  },
+  {
+    id: "dental",
+    name: "Dental Clinic",
+    category: "Santé · Next.js",
+    tag: "nextjs",
+    tagline: "Site d’un chirurgien-dentiste implantologue : soins, solutions d’implants, diagnostic en ligne et prise de rendez-vous.",
+    stack: ["Next.js", "React", "Tailwind"],
+    image: "/portfolio/dental.webp",
+  },
+  {
+    id: "kinetik",
+    name: "Kinetik",
+    category: "Salle de sport · Next.js",
+    tag: "nextjs",
+    tagline: "Site d’un training club : espaces, coachs, programmes d’entraînement et réservation de séances.",
+    stack: ["Next.js", "React", "Tailwind"],
+    image: "/portfolio/kinetik.webp",
+  },
+  {
+    id: "moon",
+    name: "Moon",
+    category: "Beauté · React",
+    tag: "nextjs",
+    tagline: "Marque de maquillage : collection, rituel en trois gestes, avis clientes et réservation de séances beauté.",
+    stack: ["React", "Vite", "Tailwind"],
+    image: "/portfolio/moon.webp",
+  },
+  {
+    id: "renova",
+    name: "Renova",
+    category: "Rénovation · Next.js",
+    tag: "nextjs",
+    tagline: "Entreprise de rénovation d’intérieur : méthode, avantages, réalisations et demande de devis en ligne.",
+    stack: ["Next.js", "React", "Tailwind"],
+    image: "/portfolio/renova.webp",
+  },
+  {
+    id: "wonder",
+    name: "Wonder Club",
+    category: "Barbier · React",
+    tag: "nextjs",
+    tagline: "Salon de coiffure et barbier : prestations et tarifs, galerie de coupes, infos pratiques et réservation de créneau.",
+    stack: ["React", "Tailwind"],
+    image: "/portfolio/wonder.webp",
+  },
+  {
+    id: "connect",
+    name: "Connect",
+    category: "Produit tech · HTML",
+    tag: "html",
+    tagline: "Page produit pour un casque audio : présentation immersive, coloris, fiche technique et ajout au panier.",
+    stack: ["HTML", "CSS", "JavaScript"],
+    image: "/portfolio/connect.webp",
+  },
+  {
+    id: "infini",
+    name: "Infini",
+    category: "Automobile · HTML",
+    tag: "html",
+    tagline: "Site d’un constructeur de véhicules électriques de luxe : gamme filtrable, recharge, actualités et essais.",
+    stack: ["HTML", "CSS", "JavaScript"],
+    image: "/portfolio/infini.webp",
+  },
+  {
+    id: "mosa",
+    name: "Mosa",
+    category: "Mobilier · HTML",
+    tag: "html",
+    tagline: "Atelier de canapés artisanaux : collections, savoir-faire, sur-mesure et showroom, dans une mise en page éditoriale.",
+    stack: ["HTML", "CSS", "JavaScript"],
+    image: "/portfolio/mosa.webp",
   },
 ];
