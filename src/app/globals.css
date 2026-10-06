@@ -63,6 +63,9 @@ html.has-custom-cursor * {
 @keyframes h-rise  { from { transform: translateY(110%); } to { transform: none; } }
 @keyframes h-photo { from { opacity: 0; transform: translateY(70px) scale(.96); filter: blur(12px); } to { opacity: 1; transform: none; filter: blur(0); } }
 @keyframes h-fade  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes h-out   { to { transform: translateY(-100%); opacity: 0; filter: blur(6px); } }
+@keyframes pp-fade { from { opacity: 0; } }
+@keyframes pp-in   { from { opacity: 0; transform: translateY(40px) scale(.97); } }
 @keyframes h-light { from { opacity: 0; } to { opacity: 1; } }
 @keyframes h-ping  { 75%, 100% { transform: scale(2); opacity: 0; } }
 @keyframes h-blink { 50% { opacity: 0; } }
@@ -84,10 +87,9 @@ html.has-custom-cursor * {
   transform-origin: 0 100%;
 }
 
-/* ─── Hero (home + landing pages): phones ───────────────────────────────── */
+/* ─── Hero: phones ──────────────────────────────────────────────────────── */
 @media (max-width: 700px) {
-  .hero-name  { top: 22% !important; }
-  .hero-photo { height: 68% !important; }
+  .hero-photo { height: 64% !important; }
 }
 
 /* ─── Outline watermark text ─────────────────────────────────────────────── */
@@ -138,13 +140,8 @@ html.has-custom-cursor * {
   .reveal:not(.is-in) [data-line] { transform: scale(0, 1); }
   .reveal:not(.is-in) [data-line="y"] { transform: scale(1, 0); }
   .reveal [data-line] { transition: transform 1.8s var(--ease-out-expo) 0.2s; }
-  /* Radar pins pop in */
-  .reveal:not(.is-in) [data-pin] { opacity: 0; scale: 0.3; }
-  .reveal [data-pin] { transition: opacity 0.6s ease calc(400ms + var(--i) * 90ms), scale 0.8s var(--ease-out-expo) calc(400ms + var(--i) * 90ms); }
 }
 
-@keyframes radar-sweep { to { rotate: 360deg; } }
-@keyframes radar-pulse { from { scale: 0.2; opacity: 0.8; } to { scale: 1; opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   *,

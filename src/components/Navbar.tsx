@@ -3,10 +3,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useContactModal } from "@/components/ContactModalProvider";
+import MobileMenu from "@/components/MobileMenu";
 import { useScrollToSection } from "@/lib/useScrollToSection";
 import avatarPhoto from "@/img/avatar.webp";
 
@@ -30,6 +31,7 @@ export default function Navbar() {
   const visible = pastHero || chatOpen || menuOpen;
   const { openModal } = useContactModal();
   const scrollToSection = useScrollToSection();
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   // Show hint once — after 2.5s, only if never dismissed
   useEffect(() => {
@@ -69,6 +71,7 @@ export default function Navbar() {
   };
 
   return (
+    <>
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={visible ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
@@ -170,7 +173,7 @@ export default function Navbar() {
           aria-controls="mobile-menu"
           className="flex-1 rounded-full px-3.5 py-2.5 text-left text-[13px] font-bold uppercase tracking-[0.08em] text-white/75 transition-colors hover:text-white sm:hidden"
         >
-          {menuOpen ? "Fermer" : "Menu"}
+          Menu
         </button>
 
         {/* Contact button */}
@@ -185,31 +188,10 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Phones: menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.nav
-            id="mobile-menu"
-            aria-label="Navigation mobile"
-            initial={{ opacity: 0, y: 12, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.96 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute bottom-full left-0 right-0 mb-3 flex flex-col gap-1 rounded-[28px] border border-white/[0.08] bg-[rgba(26,26,26,0.95)] p-2 shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-[16px] sm:hidden"
-          >
-            {LINKS.map((link) => (
-              <Link
-                key={link.id}
-                href={`/#${link.id}`}
-                onClick={(e) => handleNavClick(e, link.id)}
-                className="rounded-[20px] px-4 py-3.5 text-[15px] font-bold uppercase tracking-[0.08em] text-white/80 transition-colors hover:bg-white/[0.08] hover:text-white"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </motion.nav>
-        )}
-      </AnimatePresence>
     </motion.div>
+
+    {/* Phones: full-screen menu (outside the transformed pill, so `fixed` covers the viewport) */}
+    <MobileMenu open={menuOpen} onClose={closeMenu} />
+    </>
   );
 }

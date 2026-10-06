@@ -8,8 +8,8 @@ export type Project = {
   tagline: string;
   stack: string[];
   image: string;
-  /** Full-length capture shown in the site viewer (1440 px wide); falls back to `image`. */
-  full?: { src: string; height: number };
+  /** Full-page capture (menu to footer, 1440 px wide) auto-scrolled in the preview popup, e.g. `/portfolio/web/{id}.jpg`; falls back to `image`. */
+  fullImage?: string;
   concept?: boolean;
 };
 

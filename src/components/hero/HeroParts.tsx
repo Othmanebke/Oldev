@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type CSSProperties, type RefObject } from "react";
 import Image from "next/image";
-import { siGithub, siInstagram, siTiktok } from "simple-icons";
 import heroPhoto from "@/img/hero.webp";
 
 /** Condensed Archivo (wdth axis) used by the hero titles. */
@@ -18,13 +17,6 @@ export const cap = "font-sans text-[clamp(11px,.95vw,13px)] font-bold uppercase 
 /** Intro delays are offset by `--hd` set on the hero root (the home page waits for the preloader). */
 export const delay = (d: number) => `calc(var(--hd, 0s) + ${d}s)`;
 export const fade = (d: number): CSSProperties => ({ animation: `h-fade 1s cubic-bezier(.22,1,.36,1) ${delay(d)} both` });
-
-const SOCIALS = [
-  { label: "Instagram", href: "https://www.instagram.com/o.ldev/", icon: siInstagram },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/othmane-bouakline/", icon: null },
-  { label: "GitHub", href: "https://github.com/Othmanebke", icon: siGithub },
-  { label: "TikTok", href: "https://www.tiktok.com/@o.ldev", icon: siTiktok },
-];
 
 /** Mouse parallax + scroll drift (direct DOM writes, no re-render). */
 export function useHeroMotion(refs: {
@@ -177,30 +169,5 @@ export function DispoBadge() {
         <span className="absolute inset-0 rounded-full bg-abcs-green" style={{ animation: "h-ping 1.8s cubic-bezier(0,0,.2,1) infinite" }} />
       </span>
     </span>
-  );
-}
-
-export function HeroSocials({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex gap-2 ${className}`}>
-      {SOCIALS.map((s) => (
-        <a
-          key={s.label}
-          href={s.href}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={s.label}
-          className="grid h-[34px] w-[34px] place-items-center rounded-full border border-white/20 transition-all duration-200 hover:border-abcs-red hover:bg-abcs-red"
-        >
-          {s.icon ? (
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="#fff" aria-hidden>
-              <path d={s.icon.path} />
-            </svg>
-          ) : (
-            <span className="text-[12px] font-extrabold">in</span>
-          )}
-        </a>
-      ))}
-    </div>
   );
 }

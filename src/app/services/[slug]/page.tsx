@@ -1,24 +1,18 @@
-import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Footer from "@/components/Footer";
 import FaqAccordion from "@/components/fx/FaqAccordion";
-import Reveal from "@/components/fx/Reveal";
-import SectionHeader from "@/components/fx/SectionHeader";
-import StackEffect from "@/components/fx/StackEffect";
 import JsonLd from "@/components/seo/JsonLd";
-import OfferCards from "@/components/seo/OfferCards";
-import PlanSpotlight from "@/components/seo/PlanSpotlight";
-import PriceOptions from "@/components/seo/PriceOptions";
-import ProjectShowcase from "@/components/seo/ProjectShowcase";
+import ProjectGrid from "@/components/seo/ProjectGrid";
+import SeoContact from "@/components/seo/SeoContact";
+import SeoHeader from "@/components/seo/SeoHeader";
 import SeoHero from "@/components/seo/SeoHero";
-import StackCard from "@/components/seo/StackCard";
 import Steps from "@/components/seo/Steps";
+import { display, H2, Section } from "@/components/seo/ui";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/jsonLd";
 import { projectsForTag } from "@/lib/projects";
 import { getServicePage, SERVICE_PAGES } from "@/lib/seoPages";
-import { FAQ, PLANS, SERVICES, priceRange, startPrice } from "@/lib/services";
+import { FAQ, PLANS, priceRange } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -45,16 +39,19 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
   const plan = PLANS.find((p) => p.key === page.key)!;
   const path = `/services/${page.slug}`;
+  const others = [
+    ...SERVICE_PAGES.filter((p) => p.slug !== page.slug).map((o) => ({ href: `/services/${o.slug}`, eyebrow: priceRange(o.key), title: o.h1 })),
+    { href: "/creation-site-internet-seine-et-marne", eyebrow: "Seine-et-Marne · 77", title: "Création de site internet en Seine-et-Marne" },
+  ];
 
   return (
     <>
       <JsonLd data={serviceJsonLd({ key: page.key, name: page.h1, description: page.metaDescription, path })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Services", path: "/#services" }, { name: page.name, path }])} />
-      <StackEffect />
-      <main className="flex flex-col bg-abcs-bg" style={{ overflowX: "clip" }}>
+      <SeoHeader />
+      <main className="flex flex-col bg-[#f4f4f2] text-[#111]">
         <SeoHero
           crumbs={[{ name: "Services", href: "/#services" }, { name: page.name }]}
-          label={`${plan.for} · ${priceRange(page.key)}`}
           title={page.h1}
           intro={page.intro}
           stats={[
@@ -62,98 +59,81 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             { v: plan.delay, l: "de délai" },
             { v: plan.revisions, l: "de révisions" },
           ]}
+          ctaLabel="Réserver un appel"
           service={page.key}
           secondary={{ href: "/realisations", label: "Voir mes réalisations" }}
         />
 
-        <StackCard tone="dark" z={2} watermark="Pour qui · Pour vous · Pour qui · Pour vous ·" watermark2={`${page.name} · ${page.name} · ${page.name} ·`}>
-          <SectionHeader tone="dark" label="01 · Pour qui ?" title="Pensé pour vous" intro={page.intro[0]} />
-          <Reveal className="grid gap-5 md:grid-cols-3">
-            {page.audience.map((a, i) => (
-              <article
-                key={a.title}
-                data-reveal
-                style={{ "--i": i } as CSSProperties}
-                className="group relative flex flex-col gap-4 overflow-hidden rounded-[28px] border border-white/10 bg-abcs-surface p-7 transition-[border-color,translate] duration-500 ease-out-expo hover:-translate-y-1.5 hover:border-abcs-red/60 md:p-8"
-              >
-                <span
-                  aria-hidden
-                  className="font-heading text-[88px] leading-[0.8] text-transparent transition-colors duration-500 group-hover:text-abcs-red/15"
-                  style={{ WebkitTextStroke: "1.5px rgba(255,59,0,0.6)" }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="m-0 text-[21px] font-extrabold uppercase leading-tight">{a.title}</h3>
-                <p className="m-0 text-[16px] leading-[1.6] text-white/70">{a.text}</p>
+        <Section num="01" label="Pour qui">
+          <H2>Pensé pour vous</H2>
+          <div className="grid gap-8 min-[900px]:grid-cols-3 min-[900px]:gap-6">
+            {page.audience.map((a) => (
+              <article key={a.title} className="flex flex-col gap-2.5 border-t border-[#111] pt-5">
+                <h3 className="m-0 text-[17px] font-semibold leading-[1.4]">{a.title}</h3>
+                <p className="m-0 text-[15px] leading-[1.6] text-[#555] text-pretty">{a.text}</p>
               </article>
             ))}
-          </Reveal>
-        </StackCard>
-
-        <StackCard tone="light" z={3} dots watermark="Tarif · Inclus · Tarif · Inclus · Tarif ·" watermark2="Transparent · Sans surprise · Transparent ·">
-          <SectionHeader
-            tone="light"
-            label="02 · Tarif transparent"
-            title="Tarif & options"
-            intro={`De ${startPrice(page.key)} pour la formule de base à ${SERVICES[page.key].max} avec toutes les options. Le prix final est fixé au devis.`}
-          />
-          <PlanSpotlight service={page.key} />
-          <PriceOptions service={page.key} />
-        </StackCard>
-
-        <StackCard tone="dark" z={4} watermark="Méthode · Étapes · Méthode · Étapes ·" watermark2="Appel · Devis · Design · Code · En ligne ·">
-          <SectionHeader tone="dark" label="03 · Méthode" title="Comment ça se passe" intro="Cinq étapes claires, de notre premier appel à la mise en ligne de votre site." />
-          <Steps />
-        </StackCard>
-
-        <StackCard tone="bg" z={5} watermark="Réalisations · Projets · Réalisations ·" watermark2="Cliquez · Explorez · Cliquez · Explorez ·">
-          <SectionHeader tone="light" label="04 · Exemples" title="Réalisations" intro="Cliquez sur un projet pour parcourir le site en entier." />
-          <ProjectShowcase projects={projectsForTag(page.tag).slice(0, 6)} />
-          <Link
-            href="/realisations"
-            className="self-center inline-flex items-center gap-2 rounded-full border border-abcs-black/25 px-[26px] py-[16px] text-[13px] font-bold uppercase tracking-[0.14em] transition-colors hover:border-abcs-red hover:text-abcs-red-text"
-          >
-            Toutes les réalisations →
-          </Link>
-        </StackCard>
-
-        <StackCard tone="light" z={6} watermark="FAQ · Questions · FAQ · Questions ·">
-          <div className="grid items-start" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,400px),1fr))", gap: "clamp(24px,4vw,56px)" }}>
-            <SectionHeader
-              tone="light"
-              label="05 · FAQ"
-              title="Questions fréquentes"
-              titleSize="clamp(2.4rem,6vw,5rem)"
-              intro="Une autre question ? Réponse sous 48 h maximum."
-              className="md:items-start md:text-left"
-            />
-            <FaqAccordion items={[...page.faq, ...FAQ]} />
           </div>
-        </StackCard>
+        </Section>
 
-        <StackCard tone="bg" z={7} watermark="Offres · Services · Offres · Services ·">
-          <SectionHeader tone="light" label="Aussi disponible" title="Mes autres offres" />
-          <OfferCards
-            tone="light"
-            items={[
-              ...SERVICE_PAGES.filter((p) => p.slug !== page.slug).map((o) => ({
-                href: `/services/${o.slug}`,
-                eyebrow: priceRange(o.key),
-                title: o.h1,
-                text: o.intro[0],
-              })),
-              {
-                href: "/creation-site-internet-seine-et-marne",
-                eyebrow: "Seine-et-Marne · 77",
-                title: "Création de site internet en Seine-et-Marne",
-                text: "Un développeur web freelance basé à Brie-Comte-Robert, pour les entreprises du 77 et d’Île-de-France.",
-              },
-            ]}
-          />
-        </StackCard>
+        <Section num="02" label="Tarif" dark>
+          <h2 className="sr-only">Tarif</h2>
+          <div className="grid gap-12 min-[1000px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] min-[1000px]:gap-16">
+            <div className="flex flex-col gap-4">
+              <p className="m-0 text-[15px] text-[#f4f4f2]/65">De la formule de base à toutes les options</p>
+              <p className="m-0 whitespace-nowrap leading-[.95]" style={{ ...display, fontSize: "clamp(3rem,6.4vw,5.6rem)", textWrap: "nowrap" }}>
+                {priceRange(page.key)}
+              </p>
+              <p className="m-0 text-[15px] text-[#f4f4f2]/65">
+                {plan.delay} · {plan.revisions} de révisions · prix fixé au devis
+              </p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <h3 className="m-0 text-[13px] font-medium text-[#f4f4f2]/60">Inclus dans la formule de base</h3>
+              <ul className="m-0 flex list-none flex-col p-0">
+                {plan.included.map((it) => (
+                  <li key={it} className="flex gap-3 border-t border-[rgba(244,244,242,.12)] py-3.5 text-[16px] leading-[1.5] last:border-b">
+                    <span aria-hidden className="font-bold text-abcs-red">✓</span>
+                    {it}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Section>
 
-        <Footer />
+        <Section num="03" label="Méthode">
+          <H2>Comment ça se passe</H2>
+          <Steps />
+        </Section>
+
+        <Section num="04" label="Exemples">
+          <ProjectGrid title="Quelques réalisations" projects={projectsForTag(page.tag).slice(0, 3)} link={{ href: "/realisations", label: "Toutes les réalisations" }} />
+        </Section>
+
+        <Section num="05" label="FAQ">
+          <H2>Questions fréquentes</H2>
+          <FaqAccordion items={[...page.faq, ...FAQ]} />
+        </Section>
+
+        <Section label="Autres offres">
+          <H2>Mes autres offres</H2>
+          <div className="grid gap-4 min-[760px]:grid-cols-3">
+            {others.map((o) => (
+              <Link
+                key={o.href}
+                href={o.href}
+                className="group flex flex-col gap-3 rounded-2xl border border-[rgba(17,17,17,.12)] p-6 transition-colors duration-300 hover:border-[#111]"
+              >
+                <span className="text-[14px] text-[#666]">{o.eyebrow}</span>
+                <span className="text-[20px] leading-[1.15]" style={{ ...display, fontWeight: 700, letterSpacing: "-.02em" }}>{o.title}</span>
+                <span aria-hidden className="mt-auto pt-2 text-[18px] text-abcs-red transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+              </Link>
+            ))}
+          </div>
+        </Section>
       </main>
+      <SeoContact />
     </>
   );
 }
