@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { SITE_URL } from "@/lib/site";
 
 const OWNER_EMAIL = "othmane.bouakline.pro@gmail.com";
 const SENDER_NAME = "O'ldev";
@@ -42,82 +43,85 @@ const field = (v: unknown, multiline = false) => {
   return multiline ? s : s.replace(/[\r\n]+/g, " ");
 };
 
-function notificationHtml(name: string, email: string, phone: string, type: string, budget: string, message: string) {
+const AVATAR_URL = `${SITE_URL}/email/avatar.jpg`;
+const SITE_HOST = SITE_URL.replace(/^https?:\/\//, "");
+
+const C = { ink: "#050505", card: "#111111", line: "#242424", paper: "#f4f4f2", red: "#FF3B00", green: "#22a05a" };
+const FONT = "'Inter',Helvetica,Arial,sans-serif";
+const HEAD = "'Archivo','Arial Narrow',Arial,sans-serif";
+
+/** Small uppercase label above a value. */
+const label = (text: string, color = "rgba(244,244,242,0.45)") =>
+  `<span style="display:block;font-family:${FONT};font-size:10px;font-weight:700;color:${color};letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">${text}</span>`;
+
+/** Shared shell: dark top bar (logo + dispo pill), avatar + title, footer; `body` fills the middle. */
+function layout(opts: { title: string; preheader: string; kicker: string; heading: string; body: string }) {
   return `<!DOCTYPE html>
 <html lang="fr">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nouveau projet</title></head>
-<body style="margin:0;padding:0;background:#f0f0ee;font-family:Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f0ee;padding:40px 20px;">
-    <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="supported-color-schemes" content="dark light">
+<title>${opts.title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; -webkit-text-size-adjust:100%; }
+  @media (max-width:600px) {
+    .wrap { padding:0 !important; }
+    .px { padding-left:22px !important; padding-right:22px !important; }
+    .stack, .stack tbody, .stack tr, .col { display:block !important; width:100% !important; }
+    .col { padding-left:0 !important; padding-right:0 !important; box-sizing:border-box !important; }
+    .h1 { font-size:42px !important; }
+    .btn { display:block !important; text-align:center !important; }
+    .right { text-align:left !important; }
+    .pad-in { padding-left:22px !important; padding-right:22px !important; }
+    .pad-in.right { padding-top:0 !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:${C.ink};">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${opts.preheader}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.ink};">
+    <tr><td align="center" class="wrap" style="padding:32px 16px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:${C.ink};">
 
-        <!-- Header -->
+        <!-- Top bar -->
         <tr>
-          <td style="background:#111111;padding:32px 40px;">
-            <span style="font-size:36px;font-weight:900;color:#FF3B00;letter-spacing:-1px;text-transform:uppercase;">O'LDEV</span>
-            <span style="display:block;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:4px;text-transform:uppercase;margin-top:4px;">Nouveau message entrant</span>
-          </td>
-        </tr>
-
-        <!-- Red banner -->
-        <tr>
-          <td style="background:#FF3B00;padding:12px 40px;display:flex;justify-content:space-between;">
-            <span style="font-size:10px;font-weight:700;color:#fff;letter-spacing:3px;text-transform:uppercase;">DEMANDE DE PROJET</span>
-          </td>
-        </tr>
-
-        <!-- Body -->
-        <tr>
-          <td style="background:#ffffff;padding:40px;">
-
-            <h2 style="font-size:28px;font-weight:900;text-transform:uppercase;color:#111;margin:0 0 8px 0;letter-spacing:-0.5px;">
-              ${esc(name)}
-            </h2>
-            <p style="font-size:12px;font-weight:700;color:#FF3B00;letter-spacing:3px;text-transform:uppercase;margin:0 0 32px 0;">${esc(type)}</p>
-
-            <!-- Info grid -->
-            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+          <td class="px" style="padding:24px 36px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td width="50%" style="padding:0 8px 0 0;vertical-align:top;">
-                  <div style="border-left:3px solid #FF3B00;padding-left:12px;margin-bottom:20px;">
-                    <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Email</span>
-                    <a href="mailto:${esc(email)}" style="font-size:14px;font-weight:700;color:#111;text-decoration:none;">${esc(email)}</a>
-                  </div>
-                  <div style="border-left:3px solid #FF3B00;padding-left:12px;margin-bottom:20px;">
-                    <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Téléphone</span>
-                    <span style="font-size:14px;font-weight:700;color:#111;">${esc(phone || "Non renseigné")}</span>
-                  </div>
-                </td>
-                <td width="50%" style="padding:0 0 0 8px;vertical-align:top;">
-                  <div style="border-left:3px solid #111;padding-left:12px;margin-bottom:20px;">
-                    <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Type de projet</span>
-                    <span style="font-size:14px;font-weight:700;color:#111;">${esc(type)}</span>
-                  </div>
-                  <div style="border-left:3px solid #111;padding-left:12px;margin-bottom:20px;">
-                    <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Budget estimé</span>
-                    <span style="font-size:14px;font-weight:700;color:#111;">${esc(budget)}</span>
-                  </div>
+                <td style="font-family:${HEAD};font-size:24px;font-weight:900;color:${C.paper};letter-spacing:0.5px;text-transform:uppercase;">O'LDEV</td>
+                <td align="right">
+                  <span style="display:inline-block;background:#ffffff;border-radius:999px;padding:6px 8px 6px 14px;font-family:${FONT};font-size:11px;font-weight:700;color:${C.card};letter-spacing:1.5px;text-transform:uppercase;line-height:16px;">Dispo&nbsp;<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${C.green};vertical-align:-3px;">&nbsp;</span></span>
                 </td>
               </tr>
             </table>
-
-            <!-- Message -->
-            <div style="background:#f0f0ee;border-left:4px solid #FF3B00;padding:20px 24px;margin-bottom:32px;">
-              <span style="display:block;font-size:9px;font-weight:700;color:rgba(0,0,0,0.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;">Message</span>
-              <p style="font-size:15px;font-weight:600;color:#111;margin:0;line-height:1.7;">${esc(message).replace(/\n/g, "<br>")}</p>
-            </div>
-
-            <!-- CTA -->
-            <a href="mailto:${esc(email)}?subject=${esc(encodeURIComponent(`Re: Votre projet ${type}`))}" style="display:inline-block;background:#FF3B00;color:#fff;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:16px 32px;text-decoration:none;">
-              Répondre à ${esc(name)} →
-            </a>
           </td>
         </tr>
 
+        <!-- Avatar + title -->
+        <tr>
+          <td class="px" style="padding:24px 36px 36px;border-bottom:1px solid ${C.line};">
+            <img src="${AVATAR_URL}" width="72" height="72" alt="Othmane" style="display:block;width:72px;height:72px;border-radius:50%;border:3px solid ${C.red};margin-bottom:24px;">
+            <span style="display:block;font-family:${FONT};font-size:11px;font-weight:700;color:${C.red};letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;">${opts.kicker}</span>
+            <h1 class="h1" style="margin:0;font-family:${HEAD};font-size:56px;font-weight:900;line-height:0.95;color:${C.paper};text-transform:uppercase;letter-spacing:-1px;word-break:break-word;">${opts.heading}</h1>
+          </td>
+        </tr>
+${opts.body}
         <!-- Footer -->
         <tr>
-          <td style="background:#111;padding:24px 40px;text-align:center;">
-            <span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;">O'LDEV · FREELANCE WEB · oldev.vercel.app</span>
+          <td class="px" style="padding:28px 36px;border-top:1px solid ${C.line};">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="stack">
+              <tr>
+                <td class="col" style="font-family:${FONT};font-size:12px;line-height:1.6;color:rgba(244,244,242,0.45);">
+                  <strong style="color:${C.paper};">Othmane Bouakline</strong><br>Développeur web freelance · Seine-et-Marne
+                </td>
+                <td class="col right" align="right" style="padding-top:4px;font-family:${FONT};font-size:12px;">
+                  <a href="${SITE_URL}" style="color:${C.paper};text-decoration:none;font-weight:700;">${SITE_HOST} <span style="color:${C.red};">↗</span></a>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -126,66 +130,96 @@ function notificationHtml(name: string, email: string, phone: string, type: stri
   </table>
 </body>
 </html>`;
+}
+
+function notificationHtml(name: string, email: string, phone: string, type: string, budget: string, message: string) {
+  const info = (k: string, v: string) =>
+    `<td class="col" width="50%" style="padding:0 8px 20px 0;vertical-align:top;">${label(k)}<span style="font-family:${FONT};font-size:15px;font-weight:600;color:${C.paper};word-break:break-word;">${v}</span></td>`;
+  const reply = `mailto:${esc(email)}?subject=${esc(encodeURIComponent(`Re: Votre projet ${type}`))}`;
+  const tel = phone.replace(/[^\d+]/g, "");
+
+  const body = `
+        <!-- Contact details -->
+        <tr>
+          <td class="px" style="padding:32px 36px 12px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="stack">
+              <tr>
+                ${info("Email", `<a href="mailto:${esc(email)}" style="color:${C.paper};text-decoration:none;">${esc(email)}</a>`)}
+                ${info("Téléphone", phone ? `<a href="tel:${tel}" style="color:${C.paper};text-decoration:none;">${esc(phone)}</a>` : "Non renseigné")}
+              </tr>
+              <tr>
+                ${info("Type de projet", esc(type))}
+                ${info("Budget estimé", `<span style="color:${C.red};">${esc(budget)}</span>`)}
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Message -->
+        <tr>
+          <td class="px" style="padding:0 36px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.card};border:1px solid ${C.line};border-radius:14px;">
+              <tr>
+                <td style="padding:22px 24px;">
+                  ${label("Message")}
+                  <p style="margin:0;font-family:${FONT};font-size:15px;line-height:1.7;color:rgba(244,244,242,0.85);word-break:break-word;">${esc(message).replace(/\n/g, "<br>")}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- CTA -->
+        <tr>
+          <td class="px" style="padding:0 36px 40px;">
+            <a href="${reply}" class="btn" style="display:inline-block;background:${C.red};color:#ffffff;border-radius:999px;font-family:${FONT};font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:16px 30px;text-decoration:none;">Répondre à ${esc(name.split(" ")[0])} →</a>
+          </td>
+        </tr>
+`;
+
+  return layout({
+    title: "Nouveau projet",
+    preheader: `${esc(type)} · ${esc(budget)} · ${esc(email)}`,
+    kicker: "Nouvelle demande de projet",
+    heading: esc(name),
+    body,
+  });
 }
 
 function confirmationHtml(name: string, type: string, budget: string) {
   const firstName = name.split(" ")[0];
-  return `<!DOCTYPE html>
-<html lang="fr">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Message reçu</title></head>
-<body style="margin:0;padding:0;background:#111111;font-family:Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#111111;padding:40px 20px;">
-    <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+  const step = (n: number, text: string, last = false) => `
+              <tr>
+                <td width="44" style="padding:0 0 ${last ? 0 : 18}px 0;vertical-align:top;">
+                  <span style="display:inline-block;width:30px;height:30px;border-radius:50%;background:${C.red};text-align:center;line-height:30px;font-family:${FONT};font-size:12px;font-weight:700;color:#ffffff;">${n}</span>
+                </td>
+                <td style="padding:5px 0 ${last ? 0 : 18}px 0;vertical-align:top;font-family:${FONT};font-size:15px;line-height:1.5;color:rgba(244,244,242,0.8);">${text}</td>
+              </tr>`;
 
-        <!-- Header -->
+  const body = `
+        <!-- Intro -->
         <tr>
-          <td style="background:#111111;padding:48px 40px 32px;border-bottom:3px solid #FF3B00;">
-            <span style="font-size:48px;font-weight:900;color:#FF3B00;letter-spacing:-2px;text-transform:uppercase;line-height:1;">O'LDEV</span>
-            <span style="display:block;font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:4px;text-transform:uppercase;margin-top:8px;">FREELANCE WEB · FULL STACK</span>
-          </td>
-        </tr>
-
-        <!-- Big title -->
-        <tr>
-          <td style="background:#111111;padding:48px 40px 0;">
-            <h1 style="font-size:56px;font-weight:900;color:#ffffff;text-transform:uppercase;margin:0;letter-spacing:-2px;line-height:0.85;">
-              Bien<br><span style="color:#FF3B00;">reçu !</span>
-            </h1>
-          </td>
-        </tr>
-
-        <!-- Intro text -->
-        <tr>
-          <td style="background:#111111;padding:32px 40px 0;">
-            <p style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.7);margin:0;line-height:1.7;">
-              Salut <strong style="color:#fff;">${esc(firstName)}</strong> 👋<br>
-              Ton message est arrivé. Je prends connaissance de ton projet et je te reviens personnellement <strong style="color:#FF3B00;">sous 48h maximum</strong>.
+          <td class="px" style="padding:32px 36px 8px;">
+            <p style="margin:0;font-family:${FONT};font-size:16px;line-height:1.7;color:rgba(244,244,242,0.75);">
+              Salut <strong style="color:${C.paper};">${esc(firstName)}</strong> 👋<br>
+              Ton message est bien arrivé. Je prends connaissance de ton projet et je te réponds personnellement <strong style="color:${C.paper};">sous 48&nbsp;h maximum</strong>.
             </p>
           </td>
         </tr>
 
-        <!-- Project summary card -->
+        <!-- Recap -->
         <tr>
-          <td style="background:#111111;padding:32px 40px;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);">
+          <td class="px" style="padding:24px 36px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.card};border:1px solid ${C.line};border-radius:14px;">
               <tr>
-                <td style="padding:24px 28px;border-bottom:1px solid rgba(255,255,255,0.06);">
-                  <span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;">Récap de ta demande</span>
-                </td>
+                <td style="padding:22px 24px 4px;">${label("Récap de ta demande", C.red)}</td>
               </tr>
               <tr>
-                <td style="padding:24px 28px;">
-                  <table width="100%" cellpadding="0" cellspacing="0">
+                <td style="padding:8px 24px 14px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="stack">
                     <tr>
-                      <td width="50%" style="padding-bottom:20px;vertical-align:top;">
-                        <span style="display:block;font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Projet</span>
-                        <span style="font-size:14px;font-weight:700;color:#fff;">${esc(type)}</span>
-                      </td>
-                      <td width="50%" style="padding-bottom:20px;vertical-align:top;">
-                        <span style="display:block;font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Budget</span>
-                        <span style="font-size:14px;font-weight:700;color:#FF3B00;">${esc(budget)}</span>
-                      </td>
+                      <td class="col" width="50%" style="padding:0 8px 12px 0;vertical-align:top;">${label("Projet")}<span style="font-family:${FONT};font-size:15px;font-weight:600;color:${C.paper};">${esc(type)}</span></td>
+                      <td class="col" width="50%" style="padding:0 0 12px 8px;vertical-align:top;">${label("Budget")}<span style="font-family:${FONT};font-size:15px;font-weight:600;color:${C.paper};">${esc(budget)}</span></td>
                     </tr>
                   </table>
                 </td>
@@ -194,75 +228,45 @@ function confirmationHtml(name: string, type: string, budget: string) {
           </td>
         </tr>
 
-        <!-- What's next -->
+        <!-- Next steps -->
         <tr>
-          <td style="background:#111111;padding:0 40px 40px;">
-            <table width="100%" cellpadding="0" cellspacing="0">
+          <td class="px" style="padding:8px 36px 32px;">
+            ${label("La suite")}
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:12px;">
+              ${step(1, "Je lis ton brief et j'analyse ton besoin")}
+              ${step(2, "Je te reviens sous 48&nbsp;h avec une proposition concrète")}
+              ${step(3, "On démarre et je livre un site qui te ramène des clients", true)}
+            </table>
+          </td>
+        </tr>
+
+        <!-- Direct contact -->
+        <tr>
+          <td class="px" style="padding:0 36px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="stack" style="background:${C.red};border-radius:14px;">
               <tr>
-                <td style="padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);">
-                  <span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:20px;">La suite</span>
-                  <table cellpadding="0" cellspacing="0">
-                    <tr>
-                      <td style="padding:0 16px 16px 0;vertical-align:top;">
-                        <div style="width:28px;height:28px;background:#FF3B00;border-radius:50%;text-align:center;line-height:28px;font-size:11px;font-weight:900;color:#fff;">1</div>
-                      </td>
-                      <td style="padding-bottom:16px;vertical-align:top;">
-                        <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);">Je lis ton brief et analyse ton besoin</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding:0 16px 16px 0;vertical-align:top;">
-                        <div style="width:28px;height:28px;background:#FF3B00;border-radius:50%;text-align:center;line-height:28px;font-size:11px;font-weight:900;color:#fff;">2</div>
-                      </td>
-                      <td style="padding-bottom:16px;vertical-align:top;">
-                        <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);">Je te reviens sous 48h avec une proposition concrète</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding:0 16px 0 0;vertical-align:top;">
-                        <div style="width:28px;height:28px;background:#FF3B00;border-radius:50%;text-align:center;line-height:28px;font-size:11px;font-weight:900;color:#fff;">3</div>
-                      </td>
-                      <td style="vertical-align:top;">
-                        <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);">On démarre et on livre quelque chose de 🔥</span>
-                      </td>
-                    </tr>
-                  </table>
+                <td class="col pad-in" style="padding:22px 24px;">
+                  ${label("Contact direct", "rgba(255,255,255,0.75)")}
+                  <a href="mailto:${OWNER_EMAIL}" style="font-family:${FONT};font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;overflow-wrap:anywhere;">${OWNER_EMAIL}</a>
+                </td>
+                <td class="col right pad-in" align="right" style="padding:22px 24px;">
+                  <a href="${SITE_URL}/realisations" class="btn" style="display:inline-block;background:#ffffff;color:${C.card};border-radius:999px;font-family:${FONT};font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:12px 20px;text-decoration:none;white-space:nowrap;">Voir mes projets ↗</a>
                 </td>
               </tr>
             </table>
           </td>
         </tr>
+`;
 
-        <!-- CTA banner -->
-        <tr>
-          <td style="background:#FF3B00;padding:24px 40px;">
-            <table width="100%" cellpadding="0" cellspacing="0">
-              <tr>
-                <td>
-                  <span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:4px;">Contact direct</span>
-                  <a href="mailto:othmane.bouakline.pro@gmail.com" style="font-size:15px;font-weight:700;color:#fff;text-decoration:none;">othmane.bouakline.pro@gmail.com</a>
-                </td>
-                <td align="right">
-                  <a href="https://oldev.vercel.app" style="display:inline-block;background:#fff;color:#FF3B00;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 20px;text-decoration:none;">Portfolio ↗</a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- Footer -->
-        <tr>
-          <td style="background:#0a0a0a;padding:20px 40px;text-align:center;">
-            <span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.2);letter-spacing:3px;text-transform:uppercase;">© ${new Date().getFullYear()} O'LDEV · OTHMANE BOUAKLINE · FREELANCE WEB</span>
-          </td>
-        </tr>
-
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`;
+  return layout({
+    title: "Message reçu",
+    preheader: `Merci ${esc(firstName)}, je te réponds sous 48 h.`,
+    kicker: "Message bien reçu",
+    heading: `Merci ${esc(firstName)}<span style="color:${C.red};">.</span>`,
+    body,
+  });
 }
+
 
 export async function POST(req: NextRequest) {
   try {
