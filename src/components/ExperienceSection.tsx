@@ -11,7 +11,7 @@ const EXPERIENCES = [
     company: "Inetum",
     period: "2024 — 2026",
     type: "Alternance · ITSM",
-    current: true,
+    current: false,
     desc: "Portails ServiceNow sur-mesure, workflows ITSM automatisés et intégrations API REST avec des systèmes tiers.",
     highlights: [
       "Conception de portails ServiceNow sur-mesure",
