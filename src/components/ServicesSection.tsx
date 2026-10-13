@@ -7,7 +7,7 @@ import { useContactModal } from "@/components/ContactModalProvider";
 import CountPrice from "@/components/fx/CountPrice";
 import FaqAccordion from "@/components/fx/FaqAccordion";
 import { tiltLeave, tiltMove } from "@/components/fx/tilt";
-import { FAQ, PLANS, SERVICES, startPrice, type ServiceKey } from "@/lib/services";
+import { FAQ, PLANS, SERVICES, onQuote, startPrice, type ServiceKey } from "@/lib/services";
 
 const EXTRAS: { key: ServiceKey; name: string; desc: string }[] = [
   { key: "branding_canva", name: "Logo & flyer", desc: "Canva ou Adobe, prêt à imprimer" },
@@ -64,7 +64,7 @@ export function ServicesSection() {
           label="02 · Tarifs transparents"
           title="Mes services"
           titleSize="clamp(2.8rem,9vw,120px)"
-          intro="Une fourchette de prix selon les options, un délai et ce qui est inclus. Le prix final est fixé au devis, sans surprise."
+          intro="Un prix de départ ou un devis selon le projet, un délai et ce qui est inclus. Le prix final est fixé au devis, sans surprise."
         />
 
         {/* Plans */}
@@ -103,7 +103,7 @@ export function ServicesSection() {
                   {p.name}
                 </h3>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-[15px] opacity-70">dès</span>
+                  {!onQuote(p.key) && <span className="text-[15px] opacity-70">dès</span>}
                   <span
                     className={`font-heading leading-none tracking-[-0.02em] tabular-nums ${f ? "text-abcs-red" : "text-abcs-red-text"}`}
                     style={{ fontSize: "clamp(2.6rem,4vw,3.4rem)" }}
@@ -111,6 +111,9 @@ export function ServicesSection() {
                     <CountPrice value={price} start={plansIn} delay={i * 140} />
                   </span>
                 </div>
+                {onQuote(p.key) && (
+                  <p className="-mt-3 m-0 text-[14px] leading-[1.45] opacity-70">selon votre projet et les options</p>
+                )}
                 {SERVICES[p.key].max && (
                   <p className="-mt-3 m-0 text-[14px] leading-[1.45] opacity-70">
                     jusqu’à <strong className="font-bold opacity-100">{SERVICES[p.key].max}</strong> selon les options

@@ -38,15 +38,13 @@ export const SERVICES: Record<ServiceKey, Service> = {
   },
   webapp: {
     label: "Site & Application Web Sur-Mesure",
-    price: "Dès 800€",
-    max: "3 000€",
+    price: "Sur devis",
     budgets: ["800–1 500€", "1 500–2 200€", "2 200–3 000€"],
     category: "Web",
   },
   wordpress: {
     label: "Site WordPress Clé en Main",
-    price: "Dès 1 200€",
-    max: "2 500€",
+    price: "Sur devis",
     budgets: ["1 200–1 800€", "1 800–2 500€"],
     category: "Web",
   },
@@ -64,7 +62,10 @@ export const SERVICES: Record<ServiceKey, Service> = {
   },
 };
 
-/** "Dès 1 200€" → "1 200€" */
+/** True for offers priced on quote only ("Sur devis"). */
+export const onQuote = (key: ServiceKey) => /devis/i.test(SERVICES[key].price);
+
+/** "Dès 300€" → "300€" */
 export const startPrice = (key: ServiceKey) => SERVICES[key].price.replace(/^dès\s*/i, "");
 
 /** "300 – 600€" for ranged offers, otherwise the plain price ("Dès 50€", "Sur devis"). */
@@ -93,7 +94,7 @@ export const PLANS: {
 ];
 
 export const FAQ = [
-  { q: "Pourquoi une fourchette de prix ?", a: "Le prix de départ correspond à la formule de base. Il monte selon les options choisies (animations, pages supplémentaires, fonctionnalités…), comme une voiture avec des options. Vous recevez un devis détaillé après notre premier échange : une fois signé, le prix ne bouge plus." },
+  { q: "Comment est fixé le prix ?", a: "Pour le site vitrine, le prix de départ correspond à la formule de base. Pour le sur-mesure et WordPress, tout dépend de votre projet : le prix est établi sur devis. Il évolue selon les options choisies (animations, pages supplémentaires, fonctionnalités…), comme une voiture avec des options. Vous recevez un devis détaillé après notre premier échange : une fois signé, le prix ne bouge plus." },
   { q: "L’hébergement est-il inclus ?", a: "Non, mais je m’en occupe : je vous conseille une offre adaptée et je fais la mise en ligne." },
   { q: "Puis-je payer en plusieurs fois ?", a: "Oui : en une seule fois ou en plusieurs fois, jusqu’à 3 versements." },
   { q: "Le site m’appartient-il ?", a: "Oui, entièrement. Code, contenus et accès vous sont transmis à la livraison." },

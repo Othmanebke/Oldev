@@ -12,7 +12,7 @@ import { display, H2, Section } from "@/components/seo/ui";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/jsonLd";
 import { projectsForTag } from "@/lib/projects";
 import { getServicePage, SERVICE_PAGES } from "@/lib/seoPages";
-import { FAQ, PLANS, priceRange } from "@/lib/services";
+import { FAQ, PLANS, onQuote, priceRange } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -55,7 +55,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           title={page.h1}
           intro={page.intro}
           stats={[
-            { v: priceRange(page.key), l: "selon les options" },
+            { v: priceRange(page.key), l: onQuote(page.key) ? "selon votre projet" : "selon les options" },
             { v: plan.delay, l: "de délai" },
             { v: plan.revisions, l: "de révisions" },
           ]}
@@ -80,7 +80,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           <h2 className="sr-only">Tarif</h2>
           <div className="grid gap-12 min-[1000px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] min-[1000px]:gap-16">
             <div className="flex flex-col gap-4">
-              <p className="m-0 text-[15px] text-[#f4f4f2]/65">De la formule de base à toutes les options</p>
+              <p className="m-0 text-[15px] text-[#f4f4f2]/65">{onQuote(page.key) ? "Un prix adapté à votre projet" : "De la formule de base à toutes les options"}</p>
               <p className="m-0 whitespace-nowrap leading-[.95]" style={{ ...display, fontSize: "clamp(3rem,6.4vw,5.6rem)", textWrap: "nowrap" }}>
                 {priceRange(page.key)}
               </p>
