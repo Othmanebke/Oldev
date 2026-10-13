@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import SectionHeader from "@/components/fx/SectionHeader";
-import Watermark from "@/components/fx/Watermark";
 
 const EXPERIENCES = [
   {
@@ -128,7 +127,6 @@ export default function ExperienceSection() {
       className="relative z-[14] -mt-9 md:-mt-16 rounded-t-[36px] md:rounded-t-[64px] bg-white text-abcs-black shadow-[0_-30px_70px_rgba(0,0,0,0.4)] lg:h-[calc(100vh+300vw)]"
     >
       <div className="relative flex flex-col overflow-hidden rounded-t-[36px] md:rounded-t-[64px] lg:sticky lg:top-0 lg:h-screen">
-        <Watermark text="Parcours · Expériences · Diplômes · Parcours ·" stroke="rgba(17,17,17,0.07)" top="clamp(16px,3vw,40px)" />
 
         {/* Progress bar */}
         <div aria-hidden className="absolute left-0 right-0 top-0 z-[3] hidden h-[3px] bg-abcs-black/8 lg:block">
@@ -137,9 +135,9 @@ export default function ExperienceSection() {
 
         <SectionHeader
           tone="light"
-          label="05 · Parcours"
-          title="Expériences"
-          titleSize="clamp(2.8rem,min(9vw,11vh),110px)"
+          num="04"
+          title={["Mon", "parcours"]}
+          titleSize="clamp(2.4rem,min(10.5vw,14vh),190px)"
           intro="5 ans en alternance chez Inetum, Fujitsu et AJC, et un Bac+5 en poche."
           className="relative z-[2]"
           style={{ padding: "clamp(40px,5vw,64px) clamp(24px,5vw,72px) 0" }}

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import SectionHeader from "@/components/fx/SectionHeader";
-import Watermark from "@/components/fx/Watermark";
 import { useContactModal } from "@/components/ContactModalProvider";
 import CountPrice from "@/components/fx/CountPrice";
 import FaqAccordion from "@/components/fx/FaqAccordion";
@@ -55,15 +54,13 @@ export function ServicesSection() {
           WebkitMaskImage: "linear-gradient(180deg, black 0%, transparent 38%, transparent 72%, black 100%)",
         }}
       />
-      <Watermark text="Services · Tarifs · Services · Tarifs · Services ·" stroke="rgba(17,17,17,0.09)" />
-      <Watermark variant="2" text="Sur-mesure · Rapide · Transparent · Sur-mesure · Rapide ·" stroke="rgba(255,59,0,0.18)" />
 
       <div className="relative z-[1] mx-auto flex max-w-[1200px] flex-col" style={{ gap: "clamp(40px,5vw,64px)" }}>
         <SectionHeader
           tone="light"
-          label="02 · Tarifs transparents"
-          title="Mes services"
-          titleSize="clamp(2.8rem,9vw,120px)"
+          num="02"
+          title={["Services", "tarifs"]}
+          aside={`Dès ${startPrice(PLANS[0].key)}`}
           intro="Un prix de départ ou un devis selon le projet, un délai et ce qui est inclus. Le prix final est fixé au devis, sans surprise."
         />
 

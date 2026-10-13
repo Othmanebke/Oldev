@@ -24,6 +24,7 @@ const archivoFlex = Archivo({
   variable: "--font-archivo-flex",
   subsets: ["latin"],
   axes: ["wdth"],
+  style: ["normal", "italic"],
 });
 
 // Only used on /legal — not preloaded on every page

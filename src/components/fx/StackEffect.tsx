@@ -8,7 +8,6 @@ const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
  * Stacked section cards: every [data-stack] except the last is sticky with
  * top = min(0, 100vh − height). While the next card slides over it, it
  * shrinks (scale 1 → .92) and darkens (brightness 1 → .45).
- * Also drifts the outline watermarks ([data-wm]) horizontally.
  * Disabled entirely under prefers-reduced-motion.
  */
 export default function StackEffect() {
@@ -16,11 +15,6 @@ export default function StackEffect() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-stack]"));
-    const wms = Array.from(document.querySelectorAll<HTMLElement>("[data-wm]")).map((el) => ({
-      el,
-      dir: el.dataset.wm,
-      sec: el.closest<HTMLElement>("[data-stack]"),
-    }));
 
     const layout = () => {
       const vh = window.innerHeight;
@@ -36,12 +30,6 @@ export default function StackEffect() {
     const update = () => {
       ticking = false;
       const vh = window.innerHeight;
-      wms.forEach(({ el, dir, sec }) => {
-        if (!sec) return;
-        // The first card starts at the top and sticks right away, so its rect never moves: use the scroll instead
-        const t = sec === cards[0] ? -window.scrollY : sec.getBoundingClientRect().top;
-        el.style.transform = dir === "1" ? `translateX(${t * 0.35 - 200}px)` : `translateX(${-t * 0.3 - 600}px)`;
-      });
       cards.forEach((c, i) => {
         const next = cards[i + 1];
         if (!next) return;
@@ -82,7 +70,6 @@ export default function StackEffect() {
         c.style.filter = "";
         c.style.transformOrigin = "";
       });
-      wms.forEach(({ el }) => (el.style.transform = ""));
     };
   }, []);
 

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import SplitTitle from "@/components/fx/SplitTitle";
-import Watermark from "@/components/fx/Watermark";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { SERVICE_PAGES } from "@/lib/seoPages";
 import { EMAIL, LOCATION, SOCIALS } from "@/lib/site";
@@ -18,7 +17,6 @@ export default function Footer() {
       className="relative z-[15] -mt-9 md:-mt-16 overflow-hidden rounded-t-[36px] md:rounded-t-[64px] bg-abcs-black text-white shadow-[0_-30px_70px_rgba(0,0,0,0.7)]"
       style={{ padding: "clamp(72px,10vw,130px) clamp(20px,5vw,72px) 120px" }}
     >
-      <Watermark text="Contact · Hello · Contact · Hello · Contact ·" stroke="rgba(255,255,255,0.08)" />
 
       <div className="relative z-[1] mx-auto flex max-w-[1200px] flex-col" style={{ gap: "clamp(48px,6vw,80px)" }}>
         <div className="flex flex-col items-center gap-7 text-center">

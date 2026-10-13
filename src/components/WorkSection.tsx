@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import SectionHeader from "@/components/fx/SectionHeader";
-import Watermark from "@/components/fx/Watermark";
 import Link from "next/link";
 import { PROJECTS, PROJECT_FILTERS, projectsForTag, type Project, type ProjectTag } from "@/lib/projects";
 
@@ -162,14 +161,13 @@ export default function WorkSection() {
       className="relative z-10 -mt-9 md:-mt-16 overflow-hidden rounded-t-[36px] md:rounded-t-[64px] bg-abcs-black text-white shadow-[0_-30px_70px_rgba(0,0,0,0.5)]"
       style={{ padding: "clamp(64px,9vw,120px) clamp(20px,5vw,72px) clamp(96px,10vw,140px)" }}
     >
-      <Watermark text="Travaux · Projets · Travaux · Projets · Travaux ·" stroke="rgba(255,255,255,0.08)" />
-      <Watermark variant="2" text="Next.js · WordPress · React · HTML · Next.js ·" stroke="rgba(255,59,0,0.22)" />
 
       <div className="relative z-[1] mx-auto flex max-w-[1280px] flex-col" style={{ gap: "clamp(36px,5vw,56px)" }}>
         <SectionHeader
           tone="dark"
-          label="01 · Réalisations"
-          title="Mes travaux"
+          num="01"
+          title={["Mes", "travaux"]}
+          aside={`${PROJECTS.length} projets`}
           intro="Vitrines, e-commerce et apps web : une sélection de projets clients et personnels."
         />
 
