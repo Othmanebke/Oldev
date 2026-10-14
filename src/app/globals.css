@@ -55,8 +55,12 @@ html.has-custom-cursor * {
 }
 
 /* ─── Keyframes ──────────────────────────────────────────────────────────── */
-@keyframes loader-draw { to { stroke-dashoffset: 0; } }
-@keyframes loader-undraw { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -1600; } }
+/* Preloader */
+@keyframes ld-ch-in { from { opacity: 0; transform: translateX(-.55em); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes ld-ch-out { to { opacity: 0; transform: translateX(.55em); filter: blur(8px); } }
+@keyframes ld-t-in { from { transform: translateY(-110%); } to { transform: none; } }
+@keyframes sq-pop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes bar-fill { to { transform: scaleX(1); } }
 @keyframes loader-op-in { from { opacity: 0; } to { opacity: 1; } }
 /* fx/BorderRun: one lap of the card border (pathLength 100), each dash starting at its own --o */
 @keyframes border-run { from { stroke-dashoffset: var(--o); } to { stroke-dashoffset: calc(var(--o) - 100); } }

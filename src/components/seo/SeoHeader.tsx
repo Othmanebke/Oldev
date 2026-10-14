@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CallButton from "@/components/seo/CallButton";
+import Logo from "@/components/brand/Logo";
 import { btn, container } from "@/components/seo/ui";
 
 const LINKS = [
@@ -16,10 +17,9 @@ export default function SeoHeader() {
         <Link
           href="/"
           aria-label="O'LDEV — accueil"
-          className="text-[24px] uppercase leading-none text-[#111]"
-          style={{ fontFamily: "var(--font-archivo-flex), sans-serif", fontWeight: 900, fontStretch: "62%" }}
+          className="text-[#111]"
         >
-          O&apos;LDEV<span className="text-abcs-red">.</span>
+          <Logo className="h-5" />
         </Link>
         <nav aria-label="Pages" className="hidden items-center gap-7 min-[760px]:flex">
           {LINKS.map((l) => (

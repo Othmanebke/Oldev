@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import { LOADER_INTRO_DELAY } from "@/components/Preloader";
-import { delay, fade, DispoBadge, HeroBackground, HeroOverlays, HeroPortrait, ParisTime, condensed, useHeroMotion } from "@/components/hero/HeroParts";
+import { delay, fade, DispoBadge, HeroBackground, HeroOverlays, HeroPortrait, ParisTime, useHeroMotion } from "@/components/hero/HeroParts";
 import { useScrollToSection } from "@/lib/useScrollToSection";
+import Logo from "@/components/brand/Logo";
 
 const HD = LOADER_INTRO_DELAY / 1000;
 const FIXED = "Développeur";
@@ -112,9 +113,7 @@ export default function HeroSection() {
 
         {/* Top bar */}
         <div className="absolute inset-x-0 top-0 z-[5] grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-[clamp(20px,3vw,44px)] py-[clamp(22px,3vw,40px)]" style={fade(0.2)}>
-          <span className="uppercase" style={{ ...condensed, fontSize: 24, letterSpacing: ".01em" }}>
-            O&apos;LDEV
-          </span>
+          <Logo className="h-5 text-[#f4f4f2]" />
           <span className="hidden min-[701px]:inline-flex"><ParisTime /></span>
           <DispoBadge />
         </div>

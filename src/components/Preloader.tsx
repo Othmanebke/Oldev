@@ -1,14 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
+import Logo from "@/components/brand/Logo";
 
-/** Delay after which the hero intro starts (the curtain is rising by then). */
-export const LOADER_INTRO_DELAY = 2700;
-const LOADER_UNMOUNT = 3700;
+/** Delay after which the hero intro starts (the curtain is half-way up by then). */
+export const LOADER_INTRO_DELAY = 3700;
+const LOADER_UNMOUNT = 4700;
+
+const WORD = "Bienvenue";
+
+const type: CSSProperties = {
+  fontFamily: "var(--font-archivo-flex), sans-serif",
+  fontWeight: 900,
+  fontStretch: "62%",
+  fontVariationSettings: "'wdth' 62",
+  textTransform: "uppercase",
+  letterSpacing: ".005em",
+  lineHeight: 0.78,
+  color: "#f4f4f2",
+  whiteSpace: "nowrap",
+};
+const size = { fontSize: "clamp(36px,7vw,104px)" };
 
 /**
- * "BONJOUR" loader: the outline is drawn (0 → 1.4s), the stroke is erased in
- * the same direction (1.6 → 2.6s), then the curtain rises (2.5s). Hidden by CSS and unmounted under reduced motion.
+ * "BIENVENUE" letters blur in then out (0.15 → 2s), "CHEZ O'LDEV ■" drops in
+ * (2.15s), the bar fills over 3.3s, then the curtain rises (3.5s).
+ * Not rendered under reduced motion (and hidden by CSS until hydration).
  */
 export default function Preloader() {
   const [visible, setVisible] = useState(true);
@@ -24,31 +41,46 @@ export default function Preloader() {
   return (
     <div
       aria-hidden
-      className="preloader fixed inset-0 z-[300] flex items-center justify-center bg-abcs-black"
-      style={{ animation: "loader-up 1s cubic-bezier(.76,0,.24,1) 2.5s forwards" }}
+      className="preloader fixed inset-0 z-[300] grid place-items-center overflow-hidden bg-[#050505]"
+      style={{ animation: "loader-up 1.1s cubic-bezier(.83,0,.17,1) 3.5s forwards" }}
     >
-      <svg viewBox="0 0 1000 230" className="w-[min(86vw,860px)] overflow-visible">
-        <text
-          x="500"
-          y="180"
-          textAnchor="middle"
+      <div className="relative [grid-area:1/1]" style={size}>
+        <span className="flex" style={type}>
+          {[...WORD].map((c, i) => (
+            <span
+              key={i}
+              className="inline-block"
+              style={{
+                animation: `ld-ch-in .7s cubic-bezier(.22,1,.36,1) ${0.15 + i * 0.055}s both, ld-ch-out .55s cubic-bezier(.7,0,.3,1) ${1.45 + i * 0.04}s forwards`,
+              }}
+            >
+              {c}
+            </span>
+          ))}
+        </span>
+      </div>
+
+      <div className="relative overflow-hidden [grid-area:1/1]" style={{ ...size, padding: ".08em .1em" }}>
+        <div className="flex items-center gap-[.22em]" style={{ animation: "ld-t-in .9s cubic-bezier(.22,1,.36,1) 2.15s both" }}>
+          <span style={type}>Chez</span>
+          <Logo className="h-[.7em] text-[#f4f4f2]" />
+          <span
+            className="self-end bg-abcs-red"
+            style={{ width: ".19em", height: ".19em", marginBottom: ".155em", marginLeft: "-.1em", animation: "sq-pop .5s cubic-bezier(.34,1.56,.64,1) 2.8s both" }}
+          />
+        </div>
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 h-[2px] bg-white/[.08]">
+        <div
+          className="h-full origin-left scale-x-0"
           style={{
-            fontFamily: "var(--font-archivo), system-ui, sans-serif",
-            fontSize: 210,
-            letterSpacing: -8,
-            textTransform: "uppercase",
-            fill: "none",
-            stroke: "#FF3B00",
-            strokeWidth: 2.5,
-            strokeDasharray: 1600,
-            strokeDashoffset: 1600,
-            animation:
-              "loader-draw 1.4s cubic-bezier(.65,0,.35,1) forwards, loader-undraw 1s cubic-bezier(.65,0,.35,1) 1.6s forwards",
+            background: "linear-gradient(90deg,rgba(255,59,0,0),rgba(255,59,0,.5) 60%,#FF3B00)",
+            boxShadow: "0 0 14px rgba(255,59,0,.55)",
+            animation: "bar-fill 3.3s cubic-bezier(.65,0,.2,1) forwards",
           }}
-        >
-          BONJOUR
-        </text>
-      </svg>
+        />
+      </div>
     </div>
   );
 }

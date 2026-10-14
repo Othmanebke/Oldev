@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Globe from "@/components/Globe";
+import Logo from "@/components/brand/Logo";
 import { condensed } from "@/components/hero/HeroParts";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { useScrollToSection } from "@/lib/useScrollToSection";
@@ -110,11 +111,8 @@ export default function Footer() {
         <div className="flex flex-wrap justify-between gap-12">
           {/* Brand */}
           <div className="flex max-w-[340px] flex-col gap-[22px]">
-            <Link href="/" className="flex items-center gap-2.5">
-              <span aria-hidden className="h-3.5 w-3.5 bg-abcs-red" />
-              <span className="leading-none tracking-[.01em]" style={{ ...condensed, fontSize: 30 }}>
-                O&apos;LDEV
-              </span>
+            <Link href="/" className="self-start text-white">
+              <Logo className="h-[30px]" />
             </Link>
             <p className="m-0 text-[16px] leading-[1.6] text-white/72 text-pretty">
               Développeur web freelance en Seine-et-Marne. Sites sur-mesure, rapides et pensés pour ramener des clients.

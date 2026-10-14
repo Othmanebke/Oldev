@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { useScrollToSection } from "@/lib/useScrollToSection";
+import Logo from "@/components/brand/Logo";
 import { EMAIL, SOCIALS } from "@/lib/site";
 
 const SECTIONS = [
@@ -96,10 +97,9 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
             <Link
               href="/"
               onClick={onClose}
-              className="text-[26px] uppercase leading-none"
-              style={{ fontFamily: "var(--font-archivo-flex), sans-serif", fontWeight: 900, fontStretch: "62%" }}
+              className="text-[#f4f4f2]"
             >
-              O&apos;LDEV<span className="text-abcs-red">.</span>
+              <Logo className="h-[22px]" />
             </Link>
             <button
               ref={closeRef}
