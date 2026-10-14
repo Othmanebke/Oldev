@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import SectionHeader from "@/components/fx/SectionHeader";
 import { useContactModal } from "@/components/ContactModalProvider";
 import CountPrice from "@/components/fx/CountPrice";
+import BorderRun from "@/components/fx/BorderRun";
 import FaqAccordion from "@/components/fx/FaqAccordion";
 import { tiltLeave, tiltMove } from "@/components/fx/tilt";
 import { FAQ, PLANS, SERVICES, onQuote, startPrice, type ServiceKey } from "@/lib/services";
@@ -87,8 +88,9 @@ export function ServicesSection() {
                 style={{ "--i": i, "--r": `${(i - 1) * 5}deg` } as CSSProperties}
               >
                 <span data-glare aria-hidden className="pointer-events-none absolute inset-0 rounded-[28px] opacity-0 transition-opacity duration-300" />
+                {f && <BorderRun radius={28} />}
                 {f && (
-                  <span className="absolute -top-[13px] left-7 rounded-full bg-abcs-red px-3 py-1.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white">
+                  <span className="absolute -top-[13px] left-7 z-[4] rounded-full bg-abcs-red px-3 py-1.5 text-[12px] font-bold uppercase tracking-[0.16em] text-white">
                     Le plus choisi
                   </span>
                 )}

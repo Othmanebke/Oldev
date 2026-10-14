@@ -38,7 +38,7 @@ export default function LegalPage() {
       <div className="w-full flex flex-col items-center px-5 md:px-8 pt-16">
         <div className="w-full max-w-4xl">
         <div className="inline-block bg-abcs-black text-white font-bold text-xs uppercase tracking-widest px-4 py-2 mb-6">Légal</div>
-        <h1 className="font-heading text-[clamp(2.5rem,12vw,3.75rem)] md:text-[9rem] text-abcs-black uppercase leading-[0.8] mb-4">MENTIONS<br/><span className="text-abcs-red">LÉGALES</span></h1>
+        <h1 className="font-heading text-[clamp(2.5rem,12vw,3.75rem)] md:text-[min(9rem,12vw)] text-abcs-black uppercase leading-[0.8] mb-4">MENTIONS<br/><span className="text-abcs-red">LÉGALES</span></h1>
         <p className="font-bold text-sm opacity-50 mb-24 uppercase tracking-widest">Dernière mise à jour : Février 2026</p>
 
         <div className="flex flex-col gap-0">

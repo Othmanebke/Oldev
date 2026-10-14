@@ -3,7 +3,7 @@ import Link from "next/link";
 import FaqAccordion from "@/components/fx/FaqAccordion";
 import JsonLd from "@/components/seo/JsonLd";
 import ProjectGrid from "@/components/seo/ProjectGrid";
-import SeoContact from "@/components/seo/SeoContact";
+import Footer from "@/components/Footer";
 import SeoHeader from "@/components/seo/SeoHeader";
 import SeoHero from "@/components/seo/SeoHero";
 import Steps from "@/components/seo/Steps";
@@ -34,7 +34,7 @@ export default function LocalPage() {
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Seine-et-Marne", path: PATH }])} />
       <SeoHeader />
-      <main className="flex flex-col bg-[#f4f4f2] text-[#111]">
+      <main className="footer-gap flex flex-col bg-[#f4f4f2] text-[#111]">
         <SeoHero
           crumbs={[{ name: "Seine-et-Marne" }]}
           title="Création de site internet en Seine-et-Marne"
@@ -100,7 +100,7 @@ export default function LocalPage() {
           <FaqAccordion items={LOCAL_FAQ} />
         </Section>
       </main>
-      <SeoContact />
+      <Footer />
     </>
   );
 }

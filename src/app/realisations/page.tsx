@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/seo/JsonLd";
 import ProjectGrid from "@/components/seo/ProjectGrid";
-import SeoContact from "@/components/seo/SeoContact";
+import Footer from "@/components/Footer";
 import SeoHeader from "@/components/seo/SeoHeader";
 import SeoHero from "@/components/seo/SeoHero";
 import { Section } from "@/components/seo/ui";
@@ -28,7 +28,7 @@ export default function RealisationsPage() {
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Réalisations", path: "/realisations" }])} />
       <SeoHeader />
-      <main className="flex flex-col bg-[#f4f4f2] text-[#111]">
+      <main className="footer-gap flex flex-col bg-[#f4f4f2] text-[#111]">
         <SeoHero
           crumbs={[{ name: "Réalisations" }]}
           title="Mes réalisations"
@@ -48,7 +48,7 @@ export default function RealisationsPage() {
           <ProjectGrid title="Tous les projets" projects={projects} filters />
         </Section>
       </main>
-      <SeoContact />
+      <Footer />
     </>
   );
 }

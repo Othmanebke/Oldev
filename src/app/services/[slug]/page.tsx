@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import FaqAccordion from "@/components/fx/FaqAccordion";
 import JsonLd from "@/components/seo/JsonLd";
 import ProjectGrid from "@/components/seo/ProjectGrid";
-import SeoContact from "@/components/seo/SeoContact";
+import Footer from "@/components/Footer";
 import SeoHeader from "@/components/seo/SeoHeader";
 import SeoHero from "@/components/seo/SeoHero";
 import Steps from "@/components/seo/Steps";
@@ -49,7 +49,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
       <JsonLd data={serviceJsonLd({ key: page.key, name: page.h1, description: page.metaDescription, path })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Services", path: "/#services" }, { name: page.name, path }])} />
       <SeoHeader />
-      <main className="flex flex-col bg-[#f4f4f2] text-[#111]">
+      <main className="footer-gap flex flex-col bg-[#f4f4f2] text-[#111]">
         <SeoHero
           crumbs={[{ name: "Services", href: "/#services" }, { name: page.name }]}
           title={page.h1}
@@ -133,7 +133,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           </div>
         </Section>
       </main>
-      <SeoContact />
+      <Footer />
     </>
   );
 }
