@@ -63,11 +63,14 @@ export default function Preloader() {
       <div className="relative overflow-hidden [grid-area:1/1]" style={{ ...size, padding: ".08em .1em" }}>
         <div className="flex items-center gap-[.22em]" style={{ animation: "ld-t-in .9s cubic-bezier(.22,1,.36,1) 2.15s both" }}>
           <span style={type}>Chez</span>
-          <Logo className="h-[.7em] text-[#f4f4f2]" />
-          <span
-            className="self-end bg-abcs-red"
-            style={{ width: ".19em", height: ".19em", marginBottom: ".155em", marginLeft: "-.1em", animation: "sq-pop .5s cubic-bezier(.34,1.56,.64,1) 2.8s both" }}
-          />
+          {/* Logo + orange square sitting on its baseline, like a full stop */}
+          <span className="flex items-end" style={{ gap: ".05em" }}>
+            <Logo className="h-[.7em] text-[#f4f4f2]" />
+            <span
+              className="shrink-0 bg-abcs-red"
+              style={{ width: ".15em", height: ".15em", animation: "sq-pop .5s cubic-bezier(.34,1.56,.64,1) 2.8s both" }}
+            />
+          </span>
         </div>
       </div>
 
