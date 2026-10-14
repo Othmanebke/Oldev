@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Watermark from "@/components/fx/Watermark";
+import Grain from "@/components/fx/Grain";
 import { section } from "@/components/sections/layout";
 
 /**
@@ -56,6 +57,7 @@ export function AboutSection() {
       className={`${section} flex min-h-[90vh] items-center justify-center`}
       style={{ padding: "clamp(56px,7vw,96px) clamp(20px,5vw,72px)" }}
     >
+      <Grain />
       <Watermark text="Othmane" index={0} />
       <p
         ref={ref}

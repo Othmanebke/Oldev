@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import SectionTitle from "@/components/fx/SectionTitle";
 import Watermark from "@/components/fx/Watermark";
+import Grain from "@/components/fx/Grain";
 import { section, sectionInner, sectionPad } from "@/components/sections/layout";
 import Link from "next/link";
 import { PROJECTS, PROJECT_FILTERS, projectsForTag, type Project, type ProjectTag } from "@/lib/projects";
@@ -158,6 +159,7 @@ export default function WorkSection() {
 
   return (
     <section id="portfolio" className={section} style={sectionPad}>
+      <Grain />
       <Watermark text="Sélection" index={1} />
       <div className={sectionInner} style={{ gap: "clamp(36px,5vw,56px)" }}>
         <SectionTitle

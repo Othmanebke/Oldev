@@ -2,6 +2,7 @@
 
 import SectionTitle from "@/components/fx/SectionTitle";
 import Watermark from "@/components/fx/Watermark";
+import Grain from "@/components/fx/Grain";
 import BorderRun from "@/components/fx/BorderRun";
 import FaqAccordion from "@/components/fx/FaqAccordion";
 import { useContactModal } from "@/components/ContactModalProvider";
@@ -29,6 +30,7 @@ export function ServicesSection() {
 
   return (
     <section id="services" className={section} style={sectionPad}>
+      <Grain />
       <Watermark text="Tarifs" index={0} />
       <div className={sectionInner} style={{ gap: "clamp(40px,5vw,64px)" }}>
         <SectionTitle

@@ -2,6 +2,7 @@
 
 import SectionTitle from "@/components/fx/SectionTitle";
 import Watermark from "@/components/fx/Watermark";
+import Grain from "@/components/fx/Grain";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { PLANS, SERVICES, type ServiceKey } from "@/lib/services";
 import { section, sectionPad } from "@/components/sections/layout";
@@ -84,6 +85,7 @@ export default function StackSection() {
 
   return (
     <section id="stack" className={section} style={sectionPad}>
+      <Grain />
       <Watermark text="Stack" index={1} />
       <div className={box}>
         <SectionTitle

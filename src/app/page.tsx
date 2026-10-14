@@ -6,7 +6,6 @@ import { AboutSection } from "@/components/AboutSection";
 import StackSection from "@/components/StackSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import Footer from "@/components/Footer";
-import Grain from "@/components/fx/Grain";
 import { homeJsonLd } from "@/lib/jsonLd";
 
 export default function Home() {
@@ -19,14 +18,10 @@ export default function Home() {
       <Preloader />
       <main className="flex min-h-screen flex-col bg-[#050505]" style={{ overflowX: "clip" }}>
         <HeroSection />
-        {/* Dark sections share one grain + vignette backdrop; Parcours sits on its own light band */}
-        <div className="relative bg-[#050505]">
-          <Grain />
-          <ServicesSection />
-          <WorkSection />
-          <AboutSection />
-          <StackSection />
-        </div>
+        <ServicesSection />
+        <WorkSection />
+        <AboutSection />
+        <StackSection />
         <ExperienceSection />
         <Footer />
       </main>

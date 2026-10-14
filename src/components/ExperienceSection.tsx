@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import SectionTitle from "@/components/fx/SectionTitle";
+import { card } from "@/components/sections/layout";
 
 const EXPERIENCES = [
   {
@@ -73,7 +74,7 @@ export default function ExperienceSection() {
   return (
     <section
       id="experiences"
-      className="relative overflow-x-clip bg-[#f4f4f2] text-[#111]"
+      className={`${card} overflow-x-clip bg-[#f4f4f2] text-[#111]`}
       // Extra room at the bottom for the footer card that overlaps it
       style={{ padding: "clamp(64px,8vw,112px) clamp(20px,5vw,72px) calc(clamp(64px,8vw,112px) + clamp(48px,7vw,112px))" }}
     >
