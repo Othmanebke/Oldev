@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import SectionHeader from "@/components/fx/SectionHeader";
+import SectionTitle from "@/components/fx/SectionTitle";
+import Watermark from "@/components/fx/Watermark";
+import { section, sectionInner, sectionPad } from "@/components/sections/layout";
 import Link from "next/link";
 import { PROJECTS, PROJECT_FILTERS, projectsForTag, type Project, type ProjectTag } from "@/lib/projects";
 
@@ -155,20 +157,16 @@ export default function WorkSection() {
   const list = filter === "all" ? [] : projectsForTag(filter);
 
   return (
-    <section
-      id="portfolio"
-      data-stack
-      className="relative z-10 -mt-9 md:-mt-16 overflow-hidden rounded-t-[36px] md:rounded-t-[64px] bg-abcs-black text-white shadow-[0_-30px_70px_rgba(0,0,0,0.5)]"
-      style={{ padding: "clamp(64px,9vw,120px) clamp(20px,5vw,72px) clamp(96px,10vw,140px)" }}
-    >
-
-      <div className="relative z-[1] mx-auto flex max-w-[1280px] flex-col" style={{ gap: "clamp(36px,5vw,56px)" }}>
-        <SectionHeader
-          tone="dark"
-          num="01"
-          title={["Mes", "travaux"]}
-          aside={`${PROJECTS.length} projets`}
+    <section id="portfolio" className={section} style={sectionPad}>
+      <Watermark text="Sélection" index={1} />
+      <div className={sectionInner} style={{ gap: "clamp(36px,5vw,56px)" }}>
+        <SectionTitle
+          top="Travaux"
+          word="Sélection"
+          count={`(${PROJECTS.length})`}
           intro="Vitrines, e-commerce et apps web : une sélection de projets clients et personnels."
+          mark="projets clients"
+          aside="2020—26®"
         />
 
         <div className="flex flex-wrap justify-center gap-2" role="group" aria-label="Filtrer par technologie">
@@ -183,7 +181,7 @@ export default function WorkSection() {
                 className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-[18px] py-2.5 text-[12px] font-bold uppercase tracking-[0.12em] transition-all duration-200 ${
                   on
                     ? "border-abcs-red bg-abcs-red text-white"
-                    : "border-white/20 bg-transparent text-white/75 hover:border-white/50 hover:text-white"
+                    : "border-white/[.14] bg-[linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03))] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,.18)] backdrop-blur-[14px] backdrop-saturate-[1.7] hover:border-white/40 hover:text-white"
                 }`}
               >
                 {f.label} <span className="opacity-60">{count}</span>

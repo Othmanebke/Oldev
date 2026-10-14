@@ -41,10 +41,10 @@ export default function Navbar() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Hidden over the hero: shows once the first section after it (#portfolio on the home page)
+  // Hidden over the hero: shows once the first section after it (#services on the home page)
   // reaches 60% of the viewport. Pages without a hero show it right away.
   useEffect(() => {
-    const target = document.getElementById("portfolio") ?? document.getElementById("top")?.nextElementSibling;
+    const target = document.getElementById("services") ?? document.getElementById("top")?.nextElementSibling;
     if (!target) {
       const id = requestAnimationFrame(() => setPastHero(true));
       return () => cancelAnimationFrame(id);
@@ -82,7 +82,8 @@ export default function Navbar() {
       {chatMounted && <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />}
 
       {/* Main pill */}
-      <div className="relative flex items-center gap-1 p-1.5 rounded-full bg-[rgba(26,26,26,0.95)] backdrop-blur-[16px] border border-white/[0.08] shadow-[0_8px_40px_rgba(0,0,0,0.35)]">
+      <div className="relative flex items-center gap-1 p-1.5 rounded-full border border-white/[0.16] backdrop-blur-[20px] backdrop-saturate-[1.8] shadow-[inset_0_1px_0_rgba(255,255,255,.28),inset_0_-1px_0_rgba(255,255,255,.06),0_12px_40px_rgba(0,0,0,.45)]"
+        style={{ background: "linear-gradient(180deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.03) 55%,rgba(255,255,255,.06) 100%),rgba(18,18,18,.58)" }}>
 
         {/* Avatar — chat trigger */}
         <div className="relative flex-shrink-0">

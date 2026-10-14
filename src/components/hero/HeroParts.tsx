@@ -41,7 +41,7 @@ export function useHeroMotion(refs: {
       mx += (tx - mx) * 0.06;
       my += (ty - my) * 0.06;
       if (!root.current) return;
-      // The hero is sticky (StackEffect), so its rect barely moves: drive the drift with the page scroll (it is the first section)
+      // Drive the drift with the page scroll (the hero is the first section)
       const sy = window.scrollY;
       const t = `translate(${-mx * 22}px,${-my * 12 + sy * 0.35}px)`;
       for (const l of layers) if (l.current) l.current.style.transform = t;
