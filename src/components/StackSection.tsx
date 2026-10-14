@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import SectionTitle from "@/components/fx/SectionTitle";
 import Watermark from "@/components/fx/Watermark";
 import Grain from "@/components/fx/Grain";
@@ -84,7 +85,7 @@ export default function StackSection() {
   const box = "relative z-[1] mx-auto w-full max-w-[1424px]";
 
   return (
-    <section id="stack" className={section} style={sectionPad}>
+    <section id="stack" data-stack className={section} style={sectionPad}>
       <Grain />
       <Watermark text="Stack" index={1} />
       <div className={box}>
@@ -98,7 +99,7 @@ export default function StackSection() {
         />
       </div>
 
-      <div className="relative z-[1] flex flex-col gap-1" style={{ margin: "clamp(48px,6vw,88px) calc(-1 * clamp(20px,5vw,72px)) 0" }}>
+      <div data-reveal="clip" className="relative z-[1] flex flex-col gap-1" style={{ margin: "clamp(48px,6vw,88px) calc(-1 * clamp(20px,5vw,72px)) 0" }}>
         {ROWS.map((row, i) => (
           <Marquee key={i} {...row} />
         ))}
@@ -106,8 +107,8 @@ export default function StackSection() {
 
       <div className={`${box} flex flex-col`} style={{ marginTop: "clamp(48px,6vw,88px)" }}>
         <ul className="m-0 list-none border-t border-white/[.14] p-0">
-          {PLANS.map((p) => (
-            <li key={p.key} className="grid items-center gap-x-6 gap-y-4 border-b border-white/[.14] py-[clamp(20px,2.6vw,32px)] min-[760px]:grid-cols-[auto_1fr_auto]">
+          {PLANS.map((p, i) => (
+            <li key={p.key} data-reveal style={{ "--i": i } as CSSProperties} className="grid items-center gap-x-6 gap-y-4 border-b border-white/[.14] py-[clamp(20px,2.6vw,32px)] min-[760px]:grid-cols-[auto_1fr_auto]">
               <span className="font-mono text-[14px] text-white/60">{p.num}</span>
               <span className="flex flex-col gap-1">
                 <span className="text-[15px] text-white/60">{p.for}</span>
@@ -124,7 +125,7 @@ export default function StackSection() {
             </li>
           ))}
         </ul>
-        <p className="m-0 flex flex-wrap items-center gap-x-2 gap-y-1 pt-5 text-[15px] text-white/60">
+        <p data-reveal className="m-0 flex flex-wrap items-center gap-x-2 gap-y-1 pt-5 text-[15px] text-white/60">
           Aussi :
           {ALSO.map((a, i) => (
             <span key={a.key}>

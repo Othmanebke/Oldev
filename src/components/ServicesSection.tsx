@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import SectionTitle from "@/components/fx/SectionTitle";
 import Watermark from "@/components/fx/Watermark";
 import Grain from "@/components/fx/Grain";
@@ -29,7 +30,7 @@ export function ServicesSection() {
   const choose = (key: ServiceKey) => openModal({ type: SERVICES[key].label, budget: SERVICES[key].budgets[0] });
 
   return (
-    <section id="services" className={section} style={sectionPad}>
+    <section id="services" data-stack className={section} style={sectionPad}>
       <Grain />
       <Watermark text="Tarifs" index={0} />
       <div className={sectionInner} style={{ gap: "clamp(40px,5vw,64px)" }}>
@@ -44,12 +45,15 @@ export function ServicesSection() {
 
         {/* Plans */}
         <div className="grid items-stretch gap-4" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,290px),1fr))" }}>
-          {PLANS.map((p) => {
+          {PLANS.map((p, i) => {
             const f = !!p.featured;
             const s = SERVICES[p.key];
             return (
               <article
                 key={p.key}
+                data-reveal
+                // "Le plus choisi" comes in last
+                style={{ "--i": f ? PLANS.length : i } as CSSProperties}
                 onMouseMove={glare}
                 className={`group relative flex flex-col gap-2 rounded-[30px] border p-2 transition-[transform,border-color] duration-[450ms] ease-out-expo hover:-translate-y-1 ${
                   f ? "border-[#f4f4f2] bg-[#f4f4f2] text-[#111]" : "border-white/[.08] bg-[#121212] text-[#f4f4f2] hover:border-white/20"
@@ -131,7 +135,7 @@ export function ServicesSection() {
         </div>
 
         {/* Also available */}
-        <div className="flex flex-col gap-4">
+        <div data-reveal className="flex flex-col gap-4">
           <span className="text-[13px] font-bold uppercase tracking-[0.22em] text-[#f4f4f2]/60">Aussi disponible</span>
           <div className="grid gap-x-6 border-t border-white/15" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))" }}>
             {EXTRAS.map((e) => (
@@ -158,13 +162,15 @@ export function ServicesSection() {
           className="grid items-start"
           style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,400px),1fr))", gap: "clamp(24px,4vw,56px)", paddingTop: "clamp(16px,3vw,32px)" }}
         >
-          <div className="flex flex-col gap-3">
+          <div data-reveal className="flex flex-col gap-3">
             <h3 className="m-0 font-heading font-normal uppercase leading-[0.95] tracking-[-0.02em] text-[#f4f4f2]" style={{ fontSize: "clamp(2rem,4vw,3.2rem)" }}>
               Questions fréquentes
             </h3>
             <p className="m-0 text-[16px] leading-[1.6] text-[#f4f4f2]/60">Une autre question ? Réponse sous 48 h maximum.</p>
           </div>
-          <FaqAccordion items={FAQ} tone="dark" />
+          <div data-reveal style={{ "--i": 1 } as CSSProperties}>
+            <FaqAccordion items={FAQ} tone="dark" />
+          </div>
         </div>
       </div>
     </section>

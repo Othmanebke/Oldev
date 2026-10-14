@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import SectionTitle from "@/components/fx/SectionTitle";
 import { card } from "@/components/sections/layout";
 
@@ -74,6 +74,7 @@ export default function ExperienceSection() {
   return (
     <section
       id="experiences"
+      data-stack
       className={`${card} overflow-x-clip bg-[#f4f4f2] text-[#111]`}
       // Extra room at the bottom for the footer card that overlaps it
       style={{ padding: "clamp(64px,8vw,112px) clamp(20px,5vw,72px) calc(clamp(64px,8vw,112px) + clamp(48px,7vw,112px))" }}
@@ -96,7 +97,7 @@ export default function ExperienceSection() {
           </div>
 
           {EXPERIENCES.map((x, i) => (
-            <li key={x.company} className="grid" style={{ gridTemplateColumns: "clamp(70px,14vw,170px) 32px 1fr" }}>
+            <li key={x.company} data-reveal className="grid" style={{ gridTemplateColumns: "clamp(70px,14vw,170px) 32px 1fr" }}>
               <div className={`${mono} flex flex-col gap-1 pr-3 text-[#111]/70`}>
                 <span className="font-bold text-[#111]">{x.period}</span>
                 <span>{x.type}</span>
@@ -133,7 +134,7 @@ export default function ExperienceSection() {
 
         {/* Diplomas */}
         <div className="grid border-t border-[rgba(17,17,17,.12)] pt-[clamp(32px,4vw,56px)]" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,340px),1fr))", gap: "clamp(32px,5vw,72px)" }}>
-          <div className="flex flex-col gap-3">
+          <div data-reveal className="flex flex-col gap-3">
             <span className="font-heading leading-[0.85] tracking-[-0.04em] text-abcs-red" style={{ fontSize: "clamp(2.6rem,5vw,4.4rem)" }}>
               Bac+5
             </span>
@@ -142,7 +143,7 @@ export default function ExperienceSection() {
           </div>
           <div className="flex flex-col">
             {DIPLOMAS.map((d, i) => (
-              <div key={d.level} className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-baseline gap-4 border-b border-[rgba(17,17,17,.12)] py-[18px] first:pt-0">
+              <div key={d.level} data-reveal style={{ "--i": i + 1 } as CSSProperties} className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-baseline gap-4 border-b border-[rgba(17,17,17,.12)] py-[18px] first:pt-0">
                 <span className={`font-heading text-[16px] ${i === 0 ? "text-[#C42F00]" : "text-[#111]/60"}`}>{d.level}</span>
                 <span className="flex flex-col gap-[3px]">
                   <span className="text-[16px] font-extrabold">{d.title}</span>

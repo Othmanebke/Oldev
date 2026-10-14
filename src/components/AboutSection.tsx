@@ -54,6 +54,7 @@ export function AboutSection() {
   return (
     <section
       id="about"
+      data-stack
       className={`${section} flex min-h-[90vh] items-center justify-center`}
       style={{ padding: "clamp(56px,7vw,96px) clamp(20px,5vw,72px)" }}
     >

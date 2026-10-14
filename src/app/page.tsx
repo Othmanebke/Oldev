@@ -6,6 +6,7 @@ import { AboutSection } from "@/components/AboutSection";
 import StackSection from "@/components/StackSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import Footer from "@/components/Footer";
+import ScrollFx from "@/components/fx/ScrollFx";
 import { homeJsonLd } from "@/lib/jsonLd";
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
         <ExperienceSection />
         <Footer />
       </main>
+      <ScrollFx />
     </>
   );
 }
