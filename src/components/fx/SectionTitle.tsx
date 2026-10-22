@@ -8,7 +8,7 @@ type Props = {
   /** Second line, behind the orange square. */
   word: string;
   /** "(03)", bottom right of the second line. */
-  count: string;
+  count?: string;
   intro: string;
   /** Substring of `intro` highlighted once revealed. */
   mark?: string;
@@ -67,18 +67,20 @@ export default function SectionTitle({ top, word, count, intro, mark, aside, ton
           <span className="block overflow-hidden pt-[.08em] -mt-[.08em]">
             <span className="st-word block whitespace-nowrap">{word}</span>
           </span>
-          <span
-            aria-hidden
-            className="st-fade mb-[.12em] ml-auto shrink-0 pl-3 font-sans normal-case"
-            style={{ fontWeight: 400, fontStretch: "100%", letterSpacing: 0, fontSize: "clamp(16px,1.6vw,26px)", color: c.faint }}
-          >
-            {count}
-          </span>
+          {count && (
+            <span
+              aria-hidden
+              className="st-fade mb-[.12em] ml-auto shrink-0 pl-3 font-sans normal-case"
+              style={{ fontWeight: 400, fontStretch: "100%", letterSpacing: 0, fontSize: "clamp(16px,1.6vw,26px)", color: c.faint }}
+            >
+              {count}
+            </span>
+          )}
         </span>
       </h2>
 
       <div
-        className="st-fade grid grid-cols-[auto_1fr] items-start gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr_auto]"
+        className={`st-fade grid grid-cols-[auto_1fr] items-start gap-x-6 gap-y-3 ${aside ? "sm:grid-cols-[auto_1fr_auto]" : ""}`}
         style={{ marginTop: "clamp(28px,3.5vw,52px)" }}
       >
         <span aria-hidden className="pt-[.1em] font-medium italic" style={{ color: c.accent, fontSize: "clamp(16px,1.35vw,20px)" }}>

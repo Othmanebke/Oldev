@@ -1,48 +1,43 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
-import dynamic from "next/dynamic";
-import { useContactModal } from "@/components/ContactModalProvider";
-import MobileMenu from "@/components/MobileMenu";
+import { useCallback, useEffect, useState } from "react";
+import ChatPanel from "@/components/ChatPanel";
 import { useScrollToSection } from "@/lib/useScrollToSection";
-import avatarPhoto from "@/img/avatar.webp";
-
-// Loaded on first open only — keeps it out of the initial bundle
-const ChatWindow = dynamic(() => import("@/components/Chatbot"), { ssr: false });
 
 const LINKS = [
-  { label: "Projets",  id: "portfolio"   },
-  { label: "Tarifs",   id: "services"    },
-  { label: "À propos", id: "about"       },
+  { label: "Projets", id: "portfolio" },
+  { label: "Tarifs", id: "services" },
+  { label: "À propos", id: "about" },
   { label: "Parcours", id: "experiences" },
 ];
 
+// Offer pages, kept in the menu so they stay linked from every page
+const PAGES = [
+  { href: "/services/site-vitrine", label: "Site vitrine" },
+  { href: "/services/site-sur-mesure-nextjs", label: "Site sur-mesure" },
+  { href: "/services/site-wordpress", label: "Site WordPress" },
+  { href: "/creation-site-internet-seine-et-marne", label: "Seine-et-Marne" },
+];
+
+const round = "grid size-11 flex-none place-items-center rounded-full text-[#F4F1EC] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white max-[359px]:size-10";
+
+/**
+ * Floating bottom bar (every page): menu, AI chat, contact, WhatsApp, Instagram.
+ * Hidden over the home hero; shows once the services reach 60 % of the viewport.
+ * Opening a panel closes the other one.
+ */
 export default function Navbar() {
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatMounted, setChatMounted] = useState(false);
-  const [showHint, setShowHint] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const [pastHero, setPastHero] = useState(false);
-  const visible = pastHero || chatOpen || menuOpen;
-  const { openModal } = useContactModal();
   const scrollToSection = useScrollToSection();
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const [pastHero, setPastHero] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [chat, setChat] = useState(false);
+  const closeChat = useCallback(() => setChat(false), []);
+  const visible = pastHero || menu || chat;
 
-  // Show hint once — after 2.5s, only if never dismissed
-  useEffect(() => {
-    const dismissed = localStorage.getItem("chat-hint-dismissed");
-    if (dismissed) return;
-    const timer = setTimeout(() => setShowHint(true), 2500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Hidden over the hero: shows once the first section after it (#services on the home page)
-  // reaches 60% of the viewport. Pages without a hero show it right away.
+  // Pages without a hero show it right away
   useEffect(() => {
     const target = document.getElementById("services") ?? document.getElementById("top")?.nextElementSibling;
     if (!target) {
@@ -59,140 +54,113 @@ export default function Navbar() {
     };
   }, [pathname]);
 
-  const dismissHint =(e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowHint(false);
-    localStorage.setItem("chat-hint-dismissed", "1");
-  };
+  useEffect(() => {
+    if (!menu) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menu]);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    setMenuOpen(false);
-    if (pathname === "/" && scrollToSection(id)) e.preventDefault();
+  const go = (id: string) => (e: React.MouseEvent) => {
+    setMenu(false);
+    setChat(false);
+    if (scrollToSection(id)) e.preventDefault();
   };
 
   return (
     <>
-    <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={visible ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-[100] w-[calc(100vw-24px)] sm:w-auto sm:max-w-[calc(100vw-24px)] ${visible ? "" : "pointer-events-none"}`}
-    >
-      {/* Chat window — pops above the avatar */}
-      {chatMounted && <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />}
-
-      {/* Main pill */}
-      <div className="relative flex items-center gap-1 p-1.5 rounded-full border border-white/[0.16] backdrop-blur-[20px] backdrop-saturate-[1.8] shadow-[inset_0_1px_0_rgba(255,255,255,.28),inset_0_-1px_0_rgba(255,255,255,.06),0_12px_40px_rgba(0,0,0,.45)]"
-        style={{ background: "linear-gradient(180deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.03) 55%,rgba(255,255,255,.06) 100%),rgba(18,18,18,.58)" }}>
-
-        {/* Avatar — chat trigger */}
-        <div className="relative flex-shrink-0">
-
-          {/* ── One-time hint popup ───────────────────────────────── */}
-          <AnimatePresence>
-            {showHint && !chatOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 6, scale: 0.92 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 6, scale: 0.92 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute bottom-full left-0 mb-3 z-10 pointer-events-auto"
+      <div
+        className={`fixed bottom-[clamp(14px,2.4vh,24px)] left-1/2 z-[100] -translate-x-1/2 transition-[translate,opacity] duration-700 ease-out-expo ${
+          visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-[100px] opacity-0"
+        }`}
+      >
+        {/* Menu panel */}
+        <div
+          id="nav-menu"
+          inert={!menu}
+          className={`absolute bottom-[62px] left-0 flex min-w-[210px] origin-bottom-left flex-col rounded-[18px] bg-[rgba(20,18,16,.9)] p-1.5 shadow-[0_20px_50px_-14px_rgba(0,0,0,.8),inset_0_0_0_1px_rgba(244,241,236,.08)] backdrop-blur-[16px] transition-[translate,opacity] duration-[450ms] ease-out-expo ${
+            menu ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+          }`}
+        >
+          <nav aria-label="Navigation principale" className="flex flex-col">
+            {LINKS.map((l) => (
+              <Link
+                key={l.id}
+                href={`/#${l.id}`}
+                onClick={go(l.id)}
+                className="flex h-[42px] items-center rounded-xl px-4 text-[14px] font-semibold text-[#F4F1EC] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red"
               >
-                <div className="relative bg-abcs-red rounded-xl rounded-bl-sm px-3.5 py-2.5 flex items-center gap-2.5 shadow-lg whitespace-nowrap">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse flex-shrink-0" />
-                  <span className="font-bold text-[12px] text-white uppercase tracking-wide">
-                    Discutez avec mon IA
-                  </span>
-                  <button
-                    onClick={dismissHint}
-                    className="w-5 h-5 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 text-white text-[12px] font-bold transition-colors leading-none flex-shrink-0"
-                    aria-label="Fermer"
-                  >
-                    ✕
-                  </button>
-                  <div className="absolute -bottom-1.5 left-3 w-3 h-3 bg-abcs-red rotate-45 rounded-sm" />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Avatar button */}
-          <button
-            onClick={() => {
-              setChatMounted(true);
-              setChatOpen((v) => !v);
-              if (showHint) {
-                setShowHint(false);
-                localStorage.setItem("chat-hint-dismissed", "1");
-              }
-            }}
-            aria-label="Ouvrir le chat"
-            className="relative w-10 h-10 rounded-full bg-[#111] overflow-visible block"
-          >
-            <div className="w-full h-full rounded-full overflow-hidden">
-              <Image
-                src={avatarPhoto}
-                alt="Othmane"
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Ring — orange when chat open */}
-            <span
-              className={`absolute -inset-0.5 rounded-full border-2 transition-colors duration-300 ${
-                chatOpen ? "border-abcs-red/80" : "border-transparent"
-              }`}
-            />
-
-            {/* Green online dot */}
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#1a1a1a] z-10">
-              <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-75" />
-            </span>
-          </button>
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          <span aria-hidden className="mx-4 my-1.5 h-px bg-[rgba(244,241,236,.08)]" />
+          <nav aria-label="Offres" className="flex flex-col">
+            {PAGES.map((p) => (
+              <Link
+                key={p.href}
+                href={p.href}
+                onClick={() => setMenu(false)}
+                className="flex h-[34px] items-center rounded-xl px-4 text-[13px] text-[rgba(244,241,236,.6)] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red"
+              >
+                {p.label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
-        {/* Nav links — inline from sm, in the menu below on phones */}
-        <nav aria-label="Navigation principale" className="hidden min-w-0 items-center sm:flex">
-          {LINKS.map((link) => (
-            <Link
-              key={link.id}
-              href={`/#${link.id}`}
-              onClick={(e) => handleNavClick(e, link.id)}
-              className="px-3.5 py-2.5 rounded-full font-bold text-[13px] uppercase tracking-[0.08em] whitespace-nowrap text-white/75 hover:text-white hover:bg-white/[0.08] transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Phones: menu toggle */}
-        <button
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu"
-          className="flex-1 rounded-full px-3.5 py-2.5 text-left text-[13px] font-bold uppercase tracking-[0.08em] text-white/75 transition-colors hover:text-white sm:hidden"
-        >
-          Menu
-        </button>
-
-        {/* Contact button */}
-        <button
-          onClick={() => {
-            setMenuOpen(false);
-            openModal();
-          }}
-          className="flex-shrink-0 bg-white text-abcs-black font-bold text-[13px] uppercase tracking-[0.08em] px-[18px] py-[11px] rounded-full whitespace-nowrap hover:bg-abcs-red hover:text-white transition-colors"
-        >
-          Contact +
-        </button>
+        <div className="flex items-center gap-1.5 rounded-full bg-[rgba(20,18,16,.6)] p-1.5 shadow-[0_14px_40px_-12px_rgba(0,0,0,.7),inset_0_0_0_1px_rgba(244,241,236,.08)] backdrop-blur-[16px]">
+          <button
+            onClick={() => {
+              setMenu((v) => !v);
+              setChat(false);
+            }}
+            aria-label={menu ? "Fermer le menu" : "Menu"}
+            aria-expanded={menu}
+            aria-controls="nav-menu"
+            className={`${round} ${menu ? "bg-abcs-red" : "bg-[#1F1C19]"}`}
+          >
+            <span aria-hidden className="flex w-4 flex-col gap-1">
+              <span className={`block h-[1.5px] rounded-sm bg-current transition-transform duration-300 ${menu ? "translate-y-[2.75px] rotate-45" : ""}`} />
+              <span className={`block h-[1.5px] rounded-sm bg-current transition-transform duration-300 ${menu ? "-translate-y-[2.75px] -rotate-45" : ""}`} />
+            </span>
+          </button>
+          <button
+            onClick={() => {
+              setChat((v) => !v);
+              setMenu(false);
+            }}
+            aria-label="Discuter avec l'IA"
+            aria-expanded={chat}
+            className={`${round} ${chat ? "bg-abcs-red" : "bg-[#1F1C19]"}`}
+          >
+            <svg aria-hidden viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9z" />
+              <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+            </svg>
+          </button>
+          <a
+            href="#contact"
+            onClick={go("contact")}
+            className="flex h-11 items-center whitespace-nowrap rounded-full bg-[#F4F1EC] px-[30px] text-[14px] font-semibold text-[#0A0908] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white max-[399px]:px-5 max-[359px]:h-10 max-[359px]:px-4"
+          >
+            Contact
+          </a>
+          <a href="https://wa.me/33660805337" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className={`${round} bg-[#1F1C19]`}>
+            <svg aria-hidden viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.5h-.01a9.5 9.5 0 0 1-4.84-1.33l-.35-.21-3.6.94.96-3.5-.23-.36a9.47 9.47 0 0 1-1.45-5.05c0-5.24 4.27-9.5 9.52-9.5a9.5 9.5 0 0 1 9.5 9.51c0 5.25-4.27 9.5-9.5 9.5M20.13 3.88A11.4 11.4 0 0 0 12.05.5C5.76.5.64 5.62.64 11.9c0 2.01.52 3.97 1.52 5.7L.54 23.5l6.04-1.58a11.4 11.4 0 0 0 5.46 1.39h.01c6.29 0 11.41-5.12 11.41-11.4 0-3.05-1.19-5.91-3.33-8.07" />
+            </svg>
+          </a>
+          <a href="https://www.instagram.com/o.ldev/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={`${round} bg-[#1F1C19]`}>
+            <svg aria-hidden viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </a>
+        </div>
       </div>
 
-    </motion.div>
-
-    {/* Phones: full-screen menu (outside the transformed pill, so `fixed` covers the viewport) */}
-    <MobileMenu open={menuOpen} onClose={closeMenu} />
+      <ChatPanel open={chat && visible} onClose={closeChat} />
     </>
   );
 }

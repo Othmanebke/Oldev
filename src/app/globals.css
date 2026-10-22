@@ -56,88 +56,37 @@ html.has-custom-cursor * {
 
 /* ─── Keyframes ──────────────────────────────────────────────────────────── */
 /* Preloader */
-@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-
-.pl-bar {
-  --w: min(600px, 86vw);
-  --h: clamp(58px, 7.2vw, 76px);
-  width: var(--w);
-  height: var(--h);
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.03) 60%, rgba(255,255,255,.055) 100%);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), inset 0 1px 0 rgba(255,255,255,.28), 0 30px 80px -24px rgba(0,0,0,.95);
+@keyframes ld-in { from { opacity: 0; transform: translateY(22px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes ld-out { to { opacity: 0; transform: translateY(-18px); filter: blur(6px); } }
+@keyframes ld-card {
+  from { opacity: 0; transform: translate(-50%,-50%) translateY(70px) rotate(calc(var(--r) * 2)) scale(.9); }
+  to { opacity: 1; transform: translate(-50%,-50%) rotate(var(--r)); }
 }
-.pl-bar-ring {
-  position: absolute; inset: 0; border-radius: 999px; padding: 1px; pointer-events: none;
-  background: conic-gradient(from var(--ang), transparent 0 62%, rgba(255,255,255,.55) 78%, rgba(255,59,0,.9) 86%, transparent 94%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+@keyframes ld-expand {
+  from { clip-path: inset(calc(50% - var(--ch) / 2) calc(50% - var(--cw) / 2) round 16px); }
+  to { clip-path: inset(0 0 round 0); }
 }
-.pl-bar-gloss {
-  position: absolute; left: 7%; right: 7%; top: 1px; height: 44%; border-radius: 999px; pointer-events: none;
-  background: linear-gradient(180deg, rgba(255,255,255,.12), transparent);
-}
-.pl-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px;
-}
-
-@keyframes sb-open {
-  0%   { clip-path: inset(0 calc(50% - var(--h) / 2) round 999px); opacity: 0; transform: scale(.6); }
-  35%  { clip-path: inset(0 calc(50% - var(--h) / 2) round 999px); opacity: 1; transform: scale(1); }
-  100% { clip-path: inset(0 0 round 999px); opacity: 1; transform: scale(1); }
-}
-@keyframes sb-close {
-  0%   { clip-path: inset(0 0 round 999px); transform: scale(1); opacity: 1; }
-  60%  { clip-path: inset(0 calc(50% - var(--h) / 2) round 999px); transform: scale(1); opacity: 1; }
-  100% { clip-path: inset(0 calc(50% - var(--h) / 2) round 999px); transform: scale(0); opacity: 0; }
-}
-@keyframes sb-enter {
-  0%   { background: rgba(255,255,255,.08); color: #f4f4f2; transform: scale(1); }
-  40%  { transform: scale(.82); }
-  100% { background: #f4f4f2; color: #050505; transform: scale(1); }
-}
-@keyframes pl-ang { to { --ang: 360deg; } }
-@keyframes pl-type { from { max-width: 0; opacity: 0; } to { max-width: 1.4em; opacity: 1; } }
-@keyframes pl-ch-blur { from { filter: blur(6px); transform: translateY(.3em); } to { filter: blur(0); transform: none; } }
-@keyframes pl-caret { 50% { opacity: 0; } }
-@keyframes pl-ripple { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(2.4); } }
-@keyframes pl-lt-in { from { transform: translateY(105%) rotate(8deg); } to { transform: none; } }
-@keyframes pl-lt-out { to { transform: translateY(-105%); } }
-@keyframes pl-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pl-fade-out { to { opacity: 0; } }
-@keyframes sq-pop { from { transform: scale(0); } to { transform: scale(1); } }
-@keyframes sq-out { to { transform: scale(0); } }
-@keyframes bar-fill { to { transform: scaleX(1); } }
-@keyframes cur-l { to { transform: translateX(-101%); } }
-@keyframes cur-r { to { transform: translateX(101%); } }
-
-/* fx/BorderRun: one lap of the card border (pathLength 100), each dash starting at its own --o */
-@keyframes border-run { from { stroke-dashoffset: var(--o); } to { stroke-dashoffset: calc(var(--o) - 100); } }
-.border-run { animation: border-run 5s linear infinite; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { to { opacity: 0; } }
+/* Hero backdrop drift */
+@keyframes blob { 0%, 100% { transform: translate(-8%,-4%) scale(1); } 50% { transform: translate(8%,5%) scale(1.15); } }
 
 /* Room left under the last block for the footer card, which overlaps it */
 .footer-gap { padding-bottom: clamp(48px,7vw,112px); }
-@keyframes h-rise  { from { transform: translateY(110%); } to { transform: none; } }
-@keyframes h-photo { from { opacity: 0; transform: translateY(70px) scale(.96); filter: blur(12px); } to { opacity: 1; transform: none; filter: blur(0); } }
 @keyframes h-fade  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@keyframes h-out   { to { transform: translateY(-100%); opacity: 0; filter: blur(6px); } }
 @keyframes pp-fade { from { opacity: 0; } }
 @keyframes pp-in   { from { opacity: 0; transform: translateY(40px) scale(.97); } }
-@keyframes h-light { from { opacity: 0; } to { opacity: 1; } }
 @keyframes h-ping  { 75%, 100% { transform: scale(2); opacity: 0; } }
-@keyframes h-blink { 50% { opacity: 0; } }
-@keyframes word-in  { from { transform: translateY(100%); opacity: 0; filter: blur(6px); } to { transform: none; opacity: 1; filter: blur(0); } }
-@keyframes word-out { from { transform: none; opacity: 1; filter: blur(0); } to { transform: translateY(-100%); opacity: 0; filter: blur(6px); } }
 @keyframes mq-l { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes mq-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
-/* ─── Hero: phones ──────────────────────────────────────────────────────── */
-@media (max-width: 700px) {
-  .hero-photo { height: 64% !important; }
+@keyframes h-sl { from { opacity: 0; transform: translateX(-46px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes h-sr { from { opacity: 0; transform: translateX(46px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+
+/* ─── Hero lines: scattered on wide screens, one centred column on phones ── */
+.hero-line { position: absolute; left: var(--x); top: var(--y); }
+@media (max-width: 639px) {
+  .hero-line { left: 0; right: 0; top: calc(38% + var(--n) * 2.1em); text-align: center; }
 }
 
 /* ─── Section titles (fx/SectionTitle) ──────────────────────────────────── */
@@ -145,21 +94,9 @@ html.has-custom-cursor * {
   background: linear-gradient(rgba(255,59,0,.4), rgba(255,59,0,.4)) no-repeat 0 90% / 100% 40%;
 }
 
-/* ─── About paragraph: words light up on scroll (data-on set in JS) ─────── */
-.about [data-w] { color: rgba(244,244,242,.14); transition: color .35s ease; }
-.about [data-w][data-on] { color: #f4f4f2; }
-.about [data-w][data-k="accent"][data-on] { color: #FF3B00; }
-.about [data-k="circle"] path { stroke-dasharray: 1.05; stroke-dashoffset: 1.05; transition: stroke-dashoffset 1s cubic-bezier(.22,1,.36,1); }
-.about [data-k="circle"][data-on] path { stroke-dashoffset: 0; }
-.about [data-k="mark"] {
-  background: linear-gradient(rgba(255,59,0,.7), rgba(255,59,0,.55)) no-repeat 0 85% / 0% 58%;
-  transition: color .35s ease, background-size .8s cubic-bezier(.22,1,.36,1);
-}
-.about [data-k="mark"][data-on] { background-size: 100% 58%; }
-
 /* ─── Parcours timeline dots ─────────────────────────────────────────────── */
-.tl-dot { background: #d9d9d6; transition: background-color .35s, box-shadow .35s; }
-.tl-dot[data-on] { background: #FF3B00; box-shadow: 0 0 0 6px rgba(255,59,0,.18); }
+.tl-dot { background: #f4f4f2; border: 2px solid rgba(17,17,17,.22); transition: background-color .4s, border-color .4s, box-shadow .4s; }
+.tl-dot[data-on] { background: #FF3B00; border-color: #FF3B00; box-shadow: 0 0 0 6px rgba(255,59,0,.18); }
 
 /* ─── Motion (only when the user accepts it) ─────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {

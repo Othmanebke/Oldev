@@ -1,10 +1,8 @@
-"use client";
-
-import { useEffect, useState, type CSSProperties, type RefObject } from "react";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import heroPhoto from "@/img/hero.webp";
 
-/** Condensed Archivo (wdth axis) used by the hero titles. */
+/** Condensed Archivo (wdth axis) used by the big titles. */
 export const condensed: CSSProperties = {
   fontFamily: "var(--font-archivo-flex), sans-serif",
   fontWeight: 900,
@@ -12,152 +10,47 @@ export const condensed: CSSProperties = {
   textTransform: "uppercase",
 };
 
-export const cap = "font-sans text-[clamp(11px,.95vw,13px)] font-bold uppercase leading-[1.5] tracking-[0.18em]";
-
 /** Intro delays are offset by `--hd` set on the hero root (the home page waits for the preloader). */
 export const delay = (d: number) => `calc(var(--hd, 0s) + ${d}s)`;
 export const fade = (d: number): CSSProperties => ({ animation: `h-fade 1s cubic-bezier(.22,1,.36,1) ${delay(d)} both` });
 
-/** Mouse parallax + scroll drift (direct DOM writes, no re-render). */
-export function useHeroMotion(refs: {
-  root: RefObject<HTMLElement | null>;
-  layers: RefObject<HTMLElement | null>[];
-  caps?: RefObject<HTMLElement | null>;
-  photo?: RefObject<HTMLElement | null>;
-  light: RefObject<HTMLElement | null>;
-}) {
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const { root, layers, caps, photo, light } = refs;
-    let mx = 0, my = 0, tx = 0, ty = 0, raf = 0;
-    const onMove = (e: MouseEvent) => {
-      const b = root.current?.getBoundingClientRect();
-      if (!b) return;
-      tx = (e.clientX - b.left) / b.width - 0.5;
-      ty = (e.clientY - b.top) / b.height - 0.5;
-    };
-    const loop = () => {
-      raf = requestAnimationFrame(loop);
-      mx += (tx - mx) * 0.06;
-      my += (ty - my) * 0.06;
-      if (!root.current) return;
-      // Drive the drift with the page scroll (the hero is the first section)
-      const sy = window.scrollY;
-      const t = `translate(${-mx * 22}px,${-my * 12 + sy * 0.35}px)`;
-      for (const l of layers) if (l.current) l.current.style.transform = t;
-      if (caps?.current) {
-        caps.current.style.transform = t;
-        caps.current.style.opacity = String(Math.max(0, 1 - sy / 400));
-      }
-      if (photo?.current) photo.current.style.transform = `translate(${mx * 16}px,${sy * 0.12}px)`;
-      if (light.current) {
-        light.current.style.left = `${50 + mx * 50}%`;
-        light.current.style.top = `${35 + my * 40}%`;
-      }
-    };
-    window.addEventListener("mousemove", onMove);
-    loop();
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(raf);
-    };
-    // Refs are stable
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-}
-
-/** Dark radial background + soft light following the cursor (z-0). */
-export function HeroBackground({ lightRef }: { lightRef: RefObject<HTMLDivElement | null> }) {
+/** The "O" of the logo alone. */
+export function LogoMark({ className = "", label = true }: { className?: string; label?: boolean }) {
   return (
-    <>
-      <div aria-hidden className="absolute inset-0 z-0" style={{ background: "radial-gradient(60% 55% at 50% 28%,#1d1d1d 0%,#0a0a0a 55%,#050505 100%)", animation: `h-light 2s ease ${delay(0.1)} both` }} />
-      <div
-        ref={lightRef}
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[35%] z-0 aspect-square w-[min(900px,110vw)] rounded-full"
-        style={{ translate: "-50% -50%", background: "radial-gradient(circle,rgba(255,255,255,.09) 0%,transparent 60%)", animation: `h-light 2s ease ${delay(0.4)} both` }}
-      />
-    </>
+    <svg viewBox="0 0 222 203" fill="currentColor" fillRule="evenodd" className={`block h-auto ${className}`} {...(label ? { role: "img", "aria-label": "O'LDEV" } : { "aria-hidden": true })}>
+      <path d="M29 0H193L222 29V174L193 203H29L0 174V29Z M58 58V145H164V58Z" />
+    </svg>
   );
 }
 
-/** Orange rim glow (z-1) + portrait with simulated studio side-light (z-2). */
-export function HeroPortrait({ photoRef }: { photoRef: RefObject<HTMLDivElement | null> }) {
+const GLOWS =
+  "radial-gradient(45% 55% at 72% 38%,rgba(255,59,0,.38) 0%,rgba(255,59,0,0) 70%),radial-gradient(50% 60% at 85% 70%,rgba(255,150,90,.22) 0%,rgba(255,150,90,0) 70%),radial-gradient(60% 70% at 20% 30%,rgba(120,90,70,.35) 0%,rgba(120,90,70,0) 70%)";
+
+/**
+ * Hero background: the portrait heavily blurred + orange/peach/brown glows,
+ * drifting slowly (`drift`), with a fade to #050505 at the bottom.
+ * Shared with the preloader, whose last frame must match the hero exactly.
+ */
+export function HeroBackdrop({ drift = false }: { drift?: boolean }) {
   return (
     <>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-[8%] left-1/2 z-[1] h-[60%] w-[min(720px,80vw)]"
-        style={{ translate: "-50% 0", background: "radial-gradient(50% 50% at 50% 45%,rgba(255,59,0,.28) 0%,rgba(255,59,0,.06) 45%,transparent 72%)", animation: `h-light 2.4s ease ${delay(1)} both` }}
-      />
-      <div ref={photoRef} className="hero-photo pointer-events-none absolute bottom-0 left-1/2 z-[2] h-[86%]" style={{ translate: "-50% 0", aspectRatio: `${heroPhoto.width} / ${heroPhoto.height}` }}>
-        <div className="relative h-full" style={{ animation: `h-photo 1.6s cubic-bezier(.22,1,.36,1) ${delay(0.5)} both` }}>
+      <div aria-hidden className="absolute inset-[-12%] z-0">
+        {/* Still = first frame of `blob`; the hero starts drifting once the preloader is gone */}
+        <div className="absolute inset-0" style={drift ? { animation: "blob 22s ease-in-out var(--hd, 0s) infinite both" } : { transform: "translate(-8%,-4%)" }}>
           <Image
             src={heroPhoto}
-            alt="Othmane Bouakline"
-            fill
+            alt=""
             priority
-            sizes="(max-width: 768px) 90vw, 50vw"
-            className="object-contain object-bottom"
-            style={{ filter: "grayscale(1) contrast(1.25) brightness(.85) drop-shadow(10px -4px 18px rgba(255,255,255,.18))" }}
+            quality={40}
+            sizes="60vw"
+            className="absolute left-[12%] top-[8%] h-full w-auto max-w-none opacity-[.85]"
+            style={{ filter: "blur(38px) saturate(1.3) brightness(.9)" }}
           />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background: "linear-gradient(100deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.45) 32%,rgba(0,0,0,0) 58%,rgba(255,255,255,.10) 80%,rgba(255,255,255,0) 100%)",
-              WebkitMaskImage: `url(${heroPhoto.src})`,
-              maskImage: `url(${heroPhoto.src})`,
-              WebkitMaskSize: "100% 100%",
-              maskSize: "100% 100%",
-            }}
-          />
+          <div className="absolute inset-0" style={{ background: GLOWS, filter: "blur(40px)" }} />
         </div>
       </div>
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-[42%]" style={{ background: "linear-gradient(180deg,rgba(5,5,5,0) 0%,rgba(5,5,5,.7) 60%,#050505 100%)" }} />
     </>
-  );
-}
-
-/** Bottom fade, vignette, grain (z-3). */
-export function HeroOverlays() {
-  return (
-    <>
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-[44%]" style={{ background: "linear-gradient(180deg,rgba(5,5,5,0) 0%,rgba(5,5,5,.72) 55%,#050505 100%)" }} />
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-[3]" style={{ background: "radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.65) 100%)" }} />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-[3] opacity-[0.12] mix-blend-overlay"
-        style={{
-          backgroundSize: "160px",
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")",
-        }}
-      />
-    </>
-  );
-}
-
-export function ParisTime() {
-  const [now, setNow] = useState<Date | null>(null);
-  useEffect(() => {
-    const tick = () => setNow(new Date());
-    const first = setTimeout(tick, 0);
-    const t = setInterval(tick, 1000);
-    return () => {
-      clearTimeout(first);
-      clearInterval(t);
-    };
-  }, []);
-  if (!now) return <span className="opacity-0">00:00</span>;
-  const [hh, mm] = new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Paris" })
-    .format(now)
-    .split(":");
-  return (
-    <span className="leading-none tabular-nums text-[#f4f4f2]" style={{ ...condensed, fontSize: 24, letterSpacing: ".02em" }}>
-      {hh}
-      <span className="text-abcs-red" style={{ animation: "h-blink 1s steps(1) infinite" }}>:</span>
-      {mm}
-    </span>
   );
 }
 

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import SectionTitle from "@/components/fx/SectionTitle";
-import Watermark from "@/components/fx/Watermark";
 import Grain from "@/components/fx/Grain";
 import { section, sectionInner, sectionPad } from "@/components/sections/layout";
 import Link from "next/link";
@@ -160,15 +159,12 @@ export default function WorkSection() {
   return (
     <section id="portfolio" data-stack className={section} style={sectionPad}>
       <Grain />
-      <Watermark text="Sélection" index={1} />
       <div className={sectionInner} style={{ gap: "clamp(36px,5vw,56px)" }}>
         <SectionTitle
           top="Travaux"
           word="Sélection"
-          count={`(${PROJECTS.length})`}
           intro="Vitrines, e-commerce et apps web : une sélection de projets clients et personnels."
           mark="projets clients"
-          aside="2020—26®"
         />
 
         <div data-reveal className="flex flex-wrap justify-center gap-2" role="group" aria-label="Filtrer par technologie">
@@ -195,17 +191,14 @@ export default function WorkSection() {
         {/* Always mounted, so the reveal also covers projects shown after a filter change */}
         <div data-reveal="clip" className="flex flex-col" style={{ gap: "clamp(36px,5vw,56px)" }}>
           {filter === "all" ? (
-            <>
-              <div
-                aria-hidden
-                className="pointer-events-none flex select-none flex-col gap-3"
-                style={{ margin: "0 calc(-1 * clamp(20px,5vw,72px))" }}
-              >
-                <MarqueeRow items={MARQUEE_HEROES} animation="mq-l 40s linear infinite" />
-                <MarqueeRow items={[...MARQUEE_HEROES].reverse()} animation="mq-r 46s linear infinite" />
-              </div>
-              <p className="m-0 text-center text-[15px] text-white/60">Choisis une techno pour voir le détail des projets.</p>
-            </>
+            <div
+              aria-hidden
+              className="pointer-events-none flex select-none flex-col gap-3"
+              style={{ margin: "0 calc(-1 * clamp(20px,5vw,72px))" }}
+            >
+              <MarqueeRow items={MARQUEE_HEROES} animation="mq-l 40s linear infinite" />
+              <MarqueeRow items={[...MARQUEE_HEROES].reverse()} animation="mq-r 46s linear infinite" />
+            </div>
           ) : (
             <ProjectCarousel key={filter} items={list} />
           )}

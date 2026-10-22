@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Globe from "@/components/Globe";
@@ -20,45 +21,83 @@ const ICONS: Record<string, string> = {
     "M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z",
 };
 
-const EXPLORE = [
-  { id: "services", label: "Services" },
-  { id: "portfolio", label: "Travaux" },
-  { id: "about", label: "À propos" },
-  { id: "experiences", label: "Parcours" },
+// Bars rising with the scroll: orange in the middle, pulling to violet on the sides
+const BARS = [30, 42, 54, 66, 80, 66, 54, 42, 30];
+const BAR_BG = [
+  "linear-gradient(to top,#7C3AED 0%,#5B21B6 40%,rgba(5,5,5,0) 100%)",
+  "linear-gradient(to top,#C2410C 0%,#7C3AED 45%,rgba(5,5,5,0) 100%)",
+  "linear-gradient(to top,#FF3B00 0%,#C2400F 40%,#4A1A08 80%,rgba(5,5,5,0) 100%)",
 ];
+const barBg = (i: number) => BAR_BG[Math.min(2, Math.min(i, BARS.length - 1 - i))];
 
-const OFFERS = [
-  { href: "/services/site-vitrine", label: "Site vitrine" },
-  { href: "/services/site-sur-mesure-nextjs", label: "Site Next.js" },
-  { href: "/services/site-wordpress", label: "Site WordPress" },
-  { href: "/creation-site-internet-seine-et-marne", label: "Seine-et-Marne" },
-];
-
-const link = "text-[16px] text-white/70 transition-colors hover:text-abcs-red";
+const link = "text-white/60 transition-colors hover:text-abcs-red";
 
 /**
  * Site footer, shared by every page: CTA card with the globe (overlapping the
- * previous section), brand + socials, link columns, contact line, copyright.
- * On the home page it is the last card of the stack.
+ * previous section) over bars rising with the scroll (`--f`), then the logo,
+ * the socials and one copyright line. On the home page it is the last card of the stack.
  */
 export default function Footer() {
   const { openModal } = useContactModal();
   const scrollToSection = useScrollToSection();
   const home = usePathname() === "/";
+  const ref = useRef<HTMLElement>(null);
+
+  // --f: 0 → 1 while the footer comes up the viewport (eased)
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.style.setProperty("--f", "1");
+      return;
+    }
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const vh = window.innerHeight, r = el.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.95)));
+      el.style.setProperty("--f", (1 - Math.pow(1 - p, 2)).toFixed(3));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   return (
     <footer
+      ref={ref}
       id="contact"
       data-stack={home ? "" : undefined}
       className="relative z-[15] overflow-visible bg-[#050505] text-white"
-      style={{ padding: "clamp(56px,7vw,96px) clamp(16px,4vw,56px) clamp(110px,12vw,160px)" }}
+      style={{ "--f": 0, padding: "clamp(56px,7vw,96px) clamp(16px,4vw,56px) clamp(110px,12vw,160px)" } as CSSProperties}
     >
-      {/* Background + orange halo at the bottom */}
+      {/* Background: violet glow on the sides + blurred bars growing with --f */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden bg-[#050505]">
         <div
-          className="absolute inset-0"
-          style={{ background: "radial-gradient(55% 60% at 50% 100%,rgba(255,80,20,.22) 0%,rgba(255,59,0,.06) 50%,transparent 80%)" }}
+          className="absolute -inset-x-[10%] -bottom-[20%] h-[70%]"
+          style={{
+            background: "radial-gradient(40% 60% at 18% 100%,rgba(124,58,237,.45) 0%,rgba(124,58,237,0) 70%),radial-gradient(40% 60% at 82% 100%,rgba(124,58,237,.45) 0%,rgba(124,58,237,0) 70%)",
+            filter: "blur(30px)",
+            opacity: "var(--f)",
+          }}
         />
+        <div
+          className="absolute inset-x-0 bottom-0 flex h-[58vh] items-end"
+          style={{ filter: "blur(12px)", WebkitMaskImage: "linear-gradient(to bottom,transparent,#000 22%)", maskImage: "linear-gradient(to bottom,transparent,#000 22%)" }}
+        >
+          {BARS.map((h, i) => (
+            <div key={i} className="-mx-px flex-1" style={{ height: `calc(${h}% * var(--f))`, background: barBg(i) }} />
+          ))}
+        </div>
+        <div className="absolute inset-x-0 bottom-0 h-[46%]" style={{ background: "linear-gradient(to top,rgba(5,5,5,.55),rgba(5,5,5,0))" }} />
       </div>
 
       {/* CTA card */}
@@ -84,9 +123,6 @@ export default function Footer() {
             <br />
             ensemble<span className="text-abcs-red">&nbsp;?</span>
           </h2>
-          <p className="m-0 max-w-[400px] text-[17px] leading-[1.55] text-white/72 text-pretty">
-            Un site, une refonte ou juste une idée — on en parle 30 minutes, sans engagement.
-          </p>
           <div className="pointer-events-auto flex flex-wrap gap-3">
             <button
               onClick={() => openModal()}
@@ -105,87 +141,44 @@ export default function Footer() {
       </div>
 
       <div
-        className="relative z-[1] mx-auto flex max-w-[1280px] flex-col"
-        style={{ marginTop: "clamp(56px,6vw,80px)", padding: "0 clamp(8px,3vw,48px)", gap: "clamp(40px,5vw,64px)" }}
+        className="relative z-[1] mx-auto flex max-w-[1180px] flex-col gap-7"
+        style={{ marginTop: "clamp(48px,5vw,72px)", padding: "0 clamp(8px,3vw,48px)" }}
       >
-        <div className="flex flex-wrap justify-between gap-12">
-          {/* Brand */}
-          <div className="flex max-w-[340px] flex-col gap-[22px]">
-            <Link href="/" className="self-start text-white">
-              <Logo className="h-[30px]" />
+        <div className="flex flex-wrap items-center justify-between gap-5">
+          <Link href="/" aria-label="Accueil O'LDEV" className="text-white">
+            <Logo className="h-[22px]" />
+          </Link>
+          <div className="flex flex-wrap gap-2.5">
+            {SOCIALS.filter((s) => s.label !== "GitHub").map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={s.label}
+                className="grid h-[42px] w-[42px] place-items-center rounded-full border border-white/18 bg-white/[0.03] text-white transition-colors duration-[250ms] hover:border-abcs-red hover:bg-abcs-red"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>
+                  <path d={ICONS[s.label]} />
+                </svg>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2.5 border-t border-white/12 pt-[22px] text-[14px] text-white/60">
+          <span>© {new Date().getFullYear()} O&apos;LDEV · Seine-et-Marne</span>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <Link
+              href="/#portfolio"
+              onClick={(e) => {
+                if (home && scrollToSection("portfolio")) e.preventDefault();
+              }}
+              className={link}
+            >
+              Réalisations
             </Link>
-            <p className="m-0 text-[16px] leading-[1.6] text-white/72 text-pretty">
-              Développeur web freelance en Seine-et-Marne. Sites sur-mesure, rapides et pensés pour ramener des clients.
-            </p>
-            <div className="flex flex-wrap gap-2.5">
-              {SOCIALS.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={s.label}
-                  className="grid h-12 w-12 place-items-center rounded-full border border-white/18 bg-white/[0.03] text-white transition-colors duration-[250ms] hover:border-abcs-red hover:bg-abcs-red"
-                >
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>
-                    <path d={ICONS[s.label]} />
-                  </svg>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Link columns, pushed to the right */}
-          <div className="flex flex-wrap justify-end" style={{ gap: "clamp(32px,6vw,96px)" }}>
-            <nav aria-label="Explorer" className="flex min-w-[140px] flex-col gap-[18px]">
-              <span className="text-[15px] font-bold text-white">Explorer</span>
-              <div className="flex flex-col gap-3.5">
-                {EXPLORE.map((l) => (
-                  <Link
-                    key={l.id}
-                    href={`/#${l.id}`}
-                    onClick={(e) => {
-                      if (home && scrollToSection(l.id)) e.preventDefault();
-                    }}
-                    className={link}
-                  >
-                    {l.label}
-                  </Link>
-                ))}
-                <Link href="/realisations" className={link}>
-                  Réalisations
-                </Link>
-              </div>
-            </nav>
-            <nav aria-label="Offres" className="flex min-w-[140px] flex-col gap-[18px]">
-              <span className="text-[15px] font-bold text-white">Offres</span>
-              <div className="flex flex-col gap-3.5">
-                {OFFERS.map((l) => (
-                  <Link key={l.href} href={l.href} className={link}>
-                    {l.label}
-                  </Link>
-                ))}
-              </div>
-            </nav>
-          </div>
-        </div>
-
-        {/* Contact, one discreet line */}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
-          <span className="text-[13px] font-bold text-white">Contact</span>
-          <a href={`mailto:${EMAIL}`} className="text-white/70 transition-colors [overflow-wrap:anywhere] hover:text-abcs-red">
-            {EMAIL}
-          </a>
-          <button onClick={() => openModal()} className="text-white/70 transition-colors hover:text-abcs-red">
-            Réserver un appel →
-          </button>
-          <span className="font-semibold text-white">Seine-et-Marne (77)</span>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/12 pt-7 text-[15px] text-white/70">
-          <div className="flex flex-wrap gap-x-7 gap-y-2">
-            <span>© {new Date().getFullYear()} O&apos;LDEV. Tous droits réservés.</span>
-            <Link href="/legal" className="transition-colors hover:text-abcs-red">
+            <Link href="/legal" className={link}>
               Mentions légales
             </Link>
             <button
@@ -193,12 +186,11 @@ export default function Footer() {
                 localStorage.removeItem("cookie-consent");
                 window.location.reload();
               }}
-              className="transition-colors hover:text-abcs-red"
+              className={link}
             >
               Cookies
             </button>
           </div>
-          <span>Conçu &amp; codé à la main</span>
         </div>
       </div>
     </footer>

@@ -86,7 +86,7 @@ export const PLANS: {
     included: ["One-page responsive", "Formulaire de contact", "SEO de base + Google Maps", "Mise en ligne"], excluded: ["Hébergement & domaine"],
     options: ["Identité visuelle (logo, couleurs)", "Animations", "Page de chargement", "Sections ou pages supplémentaires", "Rédaction des textes"] },
   { key: "webapp", num: "02", name: "Site sur-mesure", for: "PME · startups", delay: "3–4 sem.", revisions: "3 tours", featured: true,
-    included: ["Design exclusif multi-pages", "Next.js / React, Lighthouse 90+", "SEO technique avancé", "1 mois de maintenance offert"], excluded: ["Rédaction des contenus"],
+    included: ["Design exclusif multi-pages", "Next.js / React, Lighthouse 90+", "SEO technique avancé", "Animations sur-mesure"], excluded: ["Rédaction des contenus"],
     options: ["Pages supplémentaires", "Animations avancées", "Espace client / connexion", "Paiement en ligne", "Intégrations (API, CRM)", "Chatbot IA"] },
   { key: "wordpress", num: "03", name: "WordPress clé en main", for: "Blog · e-commerce", delay: "3–5 sem.", revisions: "3 tours",
     included: ["Jusqu’à 5 pages 100 % administrables", "Thème personnalisé à votre image", "Blog, formulaire de contact, SEO de base", "Formation à l’admin (1 h) + mise en ligne"], excluded: ["Licences premium"],
@@ -98,7 +98,7 @@ export const FAQ = [
   { q: "L’hébergement est-il inclus ?", a: "Non, mais je m’en occupe : je vous conseille une offre adaptée et je fais la mise en ligne." },
   { q: "Puis-je payer en plusieurs fois ?", a: "Oui : en une seule fois ou en plusieurs fois, jusqu’à 3 versements." },
   { q: "Le site m’appartient-il ?", a: "Oui, entièrement. Code, contenus et accès vous sont transmis à la livraison." },
-  { q: "Et après la livraison ?", a: "Maintenance mensuelle optionnelle : mises à jour, sauvegardes et petites modifications." },
+  { q: "Et après la livraison ?", a: "La première année de maintenance est offerte : mises à jour, sauvegardes et correctifs. Ensuite, maintenance mensuelle optionnelle, petites modifications comprises." },
 ];
 
 export const SERVICE_GROUPS: { label: string; keys: ServiceKey[] }[] = [

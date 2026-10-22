@@ -60,7 +60,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     key: "webapp",
     metaTitle: "Site web sur-mesure Next.js / React",
     metaDescription:
-      "Site web sur-mesure en Next.js / React, sur devis : design exclusif multi-pages, score Lighthouse 90+, SEO technique avancé et 1 mois de maintenance offert.",
+      "Site web sur-mesure en Next.js / React, sur devis : design exclusif multi-pages, score Lighthouse 90+, SEO technique avancé et 1 an de maintenance offert.",
     name: "Site sur-mesure Next.js",
     h1: "Site web sur-mesure en Next.js",
     intro: [
@@ -76,7 +76,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     faq: [
       { q: "Pourquoi choisir Next.js plutôt que WordPress ?", a: "Next.js offre des performances et une sécurité supérieures, et une liberté totale sur le design et les fonctionnalités. WordPress reste idéal si vous voulez modifier vous-même tous vos contenus." },
       { q: "Combien coûte un site sur-mesure ?", a: "Le tarif est établi sur devis, selon votre projet. La formule de base comprend un site multi-pages au design exclusif. Le prix évolue selon les options : pages supplémentaires, animations avancées, espace client, paiement en ligne, intégrations, chatbot IA. Vous recevez un devis détaillé après notre premier échange." },
-      { q: "Quel est le délai de réalisation ?", a: "En général 3 à 4 semaines, avec 3 tours de révision et 1 mois de maintenance offert après la mise en ligne." },
+      { q: "Quel est le délai de réalisation ?", a: "En général 3 à 4 semaines, avec 3 tours de révision et 1 an de maintenance offert après la mise en ligne." },
     ],
   },
   {
