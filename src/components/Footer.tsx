@@ -32,10 +32,17 @@ const barBg = (i: number) => BAR_BG[Math.min(2, Math.min(i, BARS.length - 1 - i)
 
 const link = "text-white/60 transition-colors hover:text-abcs-red";
 
+const OFFERS = [
+  { href: "/services/site-vitrine", label: "Site vitrine" },
+  { href: "/services/site-sur-mesure-nextjs", label: "Site sur-mesure" },
+  { href: "/services/site-wordpress", label: "Site WordPress" },
+  { href: "/creation-site-internet-seine-et-marne", label: "Seine-et-Marne" },
+];
+
 /**
  * Site footer, shared by every page: CTA card with the globe (overlapping the
  * previous section) over bars rising with the scroll (`--f`), then the logo,
- * the socials and one copyright line. On the home page it is the last card of the stack.
+ * the socials and one line of links (offers, work, legal). On the home page it is the last card of the stack.
  */
 export default function Footer() {
   const { openModal } = useContactModal();
@@ -162,7 +169,13 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2.5 border-t border-white/12 pt-[22px] text-[14px] text-white/60">
-          <span>© {new Date().getFullYear()} O&apos;LDEV · Seine-et-Marne</span>
+          <nav aria-label="Offres" className="flex flex-wrap gap-x-6 gap-y-2">
+            {OFFERS.map((o) => (
+              <Link key={o.href} href={o.href} className={link}>
+                {o.label}
+              </Link>
+            ))}
+          </nav>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link
               href="/#portfolio"
@@ -176,15 +189,6 @@ export default function Footer() {
             <Link href="/legal" className={link}>
               Mentions légales
             </Link>
-            <button
-              onClick={() => {
-                localStorage.removeItem("cookie-consent");
-                window.location.reload();
-              }}
-              className={link}
-            >
-              Cookies
-            </button>
           </div>
         </div>
       </div>
