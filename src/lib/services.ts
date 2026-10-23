@@ -39,7 +39,7 @@ export const SERVICES: Record<ServiceKey, Service> = {
   webapp: {
     label: "Site & Application Web Sur-Mesure",
     price: "Sur devis",
-    budgets: ["800–1 500€", "1 500–2 200€", "2 200–3 000€"],
+    budgets: ["800–3 000€", "+ de 3 000€"],
     category: "Web",
   },
   wordpress: {
