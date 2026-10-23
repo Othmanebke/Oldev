@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
@@ -45,6 +45,13 @@ const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: 
 const archivo = { fontFamily: "var(--font-archivo-flex), sans-serif" } as const;
 const SUN_X = ["16.66%", "50%", "83.33%"];
 const PLANET = "absolute left-1/2 top-[90px] aspect-square w-[max(2600px,240%)] -translate-x-1/2 rounded-full";
+// Phones: same planet turned on its side, its right edge a vertical arc 22px from the left
+const PLANET_SIDE = "absolute right-[calc(100%-22px)] top-1/2 aspect-square h-[max(4000px,300%)] -translate-y-1/2 rounded-full";
+const ARC_FADE = "linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent)";
+const DAWN =
+  "0 -2px 0 #fff,0 -3px 14px rgba(255,200,160,.95),0 -12px 50px rgba(255,120,60,.7),inset 0 3px 2px -1px rgba(255,220,190,.9),inset 0 30px 50px -24px rgba(255,140,80,.45)";
+const DAWN_SIDE =
+  "2px 0 0 #fff,3px 0 14px rgba(255,200,160,.95),12px 0 50px rgba(255,120,60,.7),inset -3px 0 2px -1px rgba(255,220,190,.9),inset -30px 0 50px -24px rgba(255,140,80,.45)";
 
 const noop = () => () => {};
 function useMedia(query: string) {
@@ -261,7 +268,7 @@ export function ServicesSection() {
   const resume = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // The sun moves to the next offer every 4.2 s, unless a column is hovered or a sheet is open.
-  // Phones stack the offers and can't hover: all of them stay lit there, no rotation.
+  // Phones follow the scroll instead (below).
   useEffect(() => {
     if (reduced || !wide) return;
     const t = setInterval(() => !paused.current && setSun((s) => (s + 1) % 3), 4200);
@@ -288,29 +295,94 @@ export function ServicesSection() {
     setDetail(null);
   }, []);
 
-  const sunX = wide ? SUN_X[sun] : "50%";
-  const dawnMask = `radial-gradient(min(26vw,380px) 140px at ${sunX} 90px,#000 0%,rgba(0,0,0,0) 100%)`;
+  // Phones: the offer nearest the middle of the screen lights up while scrolling, and the dawn
+  // slides along the vertical arc to sit next to it
+  const stack = useRef<HTMLDivElement>(null);
+  const [sunY, setSunY] = useState(0);
+  useEffect(() => {
+    const box = stack.current;
+    if (wide || !box) return;
+    const offers = Array.from(box.querySelectorAll<HTMLElement>("[data-offer]"));
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const mid = window.innerHeight / 2;
+      let best = 0;
+      let dist = Infinity;
+      offers.forEach((el, i) => {
+        const r = el.getBoundingClientRect();
+        const d = Math.abs(r.top + r.height / 2 - mid);
+        if (d < dist) [best, dist] = [i, d];
+      });
+      const r = offers[best].getBoundingClientRect();
+      setSun(best);
+      setSunY(Math.round(r.top + r.height / 2 - box.getBoundingClientRect().top));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [wide]);
+
+  // --sun-x / --sun-y are registered in globals.css, so the dawn glides instead of jumping
+  const dawnMask = wide
+    ? "radial-gradient(min(26vw,380px) 140px at var(--sun-x) 90px,#000 0%,rgba(0,0,0,0) 100%)"
+    : "radial-gradient(150px 230px at 22px var(--sun-y),#000 0%,rgba(0,0,0,0) 100%)";
+  const dawnVars = { "--sun-x": SUN_X[sun], "--sun-y": `${sunY}px` } as CSSProperties;
   const gutter = "clamp(20px,5vw,72px)";
+
+  const quote = (
+    <>
+      <span className="text-[14px] text-[rgba(244,244,242,.6)]">Maintenance 1 an offerte sur chaque offre</span>
+      <button
+        onClick={() => openModal()}
+        className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[.04] px-[18px] py-[11px] text-[14px] font-bold text-white transition-colors duration-[250ms] hover:border-abcs-red hover:bg-abcs-red"
+      >
+        Demander un devis <span aria-hidden>↗</span>
+      </button>
+    </>
+  );
 
   return (
     <section id="services" data-stack className={section} style={sectionPad}>
       <div className={sectionInner} style={{ gap: "clamp(40px,5vw,64px)" }}>
         <h2 className="sr-only">Offres et tarifs</h2>
 
-        {/* Three offers over a planet horizon (full viewport width, so the arc never stops at the
-            content edges); the dawn follows the active one */}
-        <div className="relative overflow-hidden" style={{ margin: "0 calc(50% - 50vw)" }}>
+        {/* Three offers lit by a planet's dawn. Wide screens: horizon under the columns, full viewport
+            width so the arc never stops at the content edges. Phones: vertical arc on the left. */}
+        <div ref={stack} className="relative overflow-hidden" style={{ margin: "0 calc(50% - 50vw)" }}>
+          {!wide && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              // The arc fades in and out instead of stopping at the block's edges
+              style={{ maskImage: ARC_FADE, WebkitMaskImage: ARC_FADE }}
+            >
+              <div className={PLANET_SIDE} style={{ boxShadow: "1px 0 0 rgba(255,140,70,.35),10px 0 40px rgba(255,90,20,.16),40px 0 120px rgba(255,59,0,.1)" }} />
+              <div className="dawn absolute inset-0" style={{ ...dawnVars, WebkitMaskImage: dawnMask, maskImage: dawnMask }}>
+                <div className={PLANET_SIDE} style={{ boxShadow: DAWN_SIDE }} />
+              </div>
+            </div>
+          )}
+
           <div
             className="relative z-[2] mx-auto grid"
             style={{
               maxWidth: `calc(1280px + 2 * ${gutter})`,
-              gap: "clamp(40px,5vw,24px)",
-              padding: `clamp(56px,8vw,96px) ${gutter} 0`,
+              gap: wide ? "24px" : "64px",
+              padding: wide ? `clamp(56px,8vw,96px) ${gutter} 0` : `24px ${gutter} 24px calc(${gutter} + 36px)`,
               gridTemplateColumns: wide ? "repeat(3,minmax(0,1fr))" : "minmax(0,1fr)",
             }}
           >
             {PLANS.map((p, i) => {
-              const on = !wide || sun === i;
+              const on = sun === i;
               const o = OFFERS[i];
               const fade = "transition-colors duration-[800ms]";
               const label = on ? "text-[#FF8A3D]" : "text-[rgba(244,244,242,.4)]";
@@ -319,11 +391,12 @@ export function ServicesSection() {
               return (
                 <button
                   key={p.key}
-                  onMouseEnter={() => hover(i)}
+                  data-offer
+                  onMouseEnter={() => wide && hover(i)}
                   onFocus={() => hover(i)}
                   onClick={() => openDetail(i)}
                   aria-haspopup="dialog"
-                  className="flex cursor-pointer flex-col items-center gap-3.5 bg-transparent p-0 text-center"
+                  className={`flex cursor-pointer flex-col gap-3.5 bg-transparent p-0 ${wide ? "items-center text-center" : "items-start text-left"}`}
                 >
                   <span className={`text-[15px] font-medium tabular-nums ${label} ${fade}`}>Délai {p.delay}</span>
                   <span className={`font-bold leading-none tracking-[-.035em] ${title} ${fade}`} style={{ ...archivo, fontSize: "clamp(2.2rem,4.4vw,3.6rem)" }}>
@@ -342,28 +415,20 @@ export function ServicesSection() {
             })}
           </div>
 
-          <div className="pointer-events-none relative z-[1]" style={{ height: "clamp(200px,22vw,300px)", marginTop: "clamp(-20px,-2vw,0px)" }}>
-            <div aria-hidden className={PLANET} style={{ boxShadow: "0 -1px 0 rgba(255,140,70,.35),0 -10px 40px rgba(255,90,20,.16),0 -40px 120px rgba(255,59,0,.1)" }} />
-            <div aria-hidden className="absolute inset-0" style={{ WebkitMaskImage: dawnMask, maskImage: dawnMask }}>
-              <div
-                className={PLANET}
-                style={{
-                  boxShadow:
-                    "0 -2px 0 #fff,0 -3px 14px rgba(255,200,160,.95),0 -12px 50px rgba(255,120,60,.7),inset 0 3px 2px -1px rgba(255,220,190,.9),inset 0 30px 50px -24px rgba(255,140,80,.45)",
-                }}
-              />
+          {wide && (
+            <div className="pointer-events-none relative z-[1]" style={{ height: "clamp(200px,22vw,300px)", marginTop: "clamp(-20px,-2vw,0px)" }}>
+              <div aria-hidden className={PLANET} style={{ boxShadow: "0 -1px 0 rgba(255,140,70,.35),0 -10px 40px rgba(255,90,20,.16),0 -40px 120px rgba(255,59,0,.1)" }} />
+              <div aria-hidden className="dawn absolute inset-0" style={{ ...dawnVars, WebkitMaskImage: dawnMask, maskImage: dawnMask }}>
+                <div className={PLANET} style={{ boxShadow: DAWN }} />
+              </div>
+              <div className="pointer-events-auto absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 px-5" style={{ bottom: "clamp(28px,4vw,48px)" }}>
+                {quote}
+              </div>
             </div>
-            <div className="pointer-events-auto absolute inset-x-0 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 px-5" style={{ bottom: "clamp(28px,4vw,48px)" }}>
-              <span className="text-[14px] text-[rgba(244,244,242,.6)]">Maintenance 1 an offerte sur chaque offre</span>
-              <button
-                onClick={() => openModal()}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[.04] px-[18px] py-[11px] text-[14px] font-bold text-white transition-colors duration-[250ms] hover:border-abcs-red hover:bg-abcs-red"
-              >
-                Demander un devis <span aria-hidden>↗</span>
-              </button>
-            </div>
-          </div>
+          )}
         </div>
+
+        {!wide && <div className="-mt-4 flex flex-col items-center gap-3 text-center">{quote}</div>}
 
         {/* Also available */}
         <div data-reveal className="flex flex-col items-center" style={{ gap: "clamp(24px,3vw,36px)" }}>

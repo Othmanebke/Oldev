@@ -88,6 +88,12 @@ html.has-custom-cursor * {
   .hero-line { left: 0; right: 0; top: var(--my); text-align: center; }
 }
 
+/* ─── Offers: the planet's dawn glides to the active offer (ServicesSection) ── */
+@property --sun-x { syntax: "<percentage>"; inherits: false; initial-value: 50%; }
+@property --sun-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
+.dawn { transition: --sun-x 1.4s cubic-bezier(.22,1,.36,1), --sun-y .9s cubic-bezier(.22,1,.36,1); }
+@media (prefers-reduced-motion: reduce) { .dawn { transition: none; } }
+
 /* ─── Parcours timeline dots ─────────────────────────────────────────────── */
 .tl-dot { background: #f4f4f2; border: 2px solid rgba(17,17,17,.2); transition: background-color .4s, border-color .4s, box-shadow .4s; }
 .tl-dot[data-on] { background: #FF3B00; border-color: #FF3B00; box-shadow: 0 0 0 6px rgba(255,59,0,.18); }
