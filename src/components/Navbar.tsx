@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import ChatPanel from "@/components/ChatPanel";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { useScrollToSection } from "@/lib/useScrollToSection";
+import { PAGES } from "@/lib/pages";
 
 const LINKS = [
   { label: "Projets", id: "portfolio" },
@@ -14,13 +15,6 @@ const LINKS = [
   { label: "Parcours", id: "experiences" },
 ];
 
-// Offer pages, kept in the menu so they stay linked from every page
-const PAGES = [
-  { href: "/services/site-vitrine", label: "Site vitrine" },
-  { href: "/services/site-sur-mesure-nextjs", label: "Site sur-mesure" },
-  { href: "/services/site-wordpress", label: "Site WordPress" },
-  { href: "/creation-site-internet-seine-et-marne", label: "Seine-et-Marne" },
-];
 
 const round = "grid size-11 flex-none place-items-center rounded-full text-[#F4F1EC] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white max-[359px]:size-10";
 
@@ -97,17 +91,22 @@ export default function Navbar() {
             ))}
           </nav>
           <span aria-hidden className="mx-4 my-1.5 h-px bg-[rgba(244,241,236,.08)]" />
-          <nav aria-label="Offres" className="flex flex-col">
-            {PAGES.map((p) => (
-              <Link
-                key={p.href}
-                href={p.href}
-                onClick={() => setMenu(false)}
-                className="flex h-[34px] items-center rounded-xl px-4 text-[13px] text-[rgba(244,241,236,.6)] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red"
-              >
-                {p.label}
-              </Link>
-            ))}
+          <nav aria-label="Pages" className="flex flex-col">
+            {PAGES.map((p) => {
+              const on = pathname === p.href;
+              return (
+                <Link
+                  key={p.href}
+                  href={p.href}
+                  aria-current={on ? "page" : undefined}
+                  onClick={() => setMenu(false)}
+                  className={`flex h-[34px] items-center gap-2 rounded-xl px-4 text-[13px] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red ${on ? "text-[#F4F1EC]" : "text-[rgba(244,241,236,.6)]"}`}
+                >
+                  {on && <span aria-hidden className="size-1.5 rounded-full bg-abcs-red" />}
+                  {p.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
