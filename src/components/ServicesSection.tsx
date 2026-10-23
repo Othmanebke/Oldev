@@ -415,32 +415,6 @@ export function ServicesSection() {
             })}
           </div>
 
-          {/* Phones: what every offer includes, in a card right under them */}
-          {!wide && (
-            <div className="relative z-[2]" style={{ padding: `8px ${gutter} 24px calc(${gutter} + 36px)` }}>
-              <div className="flex flex-col gap-4 rounded-[22px] border border-white/10 bg-white/[.03] p-5">
-                <div className="flex items-center gap-3">
-                  <span aria-hidden className="grid size-9 flex-none place-items-center rounded-[11px] bg-abcs-red text-white">
-                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z" />
-                      <path d="M9 12l2 2 4-4" />
-                    </svg>
-                  </span>
-                  <span className="flex flex-col gap-0.5">
-                    <span className="text-[15px] font-bold text-white">Maintenance 1 an offerte</span>
-                    <span className="text-[13px] leading-[1.4] text-[rgba(244,244,242,.55)]">Sur les trois offres : mises à jour, sauvegardes, correctifs</span>
-                  </span>
-                </div>
-                <button
-                  onClick={() => openModal()}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-abcs-red px-5 text-[15px] font-bold text-white transition-colors duration-[250ms] hover:bg-[#ff5a24]"
-                >
-                  Demander un devis <span aria-hidden>↗</span>
-                </button>
-              </div>
-            </div>
-          )}
-
           {wide && (
             <div className="pointer-events-none relative z-[1]" style={{ height: "clamp(200px,22vw,300px)", marginTop: "clamp(-20px,-2vw,0px)" }}>
               <div aria-hidden className={PLANET} style={{ boxShadow: "0 -1px 0 rgba(255,140,70,.35),0 -10px 40px rgba(255,90,20,.16),0 -40px 120px rgba(255,59,0,.1)" }} />
@@ -454,49 +428,31 @@ export function ServicesSection() {
           )}
         </div>
 
-        {/* Also available. Phones: a separate list of rows, name on the left, price on the right */}
-        {wide ? (
-          <div data-reveal className="flex flex-col items-center" style={{ gap: "clamp(24px,3vw,36px)" }}>
-            <span className="text-[15px] font-medium text-[rgba(244,244,242,.45)]">Aussi disponible</span>
-            <div className="grid w-full max-w-[960px] gap-2" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))" }}>
-              {EXTRAS.map((e) => (
-                <button
-                  key={e.key}
-                  onClick={() => choose(e.key)}
-                  className="flex flex-col items-center gap-2 rounded-[20px] bg-transparent px-4 py-5 text-center text-[rgba(244,244,242,.4)] transition-colors duration-500 hover:bg-[rgba(255,90,20,.06)] hover:text-white focus-visible:text-white"
-                >
-                  <span className="font-bold leading-none tracking-[-.03em]" style={{ ...archivo, fontSize: "clamp(1.4rem,2.2vw,1.8rem)" }}>
-                    {e.name}
-                  </span>
-                  <span className="text-[14px] font-medium text-[#FF8A3D]">{SERVICES[e.key].price.toLowerCase()}</span>
-                </button>
-              ))}
-            </div>
+        {/* Phones: kept tight under the offers it belongs to */}
+        {!wide && <div className="-mt-6 flex flex-col items-center gap-3 text-center">{quote}</div>}
+
+        {/* Also available. Phones: a line and more room set it apart from the offers above */}
+        <div
+          data-reveal
+          className={`flex flex-col items-center ${wide ? "" : "mt-6 border-t border-white/10 pt-12"}`}
+          style={{ gap: "clamp(24px,3vw,36px)" }}
+        >
+          <span className="text-[15px] font-medium text-[rgba(244,244,242,.45)]">Aussi disponible</span>
+          <div className="grid w-full max-w-[960px] gap-2" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))" }}>
+            {EXTRAS.map((e) => (
+              <button
+                key={e.key}
+                onClick={() => choose(e.key)}
+                className="flex flex-col items-center gap-2 rounded-[20px] bg-transparent px-4 py-5 text-center text-[rgba(244,244,242,.4)] transition-colors duration-500 hover:bg-[rgba(255,90,20,.06)] hover:text-white focus-visible:text-white"
+              >
+                <span className="font-bold leading-none tracking-[-.03em]" style={{ ...archivo, fontSize: "clamp(1.4rem,2.2vw,1.8rem)" }}>
+                  {e.name}
+                </span>
+                <span className="text-[14px] font-medium text-[#FF8A3D]">{SERVICES[e.key].price.toLowerCase()}</span>
+              </button>
+            ))}
           </div>
-        ) : (
-          <div data-reveal className="mt-6 flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <span className="text-[12px] font-semibold tracking-[.14em] text-abcs-red">AUSSI DISPONIBLE</span>
-              <span className="text-[15px] text-[rgba(244,244,242,.55)]">En plus des sites, sur demande</span>
-            </div>
-            <div className="flex flex-col border-t border-white/10">
-              {EXTRAS.map((e) => (
-                <button
-                  key={e.key}
-                  onClick={() => choose(e.key)}
-                  className="flex items-center justify-between gap-4 border-b border-white/10 py-[18px] text-left text-white"
-                >
-                  <span className="text-[20px] font-bold tracking-[-.02em]" style={archivo}>
-                    {e.name}
-                  </span>
-                  <span className="flex flex-none items-center gap-2 text-[14px] font-medium text-[#FF8A3D]">
-                    {SERVICES[e.key].price.toLowerCase()} <span aria-hidden className="text-white/40">→</span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        </div>
 
         <Faq />
       </div>
