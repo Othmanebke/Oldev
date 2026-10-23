@@ -19,7 +19,7 @@ const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: 
   {
     short: "Vitrine",
     desc: "Une page claire et rapide pour être trouvé sur Google et contacté.",
-    img: "/offres/vitrine.webp",
+    img: "/offres/moreau.webp",
     kicker: "01 · LANCEMENT",
     lead: "Une présence en ligne claire, rapide et pensée pour convertir. Tout ce qu’il faut pour être trouvé et contacté.",
     body: "Idéal pour un artisan, un commerce ou un indépendant qui veut une page soignée sans complexité : votre activité, vos services, vos coordonnées et un formulaire qui arrive directement dans votre boîte mail.",
@@ -27,7 +27,7 @@ const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: 
   {
     short: "Sur-mesure",
     desc: "Design exclusif, Next.js et animations pour un site qui marque.",
-    img: "/offres/sur-mesure.webp",
+    img: "/offres/wecars.webp",
     kicker: "02 · CROISSANCE — LE PLUS CHOISI",
     lead: "Un design exclusif, conçu de zéro pour votre marque. Rien de générique, tout est pensé pour vous démarquer.",
     body: "Développé en Next.js / React pour des performances maximales (Lighthouse 90+), avec des animations sur-mesure et un SEO technique avancé. Le prix dépend du nombre de pages et des fonctionnalités : on le fixe ensemble au devis.",
@@ -35,7 +35,7 @@ const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: 
   {
     short: "WordPress",
     desc: "Un site que vous gérez seul, thème à votre image et formation incluse.",
-    img: "/offres/wordpress.webp",
+    img: "/offres/kinetik.webp",
     kicker: "03 · AUTONOMIE",
     lead: "Un site que vous modifiez vous-même, sans dépendre de personne. Textes, images, articles : tout est administrable.",
     body: "Je crée un thème personnalisé à votre image, j’installe le blog et le formulaire de contact, puis je vous forme pendant une heure à l’administration pour que vous soyez autonome dès la mise en ligne.",
@@ -296,11 +296,13 @@ export function ServicesSection() {
       <div className={sectionInner} style={{ gap: "clamp(40px,5vw,64px)" }}>
         <h2 className="sr-only">Offres et tarifs</h2>
 
-        {/* Three offers over a planet horizon; the dawn follows the active one */}
-        <div className="relative overflow-hidden" style={{ margin: `0 calc(-1 * ${gutter})` }}>
+        {/* Three offers over a planet horizon (full viewport width, so the arc never stops at the
+            content edges); the dawn follows the active one */}
+        <div className="relative overflow-hidden" style={{ margin: "0 calc(50% - 50vw)" }}>
           <div
-            className="relative z-[2] grid"
+            className="relative z-[2] mx-auto grid"
             style={{
+              maxWidth: `calc(1280px + 2 * ${gutter})`,
               gap: "clamp(40px,5vw,24px)",
               padding: `clamp(56px,8vw,96px) ${gutter} 0`,
               gridTemplateColumns: wide ? "repeat(3,minmax(0,1fr))" : "minmax(0,1fr)",
