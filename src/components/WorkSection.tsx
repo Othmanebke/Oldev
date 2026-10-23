@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import SectionTitle from "@/components/fx/SectionTitle";
 import { section, sectionInner, sectionPad } from "@/components/sections/layout";
 import Link from "next/link";
 import { PROJECTS, PROJECT_FILTERS, projectsForTag, type Project, type ProjectTag } from "@/lib/projects";
@@ -40,7 +39,7 @@ function MarqueeRow({ items, animation }: { items: string[]; animation: string }
 function ProjectCard({ project, featured }: { project: Project; featured: boolean }) {
   return (
     <article
-      className="group relative block overflow-hidden rounded-[28px] border border-white/10 bg-abcs-surface text-white shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)]"
+      className="group relative block overflow-hidden rounded-[28px] border border-white/[.08] bg-[#0d0d0d] text-white shadow-[0_30px_60px_-20px_rgba(0,0,0,.7),0_40px_100px_-50px_rgba(255,59,0,.35)]"
       style={{ flex: featured ? "2 1 560px" : "1 1 340px", minHeight: featured ? "clamp(440px,70vw,560px)" : "clamp(360px,60vw,420px)" }}
     >
       <Image
@@ -66,11 +65,9 @@ function ProjectCard({ project, featured }: { project: Project; featured: boolea
         </span>
         <div className="flex flex-wrap justify-end gap-1.5">
           {project.concept && (
-            <span className="rounded-full bg-white px-3 py-[7px] text-[12px] font-bold uppercase tracking-[0.14em] text-abcs-black">
-              Concept
-            </span>
+            <span className="rounded-full bg-white px-3 py-[7px] text-[13px] font-semibold text-[#111]">Concept</span>
           )}
-          <span className="rounded-full bg-[rgba(10,10,10,0.75)] px-3 py-[7px] text-[12px] font-bold uppercase tracking-[0.14em] backdrop-blur-[8px]">
+          <span className="rounded-full bg-[rgba(10,10,10,0.75)] px-3 py-[7px] text-[13px] font-semibold text-[#FF8A3D] backdrop-blur-[8px]">
             {project.category}
           </span>
         </div>
@@ -81,8 +78,8 @@ function ProjectCard({ project, featured }: { project: Project; featured: boolea
         style={{ left: "clamp(20px,3vw,32px)", right: "clamp(20px,3vw,32px)", bottom: "clamp(20px,3vw,32px)" }}
       >
         <h3
-          className="m-0 font-heading font-normal uppercase leading-[0.88] tracking-[-0.03em]"
-          style={{ fontSize: featured ? "clamp(2.2rem,5vw,4.6rem)" : "clamp(1.6rem,2.6vw,2.2rem)" }}
+          className="m-0 font-bold leading-none tracking-[-.035em]"
+          style={{ fontFamily: "var(--font-archivo-flex), sans-serif", fontSize: featured ? "clamp(2.2rem,4.4vw,3.6rem)" : "clamp(1.6rem,2.6vw,2.2rem)" }}
         >
           {project.name}
         </h3>
@@ -91,7 +88,7 @@ function ProjectCard({ project, featured }: { project: Project; featured: boolea
         )}
         <div className="flex flex-wrap gap-1.5">
           {project.stack.map((t) => (
-            <span key={t} className="rounded-full border border-white/28 px-2.5 py-[5px] text-[12px] uppercase tracking-[0.1em]">
+            <span key={t} className="rounded-full bg-white/[.06] px-[11px] py-[5px] text-[13px] text-[rgba(244,244,242,.8)] shadow-[inset_0_0_0_1px_rgba(255,255,255,.12)]">
               {t}
             </span>
           ))}
@@ -102,7 +99,7 @@ function ProjectCard({ project, featured }: { project: Project; featured: boolea
 }
 
 const arrowBtn =
-  "absolute top-1/2 z-10 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-white text-abcs-black shadow-[0_10px_30px_rgba(0,0,0,0.55)] transition-all duration-200 hover:scale-110 hover:bg-abcs-red hover:text-white md:size-14";
+  "absolute top-1/2 z-10 grid size-12 -translate-y-1/2 place-items-center rounded-full border border-white/[.14] bg-[rgba(15,15,15,.8)] text-white shadow-[0_10px_30px_rgba(0,0,0,0.55)] backdrop-blur-[12px] transition-all duration-200 hover:scale-[1.08] hover:border-abcs-red hover:bg-abcs-red md:size-14";
 
 /** One project at a time, with prev / next buttons and dots. */
 function ProjectCarousel({ items }: { items: Project[] }) {
@@ -158,32 +155,34 @@ export default function WorkSection() {
   return (
     <section id="portfolio" data-stack className={section} style={sectionPad}>
       <div className={sectionInner} style={{ gap: "clamp(36px,5vw,56px)" }}>
-        <SectionTitle
-          top="Travaux"
-          word="Sélection"
-          intro="Vitrines, e-commerce et apps web : une sélection de projets clients et personnels."
-          mark="projets clients"
-        />
+        <h2 className="sr-only">Réalisations</h2>
 
-        <div data-reveal className="flex flex-wrap justify-center gap-2" role="group" aria-label="Filtrer par technologie">
-          {PROJECT_FILTERS.map((f) => {
-            const on = f.tag === filter;
-            const count = f.tag === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.tag === f.tag).length;
-            return (
-              <button
-                key={f.tag}
-                onClick={() => setFilter(f.tag)}
-                aria-pressed={on}
-                className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-[18px] py-2.5 text-[12px] font-bold uppercase tracking-[0.12em] transition-all duration-200 ${
-                  on
-                    ? "border-abcs-red bg-abcs-red text-white"
-                    : "border-white/[.14] bg-[linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03))] text-white/80 shadow-[inset_0_1px_0_rgba(255,255,255,.18)] backdrop-blur-[14px] backdrop-saturate-[1.7] hover:border-white/40 hover:text-white"
-                }`}
-              >
-                {f.label} <span className="opacity-60">{count}</span>
-              </button>
-            );
-          })}
+        <div data-reveal className="flex justify-center">
+          <div
+            className="flex flex-wrap justify-center gap-1 rounded-full bg-white/[.04] p-[5px] shadow-[inset_0_0_0_1px_rgba(255,255,255,.08)]"
+            role="group"
+            aria-label="Filtrer par type de site"
+          >
+            {PROJECT_FILTERS.map((f) => {
+              const on = f.tag === filter;
+              const count = f.tag === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.tag === f.tag).length;
+              return (
+                <button
+                  key={f.tag}
+                  onClick={() => setFilter(f.tag)}
+                  aria-pressed={on}
+                  className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-[11px] text-[15px] font-semibold transition-all duration-300 ${
+                    on
+                      ? "bg-[rgba(255,90,20,.14)] text-white shadow-[inset_0_0_0_1px_rgba(255,120,50,.45),0_0_24px_-6px_rgba(255,90,20,.5)]"
+                      : "bg-transparent text-[rgba(244,244,242,.45)] hover:bg-white/[.05] hover:text-white"
+                  }`}
+                >
+                  {f.label}
+                  <span className={`text-[13px] font-medium tabular-nums ${on ? "text-[#FF8A3D]" : "text-[rgba(244,244,242,.3)]"}`}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Always mounted, so the reveal also covers projects shown after a filter change */}

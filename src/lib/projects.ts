@@ -16,9 +16,9 @@ export type Project = {
 /** `lead` = projects shown first in that tab's carousel, in this order. */
 export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string[] }[] = [
   { tag: "all",       label: "Tous" },
-  { tag: "nextjs",    label: "React / Next.js", lead: ["dental", "kinetik", "moon", "renova", "wonder", "parfumerie"] },
-  { tag: "wordpress", label: "WordPress",       lead: ["brows"] },
-  { tag: "html",      label: "HTML",            lead: ["eclat", "connect", "infini", "mosa"] },
+  { tag: "html",      label: "Vitrine",    lead: ["eclat", "connect", "infini", "mosa"] },
+  { tag: "nextjs",    label: "Sur-mesure", lead: ["dental", "kinetik", "moon", "renova", "wonder", "parfumerie"] },
+  { tag: "wordpress", label: "WordPress",  lead: ["brows"] },
 ];
 
 export const PROJECTS: Project[] = [
