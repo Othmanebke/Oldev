@@ -296,27 +296,38 @@ export function ServicesSection() {
   }, []);
 
   // Phones: the offer nearest the middle of the screen lights up while scrolling, and the dawn
-  // slides along the vertical arc to sit next to it
+  // slides along the vertical arc to sit next to it. "Also available" lights up the same way (no arc).
   const stack = useRef<HTMLDivElement>(null);
+  const extrasBox = useRef<HTMLDivElement>(null);
   const [sunY, setSunY] = useState(0);
+  const [extraLit, setExtraLit] = useState(-1);
   useEffect(() => {
     const box = stack.current;
     if (wide || !box) return;
     const offers = Array.from(box.querySelectorAll<HTMLElement>("[data-offer]"));
-    let raf = 0;
-    const update = () => {
-      raf = 0;
+    const extras = Array.from(extrasBox.current?.querySelectorAll<HTMLElement>("[data-extra]") ?? []);
+    /** Index of the element whose centre is nearest the middle of the screen. */
+    const nearest = (els: HTMLElement[]) => {
       const mid = window.innerHeight / 2;
       let best = 0;
       let dist = Infinity;
-      offers.forEach((el, i) => {
+      els.forEach((el, i) => {
         const r = el.getBoundingClientRect();
         const d = Math.abs(r.top + r.height / 2 - mid);
         if (d < dist) [best, dist] = [i, d];
       });
+      return { best, dist };
+    };
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const { best } = nearest(offers);
       const r = offers[best].getBoundingClientRect();
       setSun(best);
       setSunY(Math.round(r.top + r.height / 2 - box.getBoundingClientRect().top));
+      // Only once the list is actually in the middle of the screen
+      const x = nearest(extras);
+      setExtraLit(x.dist < window.innerHeight * 0.3 ? x.best : -1);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -438,12 +449,15 @@ export function ServicesSection() {
           style={{ gap: "clamp(24px,3vw,36px)" }}
         >
           <span className="text-[15px] font-medium text-[rgba(244,244,242,.45)]">Aussi disponible</span>
-          <div className="grid w-full max-w-[960px] gap-2" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))" }}>
-            {EXTRAS.map((e) => (
+          <div ref={extrasBox} className="grid w-full max-w-[960px] gap-2" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))" }}>
+            {EXTRAS.map((e, i) => (
               <button
                 key={e.key}
+                data-extra
                 onClick={() => choose(e.key)}
-                className="flex flex-col items-center gap-2 rounded-[20px] bg-transparent px-4 py-5 text-center text-[rgba(244,244,242,.4)] transition-colors duration-500 hover:bg-[rgba(255,90,20,.06)] hover:text-white focus-visible:text-white"
+                className={`flex flex-col items-center gap-2 rounded-[20px] bg-transparent px-4 py-5 text-center transition-colors duration-500 hover:bg-[rgba(255,90,20,.06)] hover:text-white focus-visible:text-white ${
+                  extraLit === i ? "text-white" : "text-[rgba(244,244,242,.4)]"
+                }`}
               >
                 <span className="font-bold leading-none tracking-[-.03em]" style={{ ...archivo, fontSize: "clamp(1.4rem,2.2vw,1.8rem)" }}>
                   {e.name}
