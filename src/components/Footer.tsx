@@ -21,12 +21,12 @@ const ICONS: Record<string, string> = {
     "M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z",
 };
 
-// Bars rising with the scroll: orange in the middle, pulling to violet on the sides
+// Bars rising with the scroll, all orange: brightest in the middle, darker towards the edges
 const BARS = [30, 42, 54, 66, 80, 66, 54, 42, 30];
 const BAR_BG = [
-  "linear-gradient(to top,#7C3AED 0%,#5B21B6 40%,rgba(5,5,5,0) 100%)",
-  "linear-gradient(to top,#C2410C 0%,#7C3AED 45%,rgba(5,5,5,0) 100%)",
-  "linear-gradient(to top,#FF3B00 0%,#C2400F 40%,#4A1A08 80%,rgba(5,5,5,0) 100%)",
+  "linear-gradient(to top,#C2400F 0%,#7A2408 40%,rgba(0,0,0,0) 100%)",
+  "linear-gradient(to top,#E2450A 0%,#9A300A 45%,rgba(0,0,0,0) 100%)",
+  "linear-gradient(to top,#FF3B00 0%,#C2400F 40%,#4A1A08 80%,rgba(0,0,0,0) 100%)",
 ];
 const barBg = (i: number) => BAR_BG[Math.min(2, Math.min(i, BARS.length - 1 - i))];
 
@@ -76,15 +76,15 @@ export default function Footer() {
       ref={ref}
       id="contact"
       data-stack={home ? "" : undefined}
-      className="relative z-[15] overflow-visible bg-[#050505] text-white"
+      className="relative z-[15] overflow-visible bg-black text-white"
       style={{ "--f": 0, padding: "clamp(56px,7vw,96px) clamp(16px,4vw,56px) clamp(110px,12vw,160px)" } as CSSProperties}
     >
-      {/* Background: violet glow on the sides + blurred bars growing with --f */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden bg-[#050505]">
+      {/* Background: orange glow on the sides + blurred bars growing with --f */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden bg-black">
         <div
           className="absolute -inset-x-[10%] -bottom-[20%] h-[70%]"
           style={{
-            background: "radial-gradient(40% 60% at 18% 100%,rgba(124,58,237,.45) 0%,rgba(124,58,237,0) 70%),radial-gradient(40% 60% at 82% 100%,rgba(124,58,237,.45) 0%,rgba(124,58,237,0) 70%)",
+            background: "radial-gradient(40% 60% at 18% 100%,rgba(255,59,0,.35) 0%,rgba(255,59,0,0) 70%),radial-gradient(40% 60% at 82% 100%,rgba(255,59,0,.35) 0%,rgba(255,59,0,0) 70%)",
             filter: "blur(30px)",
             opacity: "var(--f)",
           }}
@@ -97,18 +97,13 @@ export default function Footer() {
             <div key={i} className="-mx-px flex-1" style={{ height: `calc(${h}% * var(--f))`, background: barBg(i) }} />
           ))}
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-[46%]" style={{ background: "linear-gradient(to top,rgba(5,5,5,.55),rgba(5,5,5,0))" }} />
+        <div className="absolute inset-x-0 bottom-0 h-[46%]" style={{ background: "linear-gradient(to top,rgba(0,0,0,.55),rgba(0,0,0,0))" }} />
       </div>
 
       {/* CTA card */}
       <div
-        className="relative z-[2] mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-[24px] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,.35)] min-[860px]:flex-row min-[860px]:items-center"
-        style={{
-          marginTop: "clamp(-200px,-14vw,-110px)",
-          minHeight: "clamp(320px,30vw,380px)",
-          background:
-            "radial-gradient(70% 90% at 0% 100%,rgba(255,59,0,.22) 0%,transparent 60%),linear-gradient(135deg,#1a1a1a 0%,#0c0c0c 60%,#0a0a0a 100%)",
-        }}
+        className="relative z-[2] mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-[24px] border border-white/10 bg-black min-[860px]:flex-row min-[860px]:items-center"
+        style={{ marginTop: "clamp(-200px,-14vw,-110px)", minHeight: "clamp(320px,30vw,380px)" }}
       >
         {/* Globe: cut by the right edge on desktop, by the bottom edge under 860px (never over the text) */}
         <div className="relative z-0 order-2 -mb-[38%] -mr-[22%] aspect-square w-[min(440px,88%)] self-end min-[860px]:absolute min-[860px]:right-[-24%] min-[860px]:top-1/2 min-[860px]:m-0 min-[860px]:w-[min(720px,60%)] min-[860px]:-translate-y-[34%]">
@@ -121,7 +116,7 @@ export default function Footer() {
           <h2 className="m-0 leading-[.9] tracking-[.005em] text-white" style={{ ...condensed, fontSize: "clamp(48px,7vw,96px)" }}>
             On code
             <br />
-            ensemble<span className="text-abcs-red">&nbsp;?</span>
+            ensemble&nbsp;?
           </h2>
           <div className="pointer-events-auto flex flex-wrap gap-3">
             <button

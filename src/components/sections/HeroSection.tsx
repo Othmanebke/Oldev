@@ -3,18 +3,20 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import { LOADER_INTRO_DELAY } from "@/components/Preloader";
-import { delay, fade, DispoBadge, HeroBackdrop, LogoMark } from "@/components/hero/HeroParts";
+import { delay, fade, LogoMark } from "@/components/hero/HeroParts";
+import GradientASCII from "@/components/fx/GradientASCII";
+import { HERO_CODE } from "@/lib/heroCode";
 import { useScrollToSection } from "@/lib/useScrollToSection";
 
 const HD = LOADER_INTRO_DELAY / 1000;
 const EASE = "cubic-bezier(.22,1,.36,1)";
 
-/** Scattered lines, alternating left / right entrances (centred column on phones, see .hero-line). */
+/** Lines around the ASCII shape, alternating left / right entrances (centred column on phones, see .hero-line). */
 const LINES = [
-  { t: "Chaque ligne,", x: "45%", y: "44%", from: "h-sl" },
-  { t: "codée à la main.", x: "41%", y: "50%", from: "h-sr" },
-  { t: "Chaque site,", x: "50.5%", y: "57.5%", from: "h-sl" },
-  { t: "pensé pour vendre.", x: "52%", y: "63.5%", from: "h-sr" },
+  { t: "Chaque ligne,", x: "33%", y: "16%", my: "17%", from: "h-sl" },
+  { t: "codée à la main.", x: "51%", y: "26%", my: "23%", from: "h-sr" },
+  { t: "Chaque site,", x: "34%", y: "65%", my: "62%", from: "h-sl" },
+  { t: "pensé pour vendre.", x: "50%", y: "72%", my: "68%", from: "h-sr" },
 ];
 
 export default function HeroSection() {
@@ -22,10 +24,36 @@ export default function HeroSection() {
 
   return (
     // Bottom padding: room for the next card, which overlaps it
-    <section id="top" data-stack className="relative bg-[#050505] pb-16 text-white">
-      {/* Intro waits for the preloader, whose last frame is this same backdrop */}
-      <div className="relative h-[100svh] min-h-[600px] overflow-hidden bg-[#050505]" style={{ "--hd": `${HD}s` } as CSSProperties}>
-        <HeroBackdrop drift />
+    <section id="top" data-stack className="relative bg-black pb-16 text-white">
+      {/* Intro waits for the preloader */}
+      <div className="relative h-[100svh] min-h-[600px] overflow-hidden bg-black" style={{ "--hd": `${HD}s` } as CSSProperties}>
+        <div aria-hidden className="absolute inset-0 z-0">
+          <GradientASCII
+            colors={["#000000", "#f97316", "#f0fdfa"]}
+            shape="pinch"
+            characters=" .:-=+*#%@"
+            cellSize={14}
+            density={0.8}
+            glyphOpacity={1}
+            glow={0.2}
+            depthOfField={0}
+            flicker={0.2}
+            softness={0.5}
+            scale={1}
+            flow={0.5}
+            speed={1}
+            gradientOpacity={0.9}
+            grain={0.08}
+            variation={0}
+            mouseInteraction
+            scrambleRadius={0.1}
+            clickEffect="wave"
+            intro
+            introDelay={4.4}
+            lightMode={false}
+            codeText={HERO_CODE}
+          />
+        </div>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 z-[3] opacity-[.14] mix-blend-overlay"
@@ -36,25 +64,26 @@ export default function HeroSection() {
           }}
         />
 
-        {/* Top bar: logo mark centred, availability on the right */}
-        <div className="absolute inset-x-0 top-0 z-[5] grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-[clamp(20px,3vw,44px)] py-[clamp(22px,3vw,40px)]" style={fade(0.2)}>
-          <span />
-          <LogoMark className="w-[28px] text-[#f4f4f2]" />
-          <DispoBadge />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-[42%]" style={{ background: "linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.7) 60%,#000 100%)" }} />
+
+        {/* Top bar: logo mark only, no entrance (the preloader's "O" sits right on it) */}
+        <div className="absolute inset-x-0 top-0 z-[5] flex justify-center py-[clamp(22px,3vw,40px)]">
+          <LogoMark id="hero-logo" className="h-[26px] text-[#f4f4f2]" />
         </div>
 
         {LINES.map((l, i) => (
           <span
             key={l.t}
             aria-hidden
-            className="hero-line z-[4] whitespace-nowrap font-sans font-medium tracking-[-.01em] text-[#f4f4f2]"
+            className="hero-line z-[4] whitespace-nowrap font-semibold tracking-[-.03em] text-[#f4f4f2]"
             style={
               {
                 "--x": l.x,
                 "--y": l.y,
-                "--n": i,
-                fontSize: "clamp(15px,1.15vw,18px)",
-                textShadow: "0 1px 18px rgba(0,0,0,.35)",
+                "--my": l.my,
+                fontFamily: "var(--font-archivo-flex), sans-serif",
+                fontSize: "clamp(22px,2.4vw,38px)",
+                textShadow: "0 2px 24px rgba(0,0,0,.6)",
                 animation: `${l.from} 1.3s ${EASE} ${delay(0.5 + i * 0.5)} both`,
               } as CSSProperties
             }
@@ -64,8 +93,9 @@ export default function HeroSection() {
         ))}
 
         <h1
-          className="absolute inset-x-0 z-[4] m-0 px-6 text-center font-sans font-semibold tracking-[-.035em] text-[#f4f4f2]"
-          style={{ bottom: "clamp(120px,18vh,170px)", fontSize: "clamp(24px,2.1vw,32px)", animation: `h-fade 1.4s ${EASE} ${delay(2.6)} both` }}
+          // Above the projects card below 1024px, where they would cross
+          className="absolute inset-x-0 bottom-[clamp(64px,7vh,84px)] z-[4] m-0 px-6 text-center font-sans font-semibold tracking-[-.035em] text-[#f4f4f2] max-lg:bottom-[clamp(116px,15vh,136px)]"
+          style={{ fontSize: "clamp(24px,2.1vw,32px)", animation: `h-fade 1.4s ${EASE} ${delay(2.6)} both` }}
         >
           Développeur web freelance<span className="text-abcs-red">.</span>
           <span className="sr-only"> Othmane Bouakline, O&apos;LDEV, Seine-et-Marne. Chaque ligne codée à la main, chaque site pensé pour vendre.</span>

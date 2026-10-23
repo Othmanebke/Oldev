@@ -1,9 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { EMAIL } from "@/lib/site";
+import { SERVICES, type ServiceKey } from "@/lib/services";
+
+const FORM_KEYS = Object.keys(SERVICES) as ServiceKey[];
 
 /** Site assistant (bottom bar → IA). The key stays server-side: ANTHROPIC_API_KEY in .env.local / Vercel. */
-const CHAT_CTX = `Tu es l'assistant du site d'O'LDEV, l'activité d'Othmane Bouakline, développeur web freelance en Seine-et-Marne (77). Offres : Site vitrine dès 300 € jusqu'à 600 € (artisans et indépendants, 1–2 semaines, one-page responsive, formulaire de contact, SEO de base + Google Maps, mise en ligne ; hébergement et domaine non inclus). Site sur-mesure sur devis (PME et startups, 3–4 semaines, Next.js/React, SEO technique avancé, animations sur-mesure). WordPress clé en main sur devis (3–5 semaines, pages administrables, formation 1 h). Maintenance 1 an offerte (mises à jour, sauvegardes, correctifs) sur les trois offres. Aussi : logo & flyer dès 50 €, refonte sur devis, chatbot IA sur devis. Paiement en 1 ou 3 fois. Le site appartient au client. Réponse sous 48 h. Contact : ${EMAIL}. Réponds en français, en 2 à 4 phrases maximum, ton chaleureux et direct, propose un devis gratuit quand c'est pertinent. N'invente aucune information.`;
+const CHAT_CTX = `Tu es l'assistant du site d'O'LDEV, l'activité d'Othmane Bouakline, développeur web freelance en Seine-et-Marne (77). Offres : Site vitrine dès 300 € jusqu'à 600 € (artisans et indépendants, 1–2 semaines, one-page responsive, formulaire de contact, SEO de base + Google Maps, mise en ligne ; hébergement et domaine non inclus). Site sur-mesure sur devis (PME et startups, 3–4 semaines, Next.js/React, SEO technique avancé, animations sur-mesure). WordPress clé en main sur devis (3–5 semaines, pages administrables, formation 1 h). Maintenance 1 an offerte (mises à jour, sauvegardes, correctifs) sur les trois offres. Aussi : logo & flyer dès 50 €, refonte sur devis, chatbot IA sur devis. Paiement en 1 ou 3 fois. Le site appartient au client. Réponse sous 48 h. Contact : ${EMAIL}. Réponds en français, en 2 à 4 phrases maximum, ton chaleureux et direct, propose un devis gratuit quand c'est pertinent. N'invente aucune information. Quand le visiteur veut un devis, démarrer un projet, être rappelé ou contacter Othmane, termine ta réponse par la balise [[FORM:cle]] (une seule fois, à la toute fin), avec cle parmi ${FORM_KEYS.map((k) => `${k} (${SERVICES[k].label})`).join(", ")} selon le service visé, ou [[FORM]] si le service n'est pas clair : un bouton ouvrira le formulaire de contact déjà pré-rempli. Ne mentionne jamais la balise elle-même.`;
+
+/** Answer tag → which contact form to offer (a ServiceKey, or "" for an empty form). */
+const FORM_TAG = /\s*\[\[FORM(?::([a-z_]+))?\]\]\s*/g;
 
 const MAX_TURNS = 12;
 const MAX_CHARS = 800;
@@ -57,12 +63,14 @@ export async function POST(req: Request) {
       messages,
     });
     if (res.stop_reason === "refusal") return NextResponse.json({ error: "refusal" }, { status: 502 });
-    const text = res.content
+    const raw = res.content
       .flatMap((b) => (b.type === "text" ? [b.text] : []))
-      .join("")
-      .trim();
+      .join("");
+    let form: ServiceKey | "" | null = null;
+    for (const m of raw.matchAll(FORM_TAG)) form = FORM_KEYS.includes(m[1] as ServiceKey) ? (m[1] as ServiceKey) : "";
+    const text = raw.replace(FORM_TAG, " ").trim();
     if (!text) return NextResponse.json({ error: "empty" }, { status: 502 });
-    return NextResponse.json({ text });
+    return NextResponse.json({ text, form });
   } catch (err) {
     if (err instanceof Anthropic.RateLimitError) return NextResponse.json({ error: "rate" }, { status: 429 });
     console.error("chat:", err instanceof Anthropic.APIError ? `${err.status} ${err.message}` : err);

@@ -4,7 +4,6 @@ import { useState, type CSSProperties } from "react";
 import SectionTitle from "@/components/fx/SectionTitle";
 import Grain from "@/components/fx/Grain";
 import { useContactModal } from "@/components/ContactModalProvider";
-import { useScrollToSection } from "@/lib/useScrollToSection";
 import { FAQ, PLANS, SERVICES, onQuote, startPrice, type ServiceKey } from "@/lib/services";
 import { section, sectionInner, sectionPad } from "@/components/sections/layout";
 
@@ -29,6 +28,29 @@ function Check({ light }: { light: boolean }) {
       <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 12.5l4.5 4.5L19 7.5" />
       </svg>
+    </span>
+  );
+}
+
+/** 2px orange stroke running around the card border (one turn / 4 s): a conic sweep seen through a ring mask. */
+function BorderSpin() {
+  return (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-[3] overflow-hidden rounded-[28px] p-[2px]"
+      style={{
+        WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+        WebkitMaskComposite: "xor",
+        mask: "linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0)",
+      }}
+    >
+      <span
+        className="absolute left-1/2 top-1/2 aspect-square w-[300%] -translate-x-1/2 -translate-y-1/2"
+        style={{
+          background: "conic-gradient(from 0deg,rgba(255,59,0,0) 0deg,rgba(255,59,0,0) 250deg,#FF3B00 330deg,#ffb38a 352deg,rgba(255,59,0,0) 360deg)",
+          animation: "card-spin 4s linear infinite",
+        }}
+      />
     </span>
   );
 }
@@ -81,7 +103,7 @@ function Faq() {
 
 export function ServicesSection() {
   const { openModal } = useContactModal();
-  const scrollToSection = useScrollToSection();
+  // Every offer opens the contact form, pre-filled with the service and its budget range
   const choose = (key: ServiceKey) => openModal({ type: SERVICES[key].label, budget: SERVICES[key].budgets[0] });
 
   return (
@@ -110,10 +132,11 @@ export function ServicesSection() {
                 onMouseMove={glare}
                 className={`group relative flex flex-col gap-6 overflow-hidden rounded-[28px] border transition-[transform,border-color] duration-[450ms] ease-out-expo hover:-translate-y-1 ${
                   light
-                    ? "border-white bg-[linear-gradient(180deg,#fff_0%,#f1efea_100%)] text-[#111] shadow-[0_40px_90px_-30px_rgba(255,59,0,.35),0_0_0_1px_rgba(255,59,0,.15)]"
+                    ? "border-white bg-[linear-gradient(180deg,#fff_0%,#f1efea_100%)] text-[#111]"
                     : "border-white/[.09] bg-[linear-gradient(180deg,#151515_0%,#0c0c0c_100%)] text-[#f4f4f2] shadow-[inset_0_1px_0_rgba(255,255,255,.06)] hover:border-white/[.22]"
                 }`}
               >
+                {light && <BorderSpin />}
                 <span
                   aria-hidden
                   className="pointer-events-none absolute inset-0 rounded-[28px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -146,17 +169,14 @@ export function ServicesSection() {
                   </span>
                 </div>
 
-                <a
-                  href="#contact"
-                  onClick={(e) => {
-                    if (scrollToSection("contact")) e.preventDefault();
-                  }}
+                <button
+                  onClick={() => choose(p.key)}
                   className={`relative flex items-center justify-center gap-2.5 rounded-full px-5 py-4 text-[15px] font-bold transition-colors duration-[250ms] ${
                     light ? "bg-[#111] text-white hover:bg-abcs-red" : "border border-white/20 bg-white/[.04] text-white hover:border-abcs-red hover:bg-abcs-red"
                   }`}
                 >
                   Choisir cette offre <span aria-hidden>↗</span>
-                </a>
+                </button>
 
                 <div className={`relative flex items-center gap-3 rounded-2xl px-3.5 py-3 ${light ? "bg-[#111]" : "bg-[rgba(255,59,0,.08)] shadow-[inset_0_0_0_1px_rgba(255,59,0,.25)]"}`}>
                   <span aria-hidden className="grid size-8 flex-none place-items-center rounded-[10px] bg-abcs-red text-white">

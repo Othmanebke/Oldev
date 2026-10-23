@@ -1,32 +1,72 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
-import { HeroBackdrop, LogoMark } from "@/components/hero/HeroParts";
+import { LogoMark } from "@/components/hero/HeroParts";
 
 /** Moment where the hero intro starts (the preloader is fading out). */
 export const LOADER_INTRO_DELAY = 4600;
-const LOADER_UNMOUNT = 4750;
+const LOADER_UNMOUNT = 4850;
 
 const E_OUT = "cubic-bezier(.22,1,.36,1)";
 const LINES = [["Des", "sites", "codés", "à", "la", "main,"], ["pensés", "pour", "que", "vos", "clients"], ["vous", "appellent", "vraiment."]];
 // Index of the first word of each line, for the 70 ms stagger across lines
 const START = LINES.map((_, l) => LINES.slice(0, l).flat().length);
-const CARDS = [-6, 4, -3, 5, -2, 3, -1, 0];
+
+/** Mockups flying up from under the screen: [left %, width clamp (min px, vw, max px), rotation, duration, delay, image]. */
+const FLY: [number, number, number, number, number, number, number, number][] = [
+  [4, 116, 14.6, 210, 4, 1.79, 0.45, 1],
+  [53, 154, 19.4, 280, -3, 1.63, 0.55, 2],
+  [86, 132, 16.7, 240, 5, 1.87, 0.65, 3],
+  [39, 165, 20.8, 300, -2, 1.71, 0.75, 4],
+  [72, 121, 15.3, 220, 6, 1.55, 0.85, 5],
+  [25, 143, 18.1, 260, -5, 1.79, 0.95, 6],
+  [26, 116, 14.6, 210, 3, 1.63, 1.07, 7],
+  [75, 154, 19.4, 280, -6, 1.87, 1.17, 8],
+  [3, 132, 16.7, 240, 4, 1.71, 1.27, 9],
+  [52, 165, 20.8, 300, -3, 1.55, 1.37, 10],
+  [85, 121, 15.3, 220, 5, 1.79, 1.47, 11],
+  [38, 143, 18.1, 260, -2, 1.63, 1.57, 1],
+  [7, 116, 14.6, 210, 6, 1.87, 1.69, 2],
+  [56, 154, 19.4, 280, -5, 1.71, 1.79, 3],
+  [89, 132, 16.7, 240, 3, 1.55, 1.89, 4],
+  [42, 165, 20.8, 300, -6, 1.79, 1.99, 5],
+  [75, 121, 15.3, 220, 4, 1.63, 2.09, 6],
+  [19, 143, 18.1, 260, -3, 1.87, 2.19, 7],
+];
 
 /**
- * Sentence word by word (0.3s) → it leaves (1.75s) → 8 project mockups pile up
- * in the middle (2s) → a layer with the exact hero backdrop grows from the card
- * to the full screen (3.2s) → fade out (4.2s) onto the identical hero.
- * Not rendered under reduced motion.
+ * Sentence word by word (0.15s) while project mockups fly up across the screen
+ * → a card with an orange glow rises from the bottom (2.45s) and opens to the
+ * full screen (3.3s) → fade out (4.3s) onto the hero. The "O" stays pinned on
+ * the hero's own "O" (#hero-logo) the whole time. Not rendered under reduced motion.
  */
 export default function Preloader() {
   const [visible, setVisible] = useState(true);
+  const logo = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timer = setTimeout(() => setVisible(false), reduce ? 0 : LOADER_UNMOUNT);
-    return () => clearTimeout(timer);
+    const sync = () => {
+      const h = document.getElementById("hero-logo"), l = logo.current;
+      if (!h || !l) return;
+      const r = h.getBoundingClientRect();
+      l.style.left = `${r.left}px`;
+      l.style.top = `${r.top}px`;
+      l.style.height = `${r.height}px`;
+      l.style.translate = "none";
+    };
+    sync();
+    const raf = requestAnimationFrame(sync);
+    const late = setTimeout(sync, 300);
+    window.addEventListener("resize", sync);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(late);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", sync);
+    };
   }, []);
 
   if (!visible) return null;
@@ -34,13 +74,9 @@ export default function Preloader() {
   return (
     <div
       aria-hidden
-      className="preloader fixed inset-0 z-[300] overflow-hidden bg-[#050505]"
-      style={{ "--cw": "min(440px,72vw)", "--ch": "calc(var(--cw) * .625)", animation: "fade-out .45s ease 4.2s forwards" } as CSSProperties}
+      className="preloader fixed inset-0 z-[300] overflow-hidden bg-black"
+      style={{ "--cw": "min(440px,72vw)", "--ch": "calc(var(--cw) * .625)", animation: "fade-out .45s ease 4.3s forwards" } as CSSProperties}
     >
-      <div className="absolute left-1/2 top-[clamp(20px,3vw,32px)] grid h-[34px] w-[34px] -translate-x-1/2 place-items-center" style={{ animation: "fade-in .6s ease .1s both" }}>
-        <LogoMark label={false} className="w-[26px] text-[#f4f4f2]" />
-      </div>
-
       <div className="absolute inset-0 grid place-items-center p-6">
         <p
           className="m-0 max-w-[900px] text-center text-[#f4f4f2]"
@@ -51,7 +87,7 @@ export default function Preloader() {
             lineHeight: 1.3,
             letterSpacing: "-.025em",
             textWrap: "balance",
-            animation: "ld-out .55s cubic-bezier(.65,0,.35,1) 1.75s forwards",
+            animation: "ld-out .5s cubic-bezier(.65,0,.35,1) 3.1s forwards",
           }}
         >
           {LINES.map((line, l) => (
@@ -62,7 +98,7 @@ export default function Preloader() {
                   {i > 0 && " "}
                   <span
                     className={`inline-block ${word === "vraiment." ? "text-abcs-red" : ""}`}
-                    style={{ animation: `ld-in .8s ${E_OUT} ${(0.3 + (START[l] + i) * 0.07).toFixed(2)}s both` }}
+                    style={{ animation: `ld-in .7s ${E_OUT} ${(0.15 + (START[l] + i) * 0.07).toFixed(2)}s both` }}
                   >
                     {word}
                   </span>
@@ -73,29 +109,38 @@ export default function Preloader() {
         </p>
       </div>
 
-      {CARDS.map((r, i) => (
+      {/* Starts at top:100%, so never visible at the bottom before it flies */}
+      {FLY.map(([left, min, vw, max, r, dur, delay, img], i) => (
         <div
           key={i}
-          className="absolute left-1/2 top-1/2 aspect-[16/10] w-[var(--cw)] overflow-hidden rounded-[16px] bg-[#1A1A1A]"
+          className="absolute top-full aspect-[16/10] overflow-hidden rounded-[14px] bg-[#1A1A1A]"
           style={
             {
               "--r": `${r}deg`,
+              left: `${left}%`,
+              width: `clamp(${min}px,${vw}vw,${max}px)`,
               boxShadow: "0 30px 70px -25px rgba(0,0,0,.95),inset 0 0 0 1px rgba(255,255,255,.08)",
-              animation: `ld-card .6s ${E_OUT} ${(2 + i * 0.11).toFixed(2)}s both`,
+              animation: `ld-fly ${dur}s cubic-bezier(.35,.1,.25,1) ${delay}s both`,
             } as CSSProperties
           }
         >
-          <Image src={`/defil-travaux/hero-0${i + 1}.jpg`} alt="" fill sizes="440px" className="object-cover" />
+          <Image src={`/defil-travaux/hero-${String(img).padStart(2, "0")}.jpg`} alt="" fill sizes="300px" className="object-cover" />
         </div>
       ))}
 
-      {/* The hero backdrop, opening from the card size to the full screen */}
+      {/* Hero card: rises from the bottom, then opens to the full screen */}
       <div
-        className="absolute inset-0 overflow-hidden bg-[#050505] opacity-0"
-        style={{ animation: "ld-expand .95s cubic-bezier(.76,0,.24,1) 3.2s both, fade-in .01s linear 3.2s both" }}
+        className="absolute inset-0 overflow-hidden bg-black opacity-0"
+        style={{ animation: `ld-rise .85s ${E_OUT} 2.45s both, ld-expand .95s cubic-bezier(.76,0,.24,1) 3.3s both, fade-in .01s linear 2.45s both` }}
       >
-        <HeroBackdrop />
+        <div
+          className="absolute inset-0"
+          style={{ background: "radial-gradient(80% 60% at 50% 115%,rgba(255,138,76,.55) 0%,rgba(255,59,0,.35) 35%,rgba(58,13,0,.25) 60%,rgba(0,0,0,0) 80%)" }}
+        />
       </div>
+
+      {/* Above everything, pinned on the hero logo (see sync) */}
+      <LogoMark ref={logo} label={false} className="absolute left-1/2 top-[clamp(22px,3vw,40px)] z-[5] h-[26px] w-auto -translate-x-1/2 text-[#f4f4f2]" />
     </div>
   );
 }

@@ -22,7 +22,7 @@
 }
 
 body {
-  background-color: #f0f0ee;
+  background-color: #000;
   color: var(--color-abcs-black);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -40,7 +40,7 @@ html.has-custom-cursor * {
   width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0c0c0c;
+  background: #000;
 }
 ::-webkit-scrollbar-thumb {
   background: #2a2a2a;
@@ -58,18 +58,17 @@ html.has-custom-cursor * {
 /* Preloader */
 @keyframes ld-in { from { opacity: 0; transform: translateY(22px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
 @keyframes ld-out { to { opacity: 0; transform: translateY(-18px); filter: blur(6px); } }
-@keyframes ld-card {
-  from { opacity: 0; transform: translate(-50%,-50%) translateY(70px) rotate(calc(var(--r) * 2)) scale(.9); }
-  to { opacity: 1; transform: translate(-50%,-50%) rotate(var(--r)); }
+@keyframes ld-fly {
+  from { transform: translate(-50%,80px) rotate(var(--r)); }
+  to { transform: translate(-50%,calc(-100vh - 140%)) rotate(calc(var(--r) * -1)); }
 }
+@keyframes ld-rise { from { transform: translateY(70vh); } to { transform: none; } }
 @keyframes ld-expand {
   from { clip-path: inset(calc(50% - var(--ch) / 2) calc(50% - var(--cw) / 2) round 16px); }
   to { clip-path: inset(0 0 round 0); }
 }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fade-out { to { opacity: 0; } }
-/* Hero backdrop drift */
-@keyframes blob { 0%, 100% { transform: translate(-8%,-4%) scale(1); } 50% { transform: translate(8%,5%) scale(1.15); } }
 
 /* Room left under the last block for the footer card, which overlaps it */
 .footer-gap { padding-bottom: clamp(48px,7vw,112px); }
@@ -80,13 +79,15 @@ html.has-custom-cursor * {
 @keyframes mq-l { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes mq-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 
-@keyframes h-sl { from { opacity: 0; transform: translateX(-46px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
-@keyframes h-sr { from { opacity: 0; transform: translateX(46px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes h-sl { from { opacity: 0; transform: translateX(-30vw); filter: blur(10px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes h-sr { from { opacity: 0; transform: translateX(30vw); filter: blur(10px); } to { opacity: 1; transform: none; filter: blur(0); } }
+/* Ring running around a highlighted card (ServicesSection) */
+@keyframes card-spin { to { transform: rotate(360deg); } }
 
 /* ─── Hero lines: scattered on wide screens, one centred column on phones ── */
 .hero-line { position: absolute; left: var(--x); top: var(--y); }
 @media (max-width: 639px) {
-  .hero-line { left: 0; right: 0; top: calc(38% + var(--n) * 2.1em); text-align: center; }
+  .hero-line { left: 0; right: 0; top: var(--my); text-align: center; }
 }
 
 /* ─── Section titles (fx/SectionTitle) ──────────────────────────────────── */

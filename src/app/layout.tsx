@@ -86,7 +86,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#111111",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -99,7 +99,7 @@ export default function RootLayout({
       lang="fr"
       className={`${inter.variable} ${archivoBlack.variable} ${archivoFlex.variable} ${caveat.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-white text-black">
+      <body className="min-h-full flex flex-col font-sans bg-black text-black">
           <ContactModalProvider>
             <CustomCursor />
             <CookieBanner />

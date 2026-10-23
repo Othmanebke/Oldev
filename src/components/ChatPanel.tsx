@@ -1,16 +1,30 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useContactModal } from "@/components/ContactModalProvider";
 import { EMAIL } from "@/lib/site";
+import { SERVICES, type ServiceKey } from "@/lib/services";
 
-type Msg = { role: "user" | "assistant"; text: string };
+/** `form`: the contact form offered under an answer (a service, or "" for an empty form). */
+type Msg = { role: "user" | "assistant"; text: string; form?: ServiceKey | "" | null };
 
-const GREETING: Msg = { role: "assistant", text: "Bonjour ! Je suis l'assistant d'Othmane. Une question sur un site, un prix ou un délai ?" };
+const GREETING: Msg = { role: "assistant", text: "Bonjour ! Je suis l'assistant d'Othmane. Une question sur un site, un prix ou un délai ? Ou choisissez directement votre projet." };
 const SUGGESTS = ["Combien coûte un site vitrine ?", "Quels sont les délais ?", "Tu fais du WordPress ?"];
-const FALLBACK = `Je n'arrive pas à répondre pour l'instant. Écrivez à ${EMAIL} : réponse sous 48 h.`;
+const PROJECTS: { key: ServiceKey; label: string }[] = [
+  { key: "vitrine", label: "Site vitrine" },
+  { key: "webapp", label: "Site sur-mesure" },
+  { key: "wordpress", label: "WordPress" },
+  { key: "refonte", label: "Refonte" },
+  { key: "branding_canva", label: "Logo & flyer" },
+  { key: "chatbot_ia", label: "Chatbot IA" },
+];
+const FALLBACK: Msg = { role: "assistant", text: `Je n'arrive pas à répondre pour l'instant. Écrivez à ${EMAIL} : réponse sous 48 h, ou remplissez le formulaire.`, form: "" };
 
-/** AI assistant panel, above the bottom bar (answers come from /api/chat). */
+const chip = "h-8 rounded-full bg-[#1F1C19] px-3 text-[13px] transition-colors hover:bg-[#2A2622]";
+
+/** AI assistant panel, above the bottom bar (answers from /api/chat). Every path leads to the pre-filled contact form. */
 export default function ChatPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { openModal } = useContactModal();
   const [msgs, setMsgs] = useState<Msg[]>([GREETING]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,6 +47,13 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
     };
   }, [open, onClose]);
 
+  /** Closes the chat and opens the contact form, with the service and its budget range when known. */
+  const toForm = (key?: ServiceKey | "") => {
+    onClose();
+    const s = key ? SERVICES[key] : undefined;
+    openModal(s ? { type: s.label, budget: s.budgets[0] } : undefined);
+  };
+
   const ask = async (q: string) => {
     q = q.trim();
     if (!q || loading) return;
@@ -40,19 +61,19 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
     setMsgs(next);
     setInput("");
     setLoading(true);
-    let text = FALLBACK;
+    let reply = FALLBACK;
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: next.map(({ role, text }) => ({ role, text })) }),
       });
       const data = await res.json();
-      if (res.ok && typeof data.text === "string") text = data.text;
+      if (res.ok && typeof data.text === "string") reply = { role: "assistant", text: data.text, form: data.form ?? null };
     } catch {
       // keep the fallback
     }
-    setMsgs((m) => [...m, { role: "assistant", text }]);
+    setMsgs((m) => [...m, reply]);
     setLoading(false);
   };
 
@@ -73,8 +94,11 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
         />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="text-[14px] font-semibold">Assistant O&apos;LDEV</span>
-          <span className="text-[12px] text-[rgba(244,241,236,.5)]">Répond tout de suite · Othmane sous 48 h</span>
+          <span className="truncate text-[12px] text-[rgba(244,241,236,.5)]">Répond tout de suite · Othmane sous 48 h</span>
         </div>
+        <button onClick={() => toForm()} className="h-8 flex-none rounded-full bg-[#F4F1EC] px-3 text-[12px] font-semibold text-[#0A0908] transition-colors hover:bg-abcs-red hover:text-white">
+          Formulaire
+        </button>
         <button onClick={onClose} aria-label="Fermer" className="grid size-8 flex-none place-items-center rounded-full bg-[#1F1C19] text-[14px] transition-colors hover:bg-[#2A2622]">
           ✕
         </button>
@@ -82,13 +106,22 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
 
       <div ref={scroller} data-lenis-prevent className="flex flex-1 flex-col gap-2.5 overflow-y-auto overscroll-contain p-4" aria-live="polite">
         {msgs.map((m, i) => (
-          <div
-            key={i}
-            className={`max-w-[85%] whitespace-pre-wrap px-3.5 py-2.5 text-[14px] leading-[1.5] text-pretty ${
-              m.role === "user" ? "self-end rounded-[16px_16px_4px_16px] bg-abcs-red text-white" : "self-start rounded-[16px_16px_16px_4px] bg-[#1F1C19]"
-            }`}
-          >
-            {m.text}
+          <div key={i} className={`flex max-w-[85%] flex-col gap-2 ${m.role === "user" ? "self-end" : "self-start"}`}>
+            <div
+              className={`whitespace-pre-wrap px-3.5 py-2.5 text-[14px] leading-[1.5] text-pretty ${
+                m.role === "user" ? "rounded-[16px_16px_4px_16px] bg-abcs-red text-white" : "rounded-[16px_16px_16px_4px] bg-[#1F1C19]"
+              }`}
+            >
+              {m.text}
+            </div>
+            {m.form != null && (
+              <button
+                onClick={() => toForm(m.form ?? "")}
+                className="self-start rounded-full bg-abcs-red px-3.5 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-[#F4F1EC] hover:text-[#0A0908]"
+              >
+                {m.form ? `Remplir le formulaire · ${PROJECTS.find((p) => p.key === m.form)?.label ?? "devis"}` : "Ouvrir le formulaire"} ↗
+              </button>
+            )}
           </div>
         ))}
         {loading && (
@@ -99,13 +132,23 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
           </div>
         )}
         {msgs.length === 1 && (
-          <div className="mt-1 flex flex-wrap gap-1.5">
-            {SUGGESTS.map((t) => (
-              <button key={t} onClick={() => ask(t)} className="h-8 rounded-full bg-[#1F1C19] px-3 text-[13px] transition-colors hover:bg-[#2A2622]">
-                {t}
-              </button>
-            ))}
-          </div>
+          <>
+            <div className="mt-1 flex flex-wrap gap-1.5">
+              {SUGGESTS.map((t) => (
+                <button key={t} onClick={() => ask(t)} className={chip}>
+                  {t}
+                </button>
+              ))}
+            </div>
+            <span className="mt-2 text-[12px] font-semibold uppercase tracking-[.12em] text-[rgba(244,241,236,.45)]">Démarrer un projet</span>
+            <div className="flex flex-wrap gap-1.5">
+              {PROJECTS.map((p) => (
+                <button key={p.key} onClick={() => toForm(p.key)} className={`${chip} hover:!bg-abcs-red hover:text-white`}>
+                  {p.label} ↗
+                </button>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

@@ -16,7 +16,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd()).replace(/</g, "\u003c") }}
       />
       <Preloader />
-      <main className="flex min-h-screen flex-col bg-[#050505]" style={{ overflowX: "clip" }}>
+      <main className="flex min-h-screen flex-col bg-black" style={{ overflowX: "clip" }}>
         <HeroSection />
         <ServicesSection />
         <WorkSection />

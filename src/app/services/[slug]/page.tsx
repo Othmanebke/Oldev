@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import CallButton from "@/components/seo/CallButton";
 import FaqAccordion from "@/components/fx/FaqAccordion";
 import JsonLd from "@/components/seo/JsonLd";
 import ProjectGrid from "@/components/seo/ProjectGrid";
@@ -87,6 +88,11 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
               <p className="m-0 text-[15px] text-[#f4f4f2]/65">
                 {plan.delay} · {plan.revisions} de révisions · prix fixé au devis
               </p>
+              <CallButton
+                label="Choisir cette offre ↗"
+                service={page.key}
+                className="mt-3 self-start rounded-full bg-abcs-red px-6 py-3.5 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#f4f4f2] hover:text-[#111]"
+              />
             </div>
             <div className="flex flex-col gap-3">
               <h3 className="m-0 text-[13px] font-medium text-[#f4f4f2]/60">Inclus dans la formule de base</h3>

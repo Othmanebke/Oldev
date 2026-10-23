@@ -49,7 +49,7 @@ export function Section({ num, label, dark, id, children }: SectionProps) {
   return (
     <section
       id={id}
-      className={`border-t ${dark ? "border-[rgba(244,244,242,.12)] bg-[#111] text-[#f4f4f2]" : "border-[rgba(17,17,17,.12)]"}`}
+      className={`border-t ${dark ? "border-[rgba(244,244,242,.12)] bg-black text-[#f4f4f2]" : "border-[rgba(17,17,17,.12)]"}`}
       style={{ paddingBlock: "clamp(56px,8vw,104px)" }}
     >
       <div className={`${container} grid gap-6 min-[760px]:grid-cols-[1fr_3fr] min-[760px]:gap-10`}>
