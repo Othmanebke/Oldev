@@ -176,7 +176,7 @@ export function ServicesSection() {
                   Choisir cette offre <span aria-hidden>↗</span>
                 </button>
 
-                <div className={`relative flex items-center gap-3 rounded-2xl px-3.5 py-3 ${light ? "bg-[#111]" : "bg-[rgba(255,59,0,.08)] shadow-[inset_0_0_0_1px_rgba(255,59,0,.25)]"}`}>
+                <div className={`relative flex items-center gap-3 rounded-2xl px-3.5 py-3 ${light ? "bg-[#111]" : "bg-white/[.04]"}`}>
                   <span aria-hidden className="grid size-8 flex-none place-items-center rounded-[10px] bg-abcs-red text-white">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z" />
