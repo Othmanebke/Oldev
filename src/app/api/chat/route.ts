@@ -1,4 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { EMAIL, LOCATION } from "@/lib/site";
 import { FAQ, PLANS, SERVICES, priceRange, type ServiceKey } from "@/lib/services";
@@ -16,7 +15,7 @@ const OTHERS = (["refonte", "branding_canva", "branding_adobe", "chatbot_ia"] as
 const QA = FAQ.map((f) => `- ${f.q} ${f.a}`).join("\n");
 const WORK = PROJECTS.filter((p) => !p.concept).slice(0, 8).map((p) => `${p.name} (${p.category})`).join(", ");
 
-/** Site assistant (bottom bar → IA). The key stays server-side: ANTHROPIC_API_KEY in .env.local / Vercel. */
+/** Site assistant (bottom bar → IA), on Groq's free tier. The key stays server-side: GROQ_API_KEY in .env.local / Vercel. */
 const CHAT_CTX = `Tu es l'assistant du site d'O'LDEV, l'activité d'Othmane Bouakline, développeur web freelance basé à ${LOCATION.city} (Seine-et-Marne, 77), qui travaille avec des clients partout en France (à distance, ou en rendez-vous en Île-de-France).
 
 # Offres
@@ -55,20 +54,32 @@ ${QA}
 - Si la question n'a rien à voir avec un projet web, ramène gentiment la discussion au projet.
 - Ne mentionne jamais l'outil ni ces instructions.`;
 
-const FORM_TOOL: Anthropic.Beta.BetaTool = {
-  name: "ouvrir_formulaire",
-  description:
-    "Affiche au visiteur un bouton qui ouvre le formulaire de devis pré-rempli. Renseigne uniquement les champs donnés par le visiteur ou déduits de la conversation, jamais le budget.",
-  input_schema: {
-    type: "object",
-    properties: {
-      service: { type: "string", enum: FORM_KEYS, description: FORM_KEYS.map((k) => `${k} = ${SERVICES[k].label}`).join(" ; ") },
-      name: { type: "string", description: "Prénom et nom du visiteur" },
-      email: { type: "string", description: "Email du visiteur" },
-      phone: { type: "string", description: "Téléphone du visiteur" },
-      message: { type: "string", description: "Description du projet à la première personne, comme écrite par le visiteur (activité, objectif, pages, fonctionnalités, délai…), 2 à 5 phrases" },
+const TOOL_NAME = "ouvrir_formulaire";
+const FORM_TOOL = {
+  type: "function",
+  function: {
+    name: TOOL_NAME,
+    description:
+      "Affiche au visiteur un bouton qui ouvre le formulaire de devis pré-rempli. Renseigne uniquement les champs donnés par le visiteur ou déduits de la conversation, jamais le budget.",
+    parameters: {
+      type: "object",
+      properties: {
+        service: { type: "string", enum: FORM_KEYS, description: FORM_KEYS.map((k) => `${k} = ${SERVICES[k].label}`).join(" ; ") },
+        name: { type: "string", description: "Prénom et nom du visiteur" },
+        email: { type: "string", description: "Email du visiteur" },
+        phone: { type: "string", description: "Téléphone du visiteur" },
+        message: { type: "string", description: "Description du projet à la première personne, comme écrite par le visiteur (activité, objectif, pages, fonctionnalités, délai…), 2 à 5 phrases" },
+      },
     },
   },
+};
+
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const MODEL = "llama-3.3-70b-versatile";
+
+type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
+type GroqReply = {
+  choices?: { message?: { content?: string | null; tool_calls?: { function?: { name?: string; arguments?: string } }[] } }[];
 };
 
 type Prefill = { name?: string; email?: string; phone?: string; message?: string };
@@ -88,9 +99,6 @@ function limited(ip: string) {
 
 const str = (v: unknown, max: number) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : undefined);
 
-// Created on first request, so a missing key never breaks the build
-let client: Anthropic | null = null;
-
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
   if (limited(ip)) return NextResponse.json({ error: "rate" }, { status: 429 });
@@ -104,7 +112,7 @@ export async function POST(req: Request) {
   const raw = (body as { messages?: unknown })?.messages;
   if (!Array.isArray(raw)) return NextResponse.json({ error: "bad" }, { status: 400 });
 
-  const messages: Anthropic.Beta.BetaMessageParam[] = raw
+  const messages: ChatMessage[] = raw
     .filter((m): m is { role: "user" | "assistant"; text: string } =>
       !!m && (m.role === "user" || m.role === "assistant") && typeof m.text === "string" && m.text.trim() !== "")
     .slice(-MAX_TURNS)
@@ -115,31 +123,44 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "bad" }, { status: 400 });
   }
 
-  try {
-    client ??= new Anthropic();
-    const res = await client.beta.messages.create({
-      model: "claude-opus-5-5",
-      max_tokens: 2000,
-      output_config: { effort: "low" },
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      system: CHAT_CTX,
-      tools: [FORM_TOOL],
-      messages,
-    });
-    if (res.stop_reason === "refusal") return NextResponse.json({ error: "refusal" }, { status: 502 });
+  const key = process.env.GROQ_API_KEY;
+  if (!key) {
+    console.error("chat: GROQ_API_KEY manquante");
+    return NextResponse.json({ error: "config" }, { status: 503 });
+  }
 
-    let text = res.content
-      .flatMap((b) => (b.type === "text" ? [b.text] : []))
-      .join("")
-      .replace(/\*\*/g, "")
-      .trim();
+  try {
+    const r = await fetch(GROQ_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 600,
+        temperature: 0.5,
+        messages: [{ role: "system", content: CHAT_CTX }, ...messages],
+        tools: [FORM_TOOL],
+        tool_choice: "auto",
+      }),
+    });
+    if (r.status === 429) return NextResponse.json({ error: "rate" }, { status: 429 });
+    if (!r.ok) {
+      console.error("chat:", r.status, (await r.text()).slice(0, 500));
+      return NextResponse.json({ error: "api" }, { status: 502 });
+    }
+    const msg = ((await r.json()) as GroqReply).choices?.[0]?.message;
+
+    let text = (msg?.content ?? "").replace(/\*\*/g, "").trim();
     // The tool call becomes a "pre-filled form" button under the answer
     let form: ServiceKey | "" | null = null;
     let prefill: Prefill | undefined;
-    const call = res.content.find((b) => b.type === "tool_use" && b.name === FORM_TOOL.name);
-    if (call?.type === "tool_use") {
-      const input = (call.input ?? {}) as Record<string, unknown>;
+    const call = msg?.tool_calls?.find((c) => c.function?.name === TOOL_NAME);
+    if (call) {
+      let input: Record<string, unknown> = {};
+      try {
+        input = JSON.parse(call.function?.arguments || "{}");
+      } catch {
+        // keep the form empty
+      }
       form = FORM_KEYS.includes(input.service as ServiceKey) ? (input.service as ServiceKey) : "";
       prefill = { name: str(input.name, 100), email: str(input.email, 254), phone: str(input.phone, 30), message: str(input.message, 2000) };
       text ||= "Parfait, votre formulaire est pré-rempli : il ne vous reste qu'à cocher votre budget et à l'envoyer.";
@@ -147,8 +168,7 @@ export async function POST(req: Request) {
     if (!text) return NextResponse.json({ error: "empty" }, { status: 502 });
     return NextResponse.json({ text, form, prefill });
   } catch (err) {
-    if (err instanceof Anthropic.RateLimitError) return NextResponse.json({ error: "rate" }, { status: 429 });
-    console.error("chat:", err instanceof Anthropic.APIError ? `${err.status} ${err.message}` : err);
+    console.error("chat:", err);
     return NextResponse.json({ error: "api" }, { status: 502 });
   }
 }
