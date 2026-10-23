@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Globe from "@/components/Globe";
 import Logo from "@/components/brand/Logo";
-import { condensed } from "@/components/hero/HeroParts";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { useScrollToSection } from "@/lib/useScrollToSection";
 import { SOCIALS } from "@/lib/site";
@@ -101,34 +100,52 @@ export default function Footer() {
 
       {/* CTA card */}
       <div
-        className="relative z-[2] mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-[24px] border border-white/10 bg-black min-[860px]:flex-row min-[860px]:items-center"
-        style={{ marginTop: "clamp(-200px,-14vw,-110px)", minHeight: "clamp(320px,30vw,380px)" }}
+        className="relative z-[2] mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-[32px] border border-white/[.08] shadow-[inset_0_1px_0_rgba(255,255,255,.07),0_40px_100px_-40px_rgba(0,0,0,.8),0_30px_120px_-60px_rgba(255,59,0,.4)] min-[860px]:flex-row min-[860px]:items-center"
+        style={{
+          marginTop: "clamp(-200px,-14vw,-110px)",
+          minHeight: "clamp(340px,32vw,420px)",
+          background: "radial-gradient(60% 90% at 85% 50%,rgba(255,59,0,.14) 0%,rgba(255,59,0,0) 60%),linear-gradient(180deg,#0e0e0e 0%,#070707 100%)",
+        }}
       >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-[8%] top-0 z-[2] h-px"
+          style={{ background: "linear-gradient(90deg,rgba(255,138,61,0),rgba(255,138,61,.6),rgba(255,138,61,0))" }}
+        />
         {/* Globe: cut by the right edge on desktop, by the bottom edge under 860px (never over the text) */}
         <div className="relative z-0 order-2 -mb-[38%] -mr-[22%] aspect-square w-[min(440px,88%)] self-end min-[860px]:absolute min-[860px]:right-[-24%] min-[860px]:top-1/2 min-[860px]:m-0 min-[860px]:w-[min(720px,60%)] min-[860px]:-translate-y-[34%]">
           <Globe baseColor="#f4f4f2" accent="#FF3B00" phrase="oncodeensemble" />
         </div>
         <div
-          className="pointer-events-none relative z-[1] flex max-w-[560px] flex-col items-start gap-[22px]"
-          style={{ padding: "clamp(32px,5vw,64px)" }}
+          className="pointer-events-none relative z-[1] flex max-w-[580px] flex-col items-start"
+          style={{ padding: "clamp(32px,5vw,64px)", gap: "clamp(24px,3vw,32px)" }}
         >
-          <h2 className="m-0 leading-[.9] tracking-[.005em] text-white" style={{ ...condensed, fontSize: "clamp(48px,7vw,96px)" }}>
-            On code
-            <br />
-            ensemble&nbsp;?
-          </h2>
+          <div className="flex flex-col gap-4">
+            <span className="inline-flex items-center gap-2 text-[15px] font-medium text-[#FF8A3D]">
+              <span aria-hidden className="size-[7px] rounded-full bg-[#FF8A3D] shadow-[0_0_10px_#FF8A3D]" />
+              Réponse sous 48 h
+            </span>
+            <h2
+              className="m-0 font-bold leading-[.95] tracking-[-.045em] text-white text-balance"
+              style={{ fontFamily: "var(--font-archivo-flex), sans-serif", fontSize: "clamp(44px,6vw,80px)" }}
+            >
+              On code
+              <br />
+              ensemble&nbsp;?
+            </h2>
+          </div>
           <div className="pointer-events-auto flex flex-wrap gap-3">
             <button
               onClick={() => openModal()}
-              className="inline-flex min-h-12 items-center rounded-[10px] bg-white px-[22px] text-[15px] font-bold text-[#111] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white"
+              className="inline-flex min-h-[52px] items-center gap-2.5 rounded-full bg-white px-6 text-[15px] font-bold text-[#111] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white"
             >
-              Réserver un appel
+              Réserver un appel <span aria-hidden>↗</span>
             </button>
             <a
               href={TIKTOK}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center rounded-[10px] border border-white/22 px-[22px] text-[15px] font-semibold text-white transition-colors duration-[250ms] hover:border-abcs-red"
+              className="inline-flex min-h-[52px] items-center rounded-full border border-white/[.18] bg-white/[.04] px-6 text-[15px] font-semibold text-white backdrop-blur-[10px] transition-colors duration-[250ms] hover:border-abcs-red hover:bg-[rgba(255,59,0,.12)]"
             >
               Me suivre
             </a>
