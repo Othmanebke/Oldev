@@ -96,7 +96,7 @@ html.has-custom-cursor * {
 }
 
 /* ─── Parcours timeline dots ─────────────────────────────────────────────── */
-.tl-dot { background: #f4f4f2; border: 2px solid rgba(17,17,17,.22); transition: background-color .4s, border-color .4s, box-shadow .4s; }
+.tl-dot { background: #f4f4f2; border: 2px solid rgba(17,17,17,.2); transition: background-color .4s, border-color .4s, box-shadow .4s; }
 .tl-dot[data-on] { background: #FF3B00; border-color: #FF3B00; box-shadow: 0 0 0 6px rgba(255,59,0,.18); }
 
 /* ─── Motion (only when the user accepts it) ─────────────────────────────── */
