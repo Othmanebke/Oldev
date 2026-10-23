@@ -75,7 +75,7 @@ const FORM_TOOL = {
 };
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = "llama-3.3-70b-versatile";
+const MODEL = "openai/gpt-oss-120b";
 
 type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 type GroqReply = {
@@ -135,8 +135,9 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 600,
+        max_tokens: 2000,
         temperature: 0.5,
+        reasoning_effort: "low",
         messages: [{ role: "system", content: CHAT_CTX }, ...messages],
         tools: [FORM_TOOL],
         tool_choice: "auto",
