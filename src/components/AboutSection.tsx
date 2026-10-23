@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
-import Grain from "@/components/fx/Grain";
 import heroPhoto from "@/img/hero.webp";
 import { section } from "@/components/sections/layout";
 
@@ -170,7 +169,6 @@ export function AboutSection() {
 
   return (
     <section id="about" data-stack className={section}>
-      <Grain />
 
       {/* Manifesto */}
       <div className="relative z-[1]" style={{ padding: "clamp(90px,16vh,180px) 24px clamp(40px,8vh,80px)" }}>

@@ -2,7 +2,6 @@
 
 import { useState, type CSSProperties } from "react";
 import SectionTitle from "@/components/fx/SectionTitle";
-import Grain from "@/components/fx/Grain";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { FAQ, PLANS, SERVICES, onQuote, startPrice, type ServiceKey } from "@/lib/services";
 import { section, sectionInner, sectionPad } from "@/components/sections/layout";
@@ -108,7 +107,6 @@ export function ServicesSection() {
 
   return (
     <section id="services" data-stack className={section} style={sectionPad}>
-      <Grain />
       <div className={sectionInner} style={{ gap: "clamp(40px,5vw,64px)" }}>
         <SectionTitle
           top="Services"
