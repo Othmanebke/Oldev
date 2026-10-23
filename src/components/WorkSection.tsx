@@ -9,7 +9,7 @@ import { PROJECTS, PROJECT_FILTERS, projectsForTag, type Project, type ProjectTa
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /** Hero concepts shown only in the "Tous" marquee (public/defil-travaux). */
-const MARQUEE_HEROES = Array.from({ length: 11 }, (_, i) => `/defil-travaux/hero-${pad(i + 1)}.jpg`);
+const MARQUEE_HEROES = Array.from({ length: 13 }, (_, i) => `/defil-travaux/ecran-${pad(i + 1)}.jpg`);
 
 /** Thumbnails only — decorative, no text, no interaction. */
 function MarqueeRow({ items, animation }: { items: string[]; animation: string }) {

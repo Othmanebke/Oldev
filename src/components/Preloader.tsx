@@ -125,7 +125,7 @@ export default function Preloader() {
             } as CSSProperties
           }
         >
-          <Image src={`/defil-travaux/hero-${String(img).padStart(2, "0")}.jpg`} alt="" fill sizes="300px" className="object-cover" />
+          <Image src={`/defil-travaux/ecran-${String(img).padStart(2, "0")}.jpg`} alt="" fill sizes="300px" className="object-cover" />
         </div>
       ))}
 

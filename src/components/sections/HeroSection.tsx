@@ -112,7 +112,7 @@ export default function HeroSection() {
           style={fade(1.5)}
         >
           <span className="relative block h-16 w-[110px] shrink-0 overflow-hidden rounded-[9px] max-[639px]:h-14 max-[639px]:w-24">
-            <Image src="/defil-travaux/hero-01.jpg" alt="" fill sizes="110px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+            <Image src="/defil-travaux/ecran-01.jpg" alt="" fill sizes="110px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
             <span aria-hidden className="absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-abcs-red text-[14px] text-white">↗</span>
           </span>
           <span className="font-sans text-[14px] font-semibold text-[#f4f4f2]">Voir les projets</span>
