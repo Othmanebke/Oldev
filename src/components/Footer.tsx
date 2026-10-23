@@ -8,7 +8,7 @@ import Logo from "@/components/brand/Logo";
 import { condensed } from "@/components/hero/HeroParts";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { useScrollToSection } from "@/lib/useScrollToSection";
-import { EMAIL } from "@/lib/site";
+import { SOCIALS } from "@/lib/site";
 
 // Bars rising with the scroll, all orange: brightest in the middle, darker towards the edges
 const BARS = [30, 42, 54, 66, 80, 66, 54, 42, 30];
@@ -18,6 +18,8 @@ const BAR_BG = [
   "linear-gradient(to top,#FF3B00 0%,#C2400F 40%,#4A1A08 80%,rgba(0,0,0,0) 100%)",
 ];
 const barBg = (i: number) => BAR_BG[Math.min(2, Math.min(i, BARS.length - 1 - i))];
+
+const TIKTOK = SOCIALS.find((s) => s.label === "TikTok")!.href;
 
 const link = "text-white/60 transition-colors hover:text-abcs-red";
 
@@ -123,10 +125,12 @@ export default function Footer() {
               Réserver un appel
             </button>
             <a
-              href={`mailto:${EMAIL}`}
+              href={TIKTOK}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex min-h-12 items-center rounded-[10px] border border-white/22 px-[22px] text-[15px] font-semibold text-white transition-colors duration-[250ms] hover:border-abcs-red"
             >
-              M&apos;écrire
+              Me suivre
             </a>
           </div>
         </div>
