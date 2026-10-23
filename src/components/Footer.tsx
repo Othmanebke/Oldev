@@ -189,6 +189,16 @@ export default function Footer() {
             <Link href="/legal" className={link}>
               Mentions légales
             </Link>
+            {/* Lets visitors change their cookie choice (GDPR) */}
+            <button
+              onClick={() => {
+                localStorage.removeItem("cookie-consent");
+                window.location.reload();
+              }}
+              className={link}
+            >
+              Cookies
+            </button>
           </div>
         </div>
       </div>

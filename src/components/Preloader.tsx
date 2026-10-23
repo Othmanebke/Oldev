@@ -6,7 +6,7 @@ import { LogoMark } from "@/components/hero/HeroParts";
 
 /** Moment where the hero intro starts (the preloader is fading out). */
 export const LOADER_INTRO_DELAY = 4600;
-const LOADER_UNMOUNT = 4850;
+const LOADER_UNMOUNT = 5000;
 
 const E_OUT = "cubic-bezier(.22,1,.36,1)";
 const LINES = [["Des", "sites", "codés", "à", "la", "main,"], ["pensés", "pour", "que", "vos", "clients"], ["vous", "appellent", "vraiment."]];
@@ -37,9 +37,10 @@ const FLY: [number, number, number, number, number, number, number, number][] = 
 
 /**
  * Sentence word by word (0.15s) while project mockups fly up across the screen
- * → a card with an orange glow rises from the bottom (2.45s) and opens to the
- * full screen (3.3s) → fade out (4.3s) onto the hero. The "O" stays pinned on
- * the hero's own "O" (#hero-logo) the whole time. Not rendered under reduced motion.
+ * → a card rises from the bottom (2.45s) and opens to the full screen (3.25s)
+ * on the hero's glowing band → cross-fade (4.25s) onto the hero, whose ASCII
+ * background already draws that band. The "O" stays pinned on the hero's own
+ * "O" (#hero-logo) the whole time. Not rendered under reduced motion.
  */
 export default function Preloader() {
   const [visible, setVisible] = useState(true);
@@ -75,7 +76,7 @@ export default function Preloader() {
     <div
       aria-hidden
       className="preloader fixed inset-0 z-[300] overflow-hidden bg-black"
-      style={{ "--cw": "min(440px,72vw)", "--ch": "calc(var(--cw) * .625)", animation: "fade-out .45s ease 4.3s forwards" } as CSSProperties}
+      style={{ "--cw": "min(440px,72vw)", "--ch": "calc(var(--cw) * .625)", animation: "fade-out .7s cubic-bezier(.4,0,.2,1) 4.25s forwards" } as CSSProperties}
     >
       <div className="absolute inset-0 grid place-items-center p-6">
         <p
@@ -128,14 +129,19 @@ export default function Preloader() {
         </div>
       ))}
 
-      {/* Hero card: rises from the bottom, then opens to the full screen */}
+      {/* Hero card: rises from the bottom, then opens to the full screen on the
+          same glowing band as the hero's ASCII background, which cross-fades in under it */}
       <div
         className="absolute inset-0 overflow-hidden bg-black opacity-0"
-        style={{ animation: `ld-rise .85s ${E_OUT} 2.45s both, ld-expand .95s cubic-bezier(.76,0,.24,1) 3.3s both, fade-in .01s linear 2.45s both` }}
+        style={{ animation: `ld-rise .85s ${E_OUT} 2.45s both, ld-expand 1s cubic-bezier(.76,0,.24,1) 3.25s both, fade-in .01s linear 2.45s both` }}
       >
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(80% 60% at 50% 115%,rgba(255,138,76,.55) 0%,rgba(255,59,0,.35) 35%,rgba(58,13,0,.25) 60%,rgba(0,0,0,0) 80%)" }}
+          style={{
+            background:
+              "radial-gradient(60% 15% at 50% 48%,rgba(240,253,250,.85) 0%,rgba(249,115,22,.85) 45%,rgba(249,115,22,0) 100%),radial-gradient(95% 30% at 50% 48%,rgba(249,115,22,.3) 0%,rgba(249,115,22,0) 70%)",
+            filter: "blur(18px)",
+          }}
         />
       </div>
 

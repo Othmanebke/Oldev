@@ -49,7 +49,8 @@ export default function HeroSection() {
             scrambleRadius={0.1}
             clickEffect="wave"
             intro
-            introDelay={4.4}
+            // Starts under the preloader, so its band is there when the preloader fades
+            introDelay={1.8}
             lightMode={false}
             codeText={HERO_CODE}
           />
