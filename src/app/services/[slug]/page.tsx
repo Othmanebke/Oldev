@@ -88,6 +88,18 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
               <p className="m-0 text-[15px] text-[#f4f4f2]/65">
                 {plan.delay} · {plan.revisions} de révisions · prix fixé au devis
               </p>
+              <div className="mt-3 flex max-w-[420px] items-center gap-3 rounded-2xl bg-[rgba(255,59,0,.08)] px-3.5 py-3 shadow-[inset_0_0_0_1px_rgba(255,59,0,.25)]">
+                <span aria-hidden className="grid size-8 flex-none place-items-center rounded-[10px] bg-abcs-red text-white">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                </span>
+                <span className="flex flex-col gap-px">
+                  <span className="text-[14px] font-bold text-[#f4f4f2]">Maintenance 1 an offerte</span>
+                  <span className="text-[13px] text-[#f4f4f2]/60">Mises à jour, sauvegardes, correctifs</span>
+                </span>
+              </div>
               <CallButton
                 label="Choisir cette offre ↗"
                 service={page.key}

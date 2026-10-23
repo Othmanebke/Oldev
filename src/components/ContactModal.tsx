@@ -6,7 +6,7 @@ import { SERVICES, SERVICE_GROUPS, getBudgets, priceRange } from "@/lib/services
 import type { ContactFormData } from "@/components/ContactModalProvider";
 
 const inputClass =
-  "h-12 w-full rounded-[14px] border border-white/10 bg-[#141414] px-4 text-[16px] text-[#f4f4f2] outline-none transition-colors duration-200 placeholder:text-white/30 hover:border-white/20 focus:border-abcs-red";
+  "h-11 w-full rounded-none border-0 border-b border-white/15 bg-transparent px-0 text-[16px] text-[#f4f4f2] outline-none transition-colors duration-200 placeholder:text-white/30 hover:border-white/35 focus:border-abcs-red";
 const labelClass = "text-[13px] font-medium text-white/60";
 const archivo = { fontFamily: "var(--font-archivo-flex), sans-serif" } as const;
 
@@ -145,8 +145,8 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                   </button>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                  <div className="grid gap-5 sm:grid-cols-2">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+                  <div className="grid gap-8 sm:grid-cols-2 sm:gap-6">
                     <label className="flex flex-col gap-2">
                       <span className={labelClass}>Nom *</span>
                       <input required name="name" autoComplete="name" value={form.name} onChange={handleChange} placeholder="Jean Dupont" className={inputClass} />
@@ -157,7 +157,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                     </label>
                   </div>
 
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-8 sm:grid-cols-2 sm:gap-6">
                     <label className="flex flex-col gap-2">
                       <span className={labelClass}>Téléphone</span>
                       <input type="tel" name="phone" autoComplete="tel" value={form.phone} onChange={handleChange} placeholder="06 XX XX XX XX" className={inputClass} />
@@ -174,7 +174,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                             const newBudgets = newType ? getBudgets(newType) : [];
                             setForm({ ...form, type: newType, budget: newBudgets[0] || "" });
                           }}
-                          className={`${inputClass} appearance-none truncate pr-10 [&_optgroup]:bg-[#141414] [&_option]:bg-[#141414] ${form.type ? "" : "text-white/35"}`}
+                          className={`${inputClass} appearance-none truncate pr-8 [&_optgroup]:bg-[#141414] [&_option]:bg-[#141414] ${form.type ? "" : "text-white/35"}`}
                         >
                           <option value="">Choisir…</option>
                           {SERVICE_GROUPS.map((g) => (
@@ -187,7 +187,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                             </optgroup>
                           ))}
                         </select>
-                        <svg aria-hidden viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/50">
+                        <svg aria-hidden viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-white/50">
                           <path d="M6 9l6 6 6-6" />
                         </svg>
                       </span>
@@ -238,9 +238,9 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                       name="message"
                       value={form.message}
                       onChange={handleChange}
-                      rows={5}
+                      rows={4}
                       placeholder="Décrivez votre projet en quelques lignes…"
-                      className={`${inputClass.replace("h-12 ", "")} resize-none py-3.5 leading-[1.55]`}
+                      className={`${inputClass.replace("h-11 ", "")} resize-none py-2.5 leading-[1.55]`}
                     />
                   </label>
 

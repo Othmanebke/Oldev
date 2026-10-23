@@ -24,6 +24,9 @@ export const btn = {
     "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-abcs-red px-6 py-3.5 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#f4f4f2] hover:text-[#111]",
   secondary:
     "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-[rgba(17,17,17,.2)] px-6 py-3.5 text-[15px] font-semibold text-[#111] transition-colors duration-200 hover:border-[#111]",
+  /** Compact primary button of the dark header. */
+  header:
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-abcs-red px-5 py-2.5 text-[14px] font-semibold text-white transition-colors duration-200 hover:bg-[#f4f4f2] hover:text-[#111]",
   dark:
     "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#111] px-5 py-2.5 text-[14px] font-semibold text-white transition-colors duration-200 hover:bg-abcs-red",
 };
