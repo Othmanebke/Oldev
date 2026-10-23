@@ -30,7 +30,8 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
     setPrevInitialData(initialData);
     const selectedType = initialData?.type ?? "";
     const budgets = selectedType ? getBudgets(selectedType) : [];
-    const defaultBudget = initialData?.budget || (budgets.length > 0 ? budgets[0] : "");
+    // An explicit "" (from the assistant) leaves the budget for the visitor to pick
+    const defaultBudget = initialData?.budget ?? budgets[0] ?? "";
 
     setForm({
       name: initialData?.name ?? "",
@@ -52,6 +53,10 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (budgetOptions.length > 0 && !form.budget) {
+      setError("Choisissez une fourchette de budget.");
+      return;
+    }
     setError("");
     setLoading(true);
     try {

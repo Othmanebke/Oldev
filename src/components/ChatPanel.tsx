@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useContactModal } from "@/components/ContactModalProvider";
+import { useContactModal, type ContactFormData } from "@/components/ContactModalProvider";
 import { EMAIL } from "@/lib/site";
 import { SERVICES, type ServiceKey } from "@/lib/services";
 
-/** `form`: the contact form offered under an answer (a service, or "" for an empty form). */
-type Msg = { role: "user" | "assistant"; text: string; form?: ServiceKey | "" | null };
+/** `form`: the contact form offered under an answer (a service, or "" for an empty form); `prefill`: what the assistant collected for it. */
+type Prefill = Pick<ContactFormData, "name" | "email" | "phone" | "message">;
+type Msg = { role: "user" | "assistant"; text: string; form?: ServiceKey | "" | null; prefill?: Prefill };
 
-const GREETING: Msg = { role: "assistant", text: "Bonjour ! Je suis l'assistant d'Othmane. Une question sur un site, un prix ou un délai ? Ou choisissez directement votre projet." };
-const SUGGESTS = ["Combien coûte un site vitrine ?", "Quels sont les délais ?", "Tu fais du WordPress ?"];
+const GREETING: Msg = { role: "assistant", text: "Bonjour ! Je suis l'assistant d'Othmane. Posez-moi toutes vos questions sur votre futur site, ou dites-moi votre projet : je prépare votre demande de devis avec vous." };
+const SUGGESTS = ["Combien coûte un site vitrine ?", "Le site m'appartient-il ?", "Comment se passe un projet ?", "Je n'y connais rien, c'est grave ?"];
 const PROJECTS: { key: ServiceKey; label: string }[] = [
   { key: "vitrine", label: "Site vitrine" },
   { key: "webapp", label: "Site sur-mesure" },
@@ -47,11 +48,11 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
     };
   }, [open, onClose]);
 
-  /** Closes the chat and opens the contact form, with the service and its budget range when known. */
-  const toForm = (key?: ServiceKey | "") => {
+  /** Closes the chat and opens the contact form with what the assistant collected; the budget is left for the visitor to pick. */
+  const toForm = (key?: ServiceKey | "", prefill?: Prefill) => {
     onClose();
     const s = key ? SERVICES[key] : undefined;
-    openModal(s ? { type: s.label, budget: s.budgets[0] } : undefined);
+    openModal(s || prefill ? { ...prefill, type: s?.label, budget: "" } : undefined);
   };
 
   const ask = async (q: string) => {
@@ -69,7 +70,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
         body: JSON.stringify({ messages: next.map(({ role, text }) => ({ role, text })) }),
       });
       const data = await res.json();
-      if (res.ok && typeof data.text === "string") reply = { role: "assistant", text: data.text, form: data.form ?? null };
+      if (res.ok && typeof data.text === "string") reply = { role: "assistant", text: data.text, form: data.form ?? null, prefill: data.prefill };
     } catch {
       // keep the fallback
     }
@@ -116,10 +117,14 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
             </div>
             {m.form != null && (
               <button
-                onClick={() => toForm(m.form ?? "")}
+                onClick={() => toForm(m.form ?? "", m.prefill)}
                 className="self-start rounded-full bg-abcs-red px-3.5 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-[#F4F1EC] hover:text-[#0A0908]"
               >
-                {m.form ? `Remplir le formulaire · ${PROJECTS.find((p) => p.key === m.form)?.label ?? "devis"}` : "Ouvrir le formulaire"} ↗
+                {m.prefill?.name || m.prefill?.email
+                  ? "Choisir mon budget et envoyer"
+                  : m.form
+                    ? `Remplir le formulaire · ${PROJECTS.find((p) => p.key === m.form)?.label ?? "devis"}`
+                    : "Ouvrir le formulaire"} ↗
               </button>
             )}
           </div>
@@ -143,8 +148,8 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
             <span className="mt-2 text-[12px] font-semibold uppercase tracking-[.12em] text-[rgba(244,241,236,.45)]">Démarrer un projet</span>
             <div className="flex flex-wrap gap-1.5">
               {PROJECTS.map((p) => (
-                <button key={p.key} onClick={() => toForm(p.key)} className={`${chip} hover:!bg-abcs-red hover:text-white`}>
-                  {p.label} ↗
+                <button key={p.key} onClick={() => ask(`Je voudrais démarrer un projet : ${p.label.toLowerCase()}.`)} className={`${chip} hover:!bg-abcs-red hover:text-white`}>
+                  {p.label}
                 </button>
               ))}
             </div>
