@@ -260,15 +260,16 @@ export function ServicesSection() {
   const paused = useRef(false);
   const resume = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // The sun moves to the next offer every 4.2 s, unless a column is hovered or a sheet is open
+  // The sun moves to the next offer every 4.2 s, unless a column is hovered or a sheet is open.
+  // Phones stack the offers and can't hover: all of them stay lit there, no rotation.
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || !wide) return;
     const t = setInterval(() => !paused.current && setSun((s) => (s + 1) % 3), 4200);
     return () => {
       clearInterval(t);
       clearTimeout(resume.current);
     };
-  }, [reduced]);
+  }, [reduced, wide]);
 
   const hover = (i: number) => {
     paused.current = true;
@@ -309,7 +310,7 @@ export function ServicesSection() {
             }}
           >
             {PLANS.map((p, i) => {
-              const on = sun === i;
+              const on = !wide || sun === i;
               const o = OFFERS[i];
               const fade = "transition-colors duration-[800ms]";
               const label = on ? "text-[#FF8A3D]" : "text-[rgba(244,244,242,.4)]";

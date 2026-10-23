@@ -159,7 +159,7 @@ export default function WorkSection() {
 
         <div data-reveal className="flex justify-center">
           <div
-            className="flex flex-wrap justify-center gap-1 rounded-full bg-white/[.04] p-[5px] shadow-[inset_0_0_0_1px_rgba(255,255,255,.08)]"
+            className="grid grid-cols-2 gap-1 rounded-[24px] bg-white/[.04] p-[5px] shadow-[inset_0_0_0_1px_rgba(255,255,255,.08)] sm:flex sm:flex-wrap sm:justify-center sm:rounded-full"
             role="group"
             aria-label="Filtrer par type de site"
           >
@@ -171,7 +171,7 @@ export default function WorkSection() {
                   key={f.tag}
                   onClick={() => setFilter(f.tag)}
                   aria-pressed={on}
-                  className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-[11px] text-[15px] font-semibold transition-all duration-300 ${
+                  className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 py-[11px] max-sm:px-3 text-[15px] font-semibold transition-all duration-300 ${
                     on
                       ? "bg-[rgba(255,90,20,.14)] text-white shadow-[inset_0_0_0_1px_rgba(255,120,50,.45),0_0_24px_-6px_rgba(255,90,20,.5)]"
                       : "bg-transparent text-[rgba(244,244,242,.45)] hover:bg-white/[.05] hover:text-white"

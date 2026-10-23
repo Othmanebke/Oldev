@@ -20,7 +20,8 @@ const barBg = (i: number) => BAR_BG[Math.min(2, Math.min(i, BARS.length - 1 - i)
 
 const TIKTOK = SOCIALS.find((s) => s.label === "TikTok")!.href;
 
-const link = "text-white/60 transition-colors hover:text-abcs-red";
+// Taller tap area on phones
+const link = "inline-block py-2.5 text-white/60 transition-colors hover:text-abcs-red sm:py-0";
 
 const OFFERS = [
   { href: "/services/site-vitrine", label: "Site vitrine" },
@@ -161,15 +162,15 @@ export default function Footer() {
           <Logo className="h-[22px]" />
         </Link>
 
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2.5 border-t border-white/12 pt-[22px] text-[14px] text-white/60">
-          <nav aria-label="Offres" className="flex flex-wrap gap-x-6 gap-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 sm:gap-y-2.5 border-t border-white/12 pt-[22px] text-[14px] text-white/60">
+          <nav aria-label="Offres" className="flex flex-wrap gap-x-6 sm:gap-y-2">
             {OFFERS.map((o) => (
               <Link key={o.href} href={o.href} className={link}>
                 {o.label}
               </Link>
             ))}
           </nav>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
+          <div className="flex flex-wrap gap-x-6 sm:gap-y-2">
             <Link
               href="/#portfolio"
               onClick={(e) => {

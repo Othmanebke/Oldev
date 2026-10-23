@@ -32,9 +32,10 @@ const DIPLOMAS = [
 ];
 
 const archivo = { fontFamily: "var(--font-archivo-flex), sans-serif" } as const;
-// Date column, dot column and gap: the rail sits in the middle of the dot column
-const COLS = "clamp(70px,14vw,170px) 32px minmax(0,1fr)";
-const GAP = "clamp(12px,2vw,28px)";
+// Date column (from 640px; phones show the date above the role), dot column and gap: the rail sits
+// in the middle of the dot column
+const COLS = "grid-cols-[32px_minmax(0,1fr)] gap-x-4 sm:grid-cols-[clamp(70px,14vw,170px)_32px_minmax(0,1fr)] sm:gap-x-[clamp(12px,2vw,28px)]";
+const RAIL_LEFT = "left-[15px] sm:left-[calc(clamp(70px,14vw,170px)+clamp(12px,2vw,28px)+15px)]";
 
 /** Light section: vertical timeline whose orange line grows with the scroll, then the diplomas. */
 export default function ExperienceSection() {
@@ -80,7 +81,7 @@ export default function ExperienceSection() {
 
         <ol ref={listRef} className="relative m-0 flex list-none flex-col p-0 pt-[clamp(8px,1.5vw,16px)]">
           {/* Grey rail + orange progress, centred in the 32px dot column */}
-          <div aria-hidden className="absolute bottom-0 top-[calc(clamp(8px,1.5vw,16px)+9px)] w-0.5 bg-[rgba(17,17,17,.12)]" style={{ left: `calc(clamp(70px,14vw,170px) + ${GAP} + 15px)` }}>
+          <div aria-hidden className={`absolute bottom-0 top-[calc(clamp(8px,1.5vw,16px)+9px)] w-0.5 bg-[rgba(17,17,17,.12)] ${RAIL_LEFT}`}>
             <div ref={lineRef} className="w-full bg-abcs-red shadow-[0_0_12px_rgba(255,59,0,.45)]" />
           </div>
 
@@ -88,10 +89,9 @@ export default function ExperienceSection() {
             <li
               key={x.company}
               data-reveal
-              className="grid pb-[clamp(44px,5.5vw,72px)] last:pb-0"
-              style={{ gridTemplateColumns: COLS, columnGap: GAP }}
+              className={`grid pb-[clamp(44px,5.5vw,72px)] last:pb-0 ${COLS}`}
             >
-              <div className="flex flex-col pt-px text-[15px] font-semibold leading-[1.3] tracking-[-.01em] text-[#111] tabular-nums sm:flex-row sm:gap-[.4ch] sm:whitespace-nowrap" style={archivo}>
+              <div className="flex flex-col pt-px text-[15px] max-sm:hidden font-semibold leading-[1.3] tracking-[-.01em] text-[#111] tabular-nums sm:flex-row sm:gap-[.4ch] sm:whitespace-nowrap" style={archivo}>
                 <span>
                   {x.from} <span className="font-normal text-[rgba(17,17,17,.3)]">–</span>
                 </span>
@@ -101,6 +101,9 @@ export default function ExperienceSection() {
                 <span data-dot className="tl-dot relative z-[2] mt-0.5 block size-4 rounded-full" />
               </span>
               <div className="flex min-w-0 flex-col gap-3">
+                <span className="text-[14px] font-semibold leading-[1.3] text-[rgba(17,17,17,.5)] tabular-nums sm:hidden" style={archivo}>
+                  {x.from} – {x.to}
+                </span>
                 <span className="flex flex-wrap items-center gap-2 text-[15px] font-semibold text-[#111]">
                   {x.company}
                   {i === 0 && (
