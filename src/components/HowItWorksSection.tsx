@@ -21,7 +21,7 @@ const smooth = (a: number, b: number, v: number) => {
 
 /**
  * How it works. Desktop: a 280vh section with a sticky screen; each step shows
- * alone in the middle (big outlined number and glow behind it), then the three
+ * alone in the middle (three bars at the bottom show which), then the three
  * glide to their place in a row and the CTA fades in. Each step's title (letter
  * by letter) and text (word by word) stagger in whenever the step shows, so the
  * three replay together at the end. Phones: a list, each step staggering in when
@@ -61,7 +61,6 @@ export default function HowItWorksSection() {
     const el = root.current;
     if (!story || !el) return;
     const steps = Array.from(el.querySelectorAll<HTMLElement>("[data-step]"));
-    const nums = Array.from(el.querySelectorAll<HTMLElement>("[data-num]"));
     const dots = Array.from(el.querySelectorAll<HTMLElement>("[data-dot]"));
     const deco = el.querySelector<HTMLElement>("[data-deco]")!;
     const cta = el.querySelector<HTMLElement>("[data-cta]")!;
@@ -100,7 +99,6 @@ export default function HowItWorksSection() {
       });
       const d = smooth(0, 0.04, cur) * (1 - q);
       deco.style.opacity = d.toFixed(3);
-      nums.forEach((n, i) => (n.style.opacity = i === active ? "1" : "0"));
       dots.forEach((dot, i) => {
         dot.style.width = i === active ? "28px" : "12px";
         dot.style.backgroundColor = i === active ? "#FF3B00" : "rgba(255,255,255,.18)";
@@ -134,21 +132,6 @@ export default function HowItWorksSection() {
       >
         {story && (
           <div aria-hidden data-deco className="pointer-events-none absolute inset-0 -z-[1] overflow-hidden opacity-0">
-            <div
-              data-glow
-              className="absolute left-1/2 top-[58%] aspect-[1.6] w-[min(760px,80vw)] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[20px]"
-              style={{ background: "radial-gradient(closest-side,rgba(255,59,0,.22),rgba(255,59,0,.06) 55%,rgba(255,59,0,0))" }}
-            />
-            {STEPS.map((s) => (
-              <span
-                key={s.n}
-                data-num
-                className="absolute left-1/2 top-[58%] -translate-x-1/2 -translate-y-1/2 font-extrabold leading-none tracking-[-.06em] text-transparent opacity-0 transition-opacity duration-500"
-                style={{ ...archivo, fontSize: "clamp(220px,30vw,440px)", WebkitTextStroke: "1.5px rgba(255,255,255,.09)" }}
-              >
-                {s.n}
-              </span>
-            ))}
             <div className="absolute bottom-[clamp(28px,5vh,48px)] left-1/2 flex -translate-x-1/2 items-center gap-2.5">
               {STEPS.map((s) => (
                 <span key={s.n} data-dot className="h-1 w-3 rounded-full bg-white/[.18] transition-[width,background-color] duration-300" />
