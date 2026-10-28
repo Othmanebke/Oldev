@@ -4,40 +4,34 @@ import { useId, useState } from "react";
 
 type Props = {
   items: { q: string; a: string }[];
-  tone?: "light" | "dark";
   /** Index open on first render (-1 = all closed). */
   defaultOpen?: number;
 };
 
-/** One-open-at-a-time FAQ. Answers stay in the DOM (collapsed), so they are crawlable. */
-export default function FaqAccordion({ items, tone = "light", defaultOpen = 0 }: Props) {
+/** Numbered FAQ like the home page's, one open at a time. Answers stay in the DOM (collapsed), so they are crawlable. */
+export default function FaqAccordion({ items, defaultOpen = 0 }: Props) {
   const [open, setOpen] = useState(defaultOpen);
   const id = useId();
-  const dark = tone === "dark";
-  const line = dark ? "border-white/15" : "border-[rgba(17,17,17,.12)]";
 
   return (
-    <div className={`flex flex-col border-t ${line}`}>
+    <div className="flex flex-col border-b border-white/10">
       {items.map((f, i) => {
         const isOpen = open === i;
         return (
-          <div key={f.q} className={`border-b ${line}`}>
+          <div key={f.q} className="border-t border-white/10">
             <button
               onClick={() => setOpen(isOpen ? -1 : i)}
               aria-expanded={isOpen}
               aria-controls={`${id}-${i}`}
-              className={`group flex w-full items-center justify-between gap-5 py-5 text-left text-[17px] font-semibold leading-[1.4] ${dark ? "text-white" : "text-[#111]"}`}
+              className="group flex w-full items-start gap-4 py-5 text-left text-[#f4f4f2]"
             >
-              <span>{f.q}</span>
+              <span className={`w-7 flex-none pt-[3px] text-[13px] font-semibold transition-colors duration-300 ${isOpen ? "text-abcs-red" : "text-[#a0a0a0]"}`}>
+                {String(i + 1).padStart(2, "0")}.
+              </span>
+              <span className="flex-1 text-[17px] font-semibold leading-[1.4]">{f.q}</span>
               <span
                 aria-hidden
-                className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-[16px] leading-none transition-[rotate,background-color,border-color,color] duration-300 ease-out-expo ${
-                  isOpen
-                    ? "rotate-45 border-abcs-red bg-abcs-red text-white"
-                    : dark
-                      ? "border-white/25 text-white group-hover:border-white"
-                      : "border-[rgba(17,17,17,.2)] text-[#111] group-hover:border-[#111]"
-                }`}
+                className={`grid size-7 flex-none place-items-center rounded-full text-[16px] transition-all duration-[350ms] ease-out-expo ${isOpen ? "rotate-45 bg-abcs-red" : "bg-[#1F1C19] group-hover:bg-[#2A2622]"}`}
               >
                 +
               </span>
@@ -45,11 +39,11 @@ export default function FaqAccordion({ items, tone = "light", defaultOpen = 0 }:
             <div
               id={`${id}-${i}`}
               aria-hidden={!isOpen}
-              className={`grid transition-[grid-template-rows] duration-300 ease-out-expo ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+              className={`grid transition-[grid-template-rows] duration-[450ms] ease-out-expo ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
             >
-              <p className={`m-0 max-w-[640px] overflow-hidden text-[15px] leading-[1.6] text-pretty ${dark ? "text-white/70" : "text-[#555]"}`}>
-                <span className="block pb-5">{f.a}</span>
-              </p>
+              <div className="overflow-hidden">
+                <p className="m-0 max-w-[680px] pb-[22px] pl-11 text-[16px] leading-[1.65] text-[#c8c8c8] text-pretty max-sm:text-[15px]">{f.a}</p>
+              </div>
             </div>
           </div>
         );

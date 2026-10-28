@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Archivo_Black, Archivo, Caveat } from "next/font/google";
+import { Inter, Archivo_Black, Archivo } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
 import Navbar from "@/components/Navbar";
@@ -25,13 +25,6 @@ const archivoFlex = Archivo({
   subsets: ["latin"],
   axes: ["wdth"],
   style: ["normal", "italic"],
-});
-
-// Only used on /legal — not preloaded on every page
-const caveat = Caveat({
-  variable: "--font-caveat",
-  subsets: ["latin"],
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -97,7 +90,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${inter.variable} ${archivoBlack.variable} ${archivoFlex.variable} ${caveat.variable} h-full antialiased`}
+      className={`${inter.variable} ${archivoBlack.variable} ${archivoFlex.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-black text-black">
           <ContactModalProvider>

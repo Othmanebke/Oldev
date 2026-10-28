@@ -110,7 +110,7 @@ export default function ProjectPreview({ projects, index, onChange }: Props) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[130] flex items-center justify-center bg-[rgba(10,10,10,.7)] p-[clamp(8px,3vw,40px)] backdrop-blur-[6px]"
+      className="fixed inset-0 z-[130] flex items-center justify-center bg-[rgba(0,0,0,.75)] p-[clamp(8px,3vw,40px)] backdrop-blur-[8px]"
       style={{ animation: "pp-fade .3s ease both" }}
       onClick={(e) => e.target === e.currentTarget && onChange(null)}
     >
@@ -119,19 +119,19 @@ export default function ProjectPreview({ projects, index, onChange }: Props) {
         role="dialog"
         aria-modal="true"
         aria-label={`Aperçu du site ${project.name}`}
-        className="flex h-[min(90vh,100%)] w-[min(1120px,100%)] flex-col overflow-hidden rounded-2xl bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,.6)]"
+        className="flex h-[min(90vh,100%)] w-[min(1120px,100%)] flex-col overflow-hidden rounded-[22px] bg-[#0a0a0a] shadow-[0_40px_120px_-20px_rgba(0,0,0,.8),0_40px_120px_-40px_rgba(255,59,0,.35),inset_0_0_0_1px_rgba(255,255,255,.08)]"
         style={{ animation: "pp-in .45s cubic-bezier(.22,1,.36,1) both" }}
       >
         {/* Browser bar */}
-        <div className="flex shrink-0 items-center gap-3 border-b border-[rgba(17,17,17,.1)] bg-[#f4f4f2] px-3 py-2.5 sm:px-4">
+        <div className="flex shrink-0 items-center gap-3 border-b border-white/10 bg-[#111] px-3 py-2.5 sm:px-4">
           <span aria-hidden className="hidden gap-1.5 sm:flex">
-            <span className="h-3 w-3 rounded-full bg-[#d5d5d2]" />
-            <span className="h-3 w-3 rounded-full bg-[#d5d5d2]" />
-            <span className="h-3 w-3 rounded-full bg-[#d5d5d2]" />
+            <span className="h-3 w-3 rounded-full bg-white/20" />
+            <span className="h-3 w-3 rounded-full bg-white/20" />
+            <span className="h-3 w-3 rounded-full bg-white/20" />
           </span>
           <p className="m-0 flex min-w-0 flex-1 items-baseline gap-2 text-[14px] sm:pl-2">
-            <span className="shrink-0 font-semibold text-[#111]">{project.name}</span>
-            <span className="truncate text-[#666]">{project.category}</span>
+            <span className="shrink-0 font-semibold text-white">{project.name}</span>
+            <span className="truncate text-[#a0a0a0]">{project.sector}</span>
           </p>
           <div className="flex shrink-0 gap-1.5">
             {(
@@ -144,7 +144,7 @@ export default function ProjectPreview({ projects, index, onChange }: Props) {
                 key={label}
                 onClick={() => go(d)}
                 aria-label={label}
-                className="grid h-9 w-9 place-items-center rounded-full border border-[rgba(17,17,17,.15)] text-[#111] transition-colors hover:border-[#111]"
+                className="grid h-9 w-9 place-items-center rounded-full border border-white/20 text-white transition-colors hover:border-abcs-red hover:bg-abcs-red"
               >
                 <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[2.2]"><path d={path} /></svg>
               </button>
@@ -153,7 +153,7 @@ export default function ProjectPreview({ projects, index, onChange }: Props) {
               data-close
               onClick={() => onChange(null)}
               aria-label="Fermer l’aperçu"
-              className="grid h-9 w-9 place-items-center rounded-full bg-[#111] text-white transition-colors hover:bg-abcs-red"
+              className="grid h-9 w-9 place-items-center rounded-full bg-white text-[#111] transition-colors hover:bg-abcs-red hover:text-white"
             >
               <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[2.2]"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
@@ -161,7 +161,7 @@ export default function ProjectPreview({ projects, index, onChange }: Props) {
         </div>
 
         {/* Capture, scrolled by the animation only */}
-        <div ref={box} className="relative min-h-0 flex-1 overflow-hidden bg-[#ececea]">
+        <div ref={box} className="relative min-h-0 flex-1 overflow-hidden bg-[#111]">
           <Image
             key={project.id}
             ref={img}

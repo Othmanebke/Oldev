@@ -6,7 +6,7 @@ import heroPhoto from "@/img/hero.webp";
 import { section } from "@/components/sections/layout";
 
 /** Projects cycling inside the mini mockup of the manifesto. */
-const PILLS = ["eclat", "luxecars", "dental", "verdure", "renova"].map((n) => `/portfolio/${n}.webp`);
+const PILLS = ["moreau", "wecars", "dental", "griddle", "kinetik"].map((n) => `/portfolio/${n}.webp`);
 const PILL_AT = 4; // the mockup comes after "connaissez"
 const MANIFESTO = [
   ["Vous", "ne", "me", "connaissez", "pas", "encore,"],
@@ -19,9 +19,9 @@ const archivo: CSSProperties = { fontFamily: "var(--font-archivo-flex), sans-ser
 
 type Pt = { tx: number; ty: number; sx: number; sy: number; l: number; s: number; o: boolean; ph: number; vx: number; vy: number; ox: number; oy: number };
 
-/** Samples the portrait (120 px wide) into particles: each one has a random start around the centre and its pixel as target. */
+/** Samples the portrait (92 px wide) into particles: each one has a random start around the centre and its pixel as target. */
 function sample(img: HTMLImageElement): { pts: Pt[]; aspect: number } | null {
-  const W = 120, H = Math.round((W * img.height) / img.width);
+  const W = 92, H = Math.round((W * img.height) / img.width);
   const c = document.createElement("canvas");
   c.width = W;
   c.height = H;
@@ -41,17 +41,17 @@ function sample(img: HTMLImageElement): { pts: Pt[]; aspect: number } | null {
     for (let i = 0; i < W; i++) {
       const k = (j * W + i) * 4, a = d[k + 3] / 255, l = (d[k] + d[k + 1] + d[k + 2]) / 765;
       if (useAlpha ? a < 0.5 : l < 0.12) continue;
-      if (Math.random() > 0.25 + l * 0.6) continue;
+      if (Math.random() > 0.2 + l * 0.45) continue;
       const ang = Math.random() * Math.PI * 2, rad = 0.6 + Math.random() * 0.9;
-      pts.push({ tx: i / W, ty: j / H, sx: 0.5 + Math.cos(ang) * rad, sy: 0.5 + Math.sin(ang) * rad, l, s: 0.8 + l * 1.4, o: Math.random() < 0.035, ph: Math.random() * 6.28, vx: 0, vy: 0, ox: 0, oy: 0 });
+      pts.push({ tx: i / W, ty: j / H, sx: 0.5 + Math.cos(ang) * rad, sy: 0.5 + Math.sin(ang) * rad, l, s: 1.1 + l * 1.5, o: Math.random() < 0.02, ph: Math.random() * 6.28, vx: 0, vy: 0, ox: 0, oy: 0 });
     }
   return { pts, aspect: H / W };
 }
 
 /**
  * Who I am: a manifesto whose words sharpen with the scroll, then my portrait
- * drawn by particles converging as the (220vh, sticky) block scrolls by, with
- * three short lines and the signature.
+ * drawn by particles converging as the (150vh, sticky) block scrolls by, then
+ * three short lines.
  */
 export function AboutSection() {
   const stmt = useRef<HTMLParagraphElement>(null);
@@ -68,7 +68,7 @@ export function AboutSection() {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let pq = reduced ? 1 : 0, inView = false, raf = 0, praf = 0;
+    let pq = reduced ? 1 : 0, pqS = pq, inView = false, raf = 0, praf = 0;
     let data: ReturnType<typeof sample> = null;
 
     const img = new window.Image();
@@ -85,17 +85,16 @@ export function AboutSection() {
         const r = st.getBoundingClientRect(), prog = reduced ? 1 : clamp01((vh * 0.9 - r.top) / (r.height + vh * 0.45));
         const ws = st.querySelectorAll<HTMLElement>("[data-w]"), n = ws.length;
         ws.forEach((w, i) => {
-          const wp = clamp01(prog * (n + 3) - i);
-          w.style.opacity = String(0.1 + wp * 0.9);
-          w.style.filter = wp < 1 ? `blur(${(1 - wp) * 6}px)` : "";
+          const wp = clamp01(prog * (n + 6) - i);
+          w.style.opacity = String(0.35 + wp * 0.65);
+          w.style.filter = wp < 1 ? `blur(${(1 - wp) * 2.5}px)` : "";
           w.style.transform = wp < 1 ? `translateY(${(1 - wp) * 0.3}em)` : "";
         });
       }
       const m = me.current;
       if (m) {
         const r = m.getBoundingClientRect();
-        pq = reduced ? 1 : clamp01((vh - r.top) / (r.height - vh * 0.2));
-        m.style.setProperty("--q", pq.toFixed(3));
+        pq = reduced ? 1 : clamp01((vh - r.top) / (r.height - vh * 0.1));
         inView = r.top < vh && r.bottom > 0;
       }
     };
@@ -106,6 +105,9 @@ export function AboutSection() {
     const draw = () => {
       praf = requestAnimationFrame(draw);
       const cv = canvas.current;
+      // Smoothed progress, also drives the three lines (--q)
+      pqS += (pq - pqS) * 0.09;
+      me.current?.style.setProperty("--q", pqS.toFixed(3));
       if (!data || !cv || !inView) return;
       const dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, hh = cv.clientHeight;
       if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) {
@@ -116,10 +118,11 @@ export function AboutSection() {
       if (!ctx) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, hh);
-      const q = reduced ? 1 : clamp01(pq / 0.7), e = 1 - Math.pow(1 - q, 3);
-      let ph = hh, pw = ph / data.aspect;
-      if (pw > w) {
-        pw = w;
+      const q = reduced ? 1 : clamp01(pqS / 0.7), e = q * q * (3 - 2 * q);
+      // Portrait at 86 % of the canvas, centred, never cut
+      let ph = hh * 0.86, pw = ph / data.aspect;
+      if (pw > w * 0.86) {
+        pw = w * 0.86;
         ph = pw * data.aspect;
       }
       const ox = (w - pw) / 2, oy = (hh - ph) / 2, t = performance.now() / 1000, M = mouse.current, orange: number[] = [];
@@ -163,15 +166,15 @@ export function AboutSection() {
 
   const lineStyle = (from: number, to: number): CSSProperties => ({
     opacity: `calc((var(--q) - ${from}) * 8)`,
-    transform: `translateY(calc(max(0, ${to} - var(--q)) * 60px))`,
-    filter: `blur(calc(max(0, ${to} - var(--q)) * 40px))`,
+    transform: `translateY(calc(min(.12, max(0, ${to} - var(--q))) * 28px / .12))`,
+    filter: `blur(calc(min(.12, max(0, ${to} - var(--q))) * 14px / .12))`,
   });
 
   return (
     <section id="about" data-stack className={section}>
 
       {/* Manifesto */}
-      <div className="relative z-[1]" style={{ padding: "clamp(90px,16vh,180px) 24px clamp(40px,8vh,80px)" }}>
+      <div className="relative z-[1]" style={{ padding: "clamp(88px,11vw,150px) 24px clamp(40px,5vw,72px)" }}>
         <p ref={stmt} className="m-0 mx-auto max-w-[880px] text-center leading-[1.25] text-[#f4f4f2] text-balance" style={{ ...archivo, fontSize: "clamp(26px,3.6vw,50px)" }}>
           {MANIFESTO.map((line, l) => (
             <span key={l}>
@@ -203,8 +206,8 @@ export function AboutSection() {
       </div>
 
       {/* Portrait in particles */}
-      <div ref={me} className="relative z-[1] h-[220vh]" style={{ "--q": 0 } as CSSProperties}>
-        <div className="sticky top-0 flex h-screen flex-col items-center justify-center p-6" style={{ gap: "clamp(20px,4vh,36px)" }}>
+      <div ref={me} className="relative z-[1] h-[150vh]" style={{ "--q": 0 } as CSSProperties}>
+        <div className="sticky top-0 flex h-screen max-h-[100vh] flex-col overflow-hidden items-center justify-center p-6" style={{ gap: "clamp(20px,4vh,36px)" }}>
           <canvas
             ref={canvas}
             aria-hidden
@@ -215,25 +218,21 @@ export function AboutSection() {
             onPointerLeave={() => {
               mouse.current = { x: -9999, y: -9999 };
             }}
-            className="block h-[min(46vh,440px)] w-[min(420px,80vw)] touch-pan-y"
+            className="block h-[min(52vh,520px)] w-[min(560px,92vw)] touch-pan-y"
           />
-          <div className="flex flex-col items-center gap-1 text-center leading-[1.35] tracking-[-.015em] text-[#f4f4f2]" style={{ ...archivo, fontSize: "clamp(18px,1.8vw,24px)" }}>
+          <div className="flex flex-col items-center gap-1.5 text-center font-bold leading-[1.15] tracking-[-.035em] text-white text-balance" style={{ ...archivo, fontWeight: 700, fontSize: "clamp(22px,2.6vw,34px)" }}>
             <span style={lineStyle(0.7, 0.82)}>{LINES[0]}</span>
-            <span style={lineStyle(0.78, 0.9)}>{LINES[1]}</span>
+            <span className="text-[#b5b5b5]" style={lineStyle(0.78, 0.9)}>{LINES[1]}</span>
             <span style={lineStyle(0.86, 0.98)}>
               {LINES[2]}
               <span className="text-abcs-red">.</span>
-            </span>
-            <span className="mt-3.5 font-sans text-[13px] font-medium tracking-normal text-[rgba(244,241,236,.45)]" style={{ opacity: "calc((var(--q) - .92) * 12)" }}>
-              Othmane, fondateur d&apos;O&apos;LDEV
             </span>
           </div>
         </div>
       </div>
 
       <p className="sr-only">
-        Développeur web freelance avec 5 ans d&apos;expérience (Inetum, Fujitsu, AJC), diplômé d&apos;un Bac+5 Expert
-        Informatique Web. Basé à Brie-Comte-Robert, en Seine-et-Marne (Île-de-France).
+        Othmane Bouakline, développeur web freelance diplômé d&apos;un Master Expert Informatique Web. Basé à Brie-Comte-Robert, en Seine-et-Marne (Île-de-France).
       </p>
     </section>
   );

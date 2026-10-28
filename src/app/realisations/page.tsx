@@ -28,13 +28,13 @@ export default function RealisationsPage() {
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Réalisations", path: "/realisations" }])} />
       <SeoHeader />
-      <main className="footer-gap flex flex-col bg-[#f4f4f2] text-[#111]">
+      <main className="flex flex-col bg-black text-[#f4f4f2]">
         <SeoHero
           crumbs={[{ name: "Réalisations" }]}
           title="Mes réalisations"
           intro={[
             "Sites vitrines, sites corporate WordPress, boutiques en ligne et applications web en Next.js / React : une sélection de projets clients et personnels.",
-            "Cliquez sur un projet pour voir le site défiler en entier. Les projets « Concept » sont des créations personnelles.",
+            "Cliquez sur un projet pour voir le site en entier, du menu jusqu’au pied de page.",
           ]}
           stats={[
             { v: String(projects.length), l: "projets présentés" },

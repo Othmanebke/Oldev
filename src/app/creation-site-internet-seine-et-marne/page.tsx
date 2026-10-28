@@ -27,14 +27,14 @@ export const metadata: Metadata = {
 };
 
 /** Client work from each stack. */
-const SHOWCASE = ["cfi", "elior", "idemia", "tennis-bry", "papillon-dor", "parfumerie"];
+const SHOWCASE = ["cfi", "elior", "idemia", "tennis-bry", "papillon-dor", "brows"];
 
 export default function LocalPage() {
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Seine-et-Marne", path: PATH }])} />
       <SeoHeader />
-      <main className="footer-gap flex flex-col bg-[#f4f4f2] text-[#111]">
+      <main className="flex flex-col bg-black text-[#f4f4f2]">
         <SeoHero
           crumbs={[{ name: "Seine-et-Marne" }]}
           title="Création de site internet en Seine-et-Marne"
@@ -55,7 +55,7 @@ export default function LocalPage() {
           <H2>Quel site pour vous ?</H2>
           <ul className="m-0 flex list-none flex-col p-0">
             {SERVICE_PAGES.map((s) => (
-              <li key={s.slug} className="border-t border-[rgba(17,17,17,.12)] last:border-b">
+              <li key={s.slug} className="border-t border-white/10 last:border-b">
                 <Link
                   href={`/services/${s.slug}`}
                   className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-1 py-6 transition-[translate,color] duration-300 ease-out-expo hover:translate-x-3 hover:text-abcs-red min-[760px]:grid-cols-[minmax(0,1fr)_auto_auto]"
@@ -63,7 +63,7 @@ export default function LocalPage() {
                   <span className="text-[clamp(1.4rem,2.6vw,2.2rem)] leading-[1.05]" style={{ ...display, fontWeight: 700, letterSpacing: "-.02em" }}>
                     {s.h1}
                   </span>
-                  <span className="col-start-1 row-start-2 text-[15px] text-[#666] min-[760px]:col-start-2 min-[760px]:row-start-1">{priceRange(s.key)}</span>
+                  <span className="col-start-1 row-start-2 text-[15px] text-[#a0a0a0] min-[760px]:col-start-2 min-[760px]:row-start-1">{priceRange(s.key)}</span>
                   <span aria-hidden className="row-span-2 text-[22px] text-abcs-red min-[760px]:row-span-1">→</span>
                 </Link>
               </li>
@@ -73,13 +73,13 @@ export default function LocalPage() {
 
         <Section num="02" label="Proximité" dark>
           <H2>Près de chez vous</H2>
-          <p className="m-0 max-w-[640px] text-[17px] leading-[1.6] text-[#f4f4f2]/70 text-pretty">
+          <p className="m-0 max-w-[640px] text-[17px] leading-[1.6] text-[#c8c8c8] text-pretty">
             Basé à Brie-Comte-Robert, je travaille avec les entreprises de toute la Seine-et-Marne et du sud-est de l’Île-de-France, et avec des clients partout en
             France. Tout peut se faire à distance, par téléphone ou en visio.
           </p>
           <ul className="m-0 flex list-none flex-wrap gap-2 p-0" aria-label="Villes desservies">
             {LOCAL_TOWNS.map((t) => (
-              <li key={t} className="rounded-full border border-[rgba(244,244,242,.2)] px-3.5 py-1.5 text-[14px] text-[#f4f4f2]/85">
+              <li key={t} className="rounded-full border border-white/15 bg-white/[.03] px-3.5 py-1.5 text-[14px] text-[#e6e6e6]">
                 {t}
               </li>
             ))}

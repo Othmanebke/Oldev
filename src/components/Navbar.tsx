@@ -10,17 +10,18 @@ import { PAGES } from "@/lib/pages";
 
 const LINKS = [
   { label: "Projets", id: "portfolio" },
+  { label: "Méthode", id: "methode" },
   { label: "Tarifs", id: "services" },
+  { label: "Avis", id: "avis" },
+  { label: "FAQ", id: "faq" },
   { label: "À propos", id: "about" },
-  { label: "Parcours", id: "experiences" },
 ];
-
 
 const round = "grid size-11 flex-none place-items-center rounded-full text-[#F4F1EC] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white max-[359px]:size-10";
 
 /**
  * Floating bottom bar (every page): menu, AI chat, contact form, WhatsApp, Instagram.
- * Hidden over the home hero; shows once the services reach 60 % of the viewport.
+ * Hidden over the home hero; shows once the work section reaches 60 % of the viewport.
  * Opening a panel closes the other one.
  */
 export default function Navbar() {
@@ -35,7 +36,7 @@ export default function Navbar() {
 
   // Pages without a hero show it right away
   useEffect(() => {
-    const target = document.getElementById("services") ?? document.getElementById("top")?.nextElementSibling;
+    const target = document.getElementById("top")?.nextElementSibling;
     if (!target) {
       const id = requestAnimationFrame(() => setPastHero(true));
       return () => cancelAnimationFrame(id);
@@ -100,7 +101,7 @@ export default function Navbar() {
                   href={p.href}
                   aria-current={on ? "page" : undefined}
                   onClick={() => setMenu(false)}
-                  className={`flex h-[34px] items-center gap-2 rounded-xl px-4 text-[13px] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red ${on ? "text-[#F4F1EC]" : "text-[rgba(244,241,236,.6)]"}`}
+                  className={`flex h-[34px] items-center gap-2 rounded-xl px-4 text-[13px] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red ${on ? "text-[#F4F1EC]" : "text-[#a0a0a0]"}`}
                 >
                   {on && <span aria-hidden className="size-1.5 rounded-full bg-abcs-red" />}
                   {p.label}

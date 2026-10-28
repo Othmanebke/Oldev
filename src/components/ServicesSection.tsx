@@ -5,8 +5,10 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
 import { useContactModal } from "@/components/ContactModalProvider";
-import { FAQ, PLANS, SERVICES, onQuote, priceRange, startPrice, type ServiceKey } from "@/lib/services";
-import { section, sectionInner, sectionPad } from "@/components/sections/layout";
+import { PLANS, SERVICES, fromLabel, fromPrice, type ServiceKey } from "@/lib/services";
+import SectionHeading from "@/components/sections/SectionHeading";
+import { archivo, section, sectionInner, sectionPad } from "@/components/sections/layout";
+import { useMedia } from "@/lib/useMedia";
 
 const EXTRAS: { key: ServiceKey; name: string }[] = [
   { key: "branding_canva", name: "Logo & flyer" },
@@ -15,10 +17,9 @@ const EXTRAS: { key: ServiceKey; name: string }[] = [
 ];
 
 /** Column copy and detail sheet of each plan, in PLANS order. */
-const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: string; body: string }[] = [
+const OFFERS: { short: string; img: string; kicker: string; lead: string; body: string }[] = [
   {
     short: "Vitrine",
-    desc: "Une page claire et rapide pour être trouvé sur Google et contacté.",
     img: "/offres/moreau.webp",
     kicker: "01 · LANCEMENT",
     lead: "Une présence en ligne claire, rapide et pensée pour convertir. Tout ce qu’il faut pour être trouvé et contacté.",
@@ -26,7 +27,6 @@ const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: 
   },
   {
     short: "Sur-mesure",
-    desc: "Design exclusif, Next.js et animations pour un site qui marque.",
     img: "/offres/wecars.webp",
     kicker: "02 · CROISSANCE — LE PLUS CHOISI",
     lead: "Un design exclusif, conçu de zéro pour votre marque. Rien de générique, tout est pensé pour vous démarquer.",
@@ -34,7 +34,6 @@ const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: 
   },
   {
     short: "WordPress",
-    desc: "Un site que vous gérez seul, thème à votre image et formation incluse.",
     img: "/offres/kinetik.webp",
     kicker: "03 · AUTONOMIE",
     lead: "Un site que vous modifiez vous-même, sans dépendre de personne. Textes, images, articles : tout est administrable.",
@@ -42,7 +41,6 @@ const OFFERS: { short: string; desc: string; img: string; kicker: string; lead: 
   },
 ];
 
-const archivo = { fontFamily: "var(--font-archivo-flex), sans-serif" } as const;
 const SUN_X = ["16.66%", "50%", "83.33%"];
 const PLANET = "absolute left-1/2 top-[90px] aspect-square w-[max(2600px,240%)] -translate-x-1/2 rounded-full";
 // Phones: same planet turned on its side, its right edge a vertical arc 22px from the left
@@ -54,18 +52,6 @@ const DAWN_SIDE =
   "2px 0 0 #fff,3px 0 14px rgba(255,200,160,.95),12px 0 50px rgba(255,120,60,.7),inset -3px 0 2px -1px rgba(255,220,190,.9),inset -30px 0 50px -24px rgba(255,140,80,.45)";
 
 const noop = () => () => {};
-function useMedia(query: string) {
-  return useSyncExternalStore(
-    (cb) => {
-      const mq = window.matchMedia(query);
-      mq.addEventListener("change", cb);
-      return () => mq.removeEventListener("change", cb);
-    },
-    () => window.matchMedia(query).matches,
-    () => false
-  );
-}
-
 function Check() {
   return (
     <span aria-hidden className="mt-px grid size-[22px] flex-none place-items-center rounded-full bg-[rgba(255,59,0,.12)] text-abcs-red-text">
@@ -109,7 +95,7 @@ function DetailSheet({ index, onClose, onChoose }: { index: number | null; onClo
   const p = PLANS[last];
   const o = OFFERS[last];
   const infos = [
-    ["Prix", priceRange(p.key)],
+    ["Prix", fromLabel(p.key)],
     ["Délai", p.delay.replace("sem.", "semaines")],
     ["Révisions", p.revisions],
     ["Maintenance", "1 an offerte"],
@@ -209,52 +195,6 @@ function DetailSheet({ index, onClose, onChoose }: { index: number | null; onClo
   );
 }
 
-/** Numbered FAQ, one open at a time; answers stay in the DOM (crawlable). */
-function Faq() {
-  const [open, setOpen] = useState(0);
-  return (
-    <div data-reveal className="mx-auto flex w-full max-w-[620px] flex-col" style={{ gap: "clamp(28px,4vh,40px)", paddingTop: "clamp(40px,8vh,80px)" }}>
-      <div className="flex flex-col gap-2">
-        <span className="text-[12px] font-semibold tracking-[.14em] text-abcs-red">QUESTIONS</span>
-        <h3 className="m-0 font-semibold tracking-[-.025em] text-[#f4f4f2]" style={{ ...archivo, fontSize: "clamp(26px,3vw,36px)" }}>
-          Ce qu&apos;on me demande souvent
-        </h3>
-      </div>
-      <div className="flex flex-col">
-        {FAQ.map((f, i) => {
-          const o = open === i;
-          return (
-            <div key={f.q} className="border-t border-[rgba(244,241,236,.1)]">
-              <button
-                onClick={() => setOpen(o ? -1 : i)}
-                aria-expanded={o}
-                aria-controls={`faq-${i}`}
-                className="group flex w-full items-start gap-4 py-5 text-left text-[#F4F1EC]"
-              >
-                <span className={`w-7 flex-none pt-0.5 text-[12px] font-semibold transition-colors duration-300 ${o ? "text-abcs-red" : "text-[rgba(244,241,236,.4)]"}`}>
-                  {String(i + 1).padStart(2, "0")}.
-                </span>
-                <span className="flex-1 text-[16px] font-semibold">{f.q}</span>
-                <span
-                  aria-hidden
-                  className={`grid size-7 flex-none place-items-center rounded-full text-[16px] transition-all duration-[350ms] ease-out-expo ${o ? "rotate-45 bg-abcs-red" : "bg-[#1F1C19] group-hover:bg-[#2A2622]"}`}
-                >
-                  +
-                </span>
-              </button>
-              <div id={`faq-${i}`} aria-hidden={!o} className={`grid transition-[grid-template-rows] duration-[450ms] ease-out-expo ${o ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
-                <div className="overflow-hidden">
-                  <p className="m-0 px-11 pb-[22px] text-[15px] leading-[1.6] text-[rgba(244,241,236,.6)] text-pretty max-[480px]:pr-0">{f.a}</p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 export function ServicesSection() {
   const { openModal } = useContactModal();
   // Every offer opens the contact form, pre-filled with the service and its budget range
@@ -351,7 +291,7 @@ export function ServicesSection() {
 
   const quote = (
     <>
-      <span className="text-[14px] text-[rgba(244,244,242,.6)]">Maintenance 1 an offerte sur chaque offre</span>
+      <span className="text-[15px] text-[#b5b5b5]">Maintenance 1 an offerte sur chaque offre</span>
       <button
         onClick={() => openModal()}
         className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[.04] px-[18px] py-[11px] text-[14px] font-bold text-white transition-colors duration-[250ms] hover:border-abcs-red hover:bg-abcs-red"
@@ -364,7 +304,7 @@ export function ServicesSection() {
   return (
     <section id="services" data-stack className={section} style={sectionPad}>
       <div className={sectionInner} style={{ gap: "clamp(40px,5vw,64px)" }}>
-        <h2 className="sr-only">Offres et tarifs</h2>
+        <SectionHeading kicker="OFFRES & PRIX" title="Un prix clair, dès le départ" />
 
         {/* Three offers lit by a planet's dawn. Wide screens: horizon under the columns, full viewport
             width so the arc never stops at the content edges. Phones: vertical arc on the left. */}
@@ -396,9 +336,9 @@ export function ServicesSection() {
               const on = sun === i;
               const o = OFFERS[i];
               const fade = "transition-colors duration-[800ms]";
-              const label = on ? "text-[#FF8A3D]" : "text-[rgba(244,244,242,.4)]";
-              const title = on ? "text-white" : "text-[rgba(244,244,242,.28)]";
-              const desc = on ? "text-[rgba(244,244,242,.85)]" : "text-[rgba(244,244,242,.3)]";
+              const label = on ? "text-abcs-red" : "text-[#a0a0a0]";
+              const title = on ? "text-white" : "text-[rgba(244,244,242,.45)]";
+              const desc = on ? "text-[#d6d6d6]" : "text-[#a0a0a0]";
               return (
                 <button
                   key={p.key}
@@ -409,14 +349,14 @@ export function ServicesSection() {
                   aria-haspopup="dialog"
                   className={`flex cursor-pointer flex-col gap-3.5 bg-transparent p-0 ${wide ? "items-center text-center" : "items-start text-left"}`}
                 >
-                  <span className={`text-[15px] font-medium tabular-nums ${label} ${fade}`}>Délai {p.delay}</span>
                   <span className={`font-bold leading-none tracking-[-.035em] ${title} ${fade}`} style={{ ...archivo, fontSize: "clamp(2.2rem,4.4vw,3.6rem)" }}>
                     {o.short}
                   </span>
-                  <span className={`max-w-[300px] text-[16px] leading-[1.6] text-pretty ${desc} ${fade}`}>{o.desc}</span>
-                  <span className={`flex items-baseline gap-2 font-extrabold tracking-[-.03em] tabular-nums ${title} ${fade}`} style={{ ...archivo, fontSize: "clamp(1.6rem,2.4vw,2rem)" }}>
-                    {onQuote(p.key) ? "Sur devis" : startPrice(p.key)}
-                    {SERVICES[p.key].max && <span className={`text-[14px] font-medium tracking-normal ${desc} ${fade}`}>→ {SERVICES[p.key].max}</span>}
+                  <span className={`flex flex-col gap-0.5 ${wide ? "items-center" : "items-start"}`}>
+                    <span className={`text-[13px] font-medium ${desc} ${fade}`}>dès</span>
+                    <span className={`font-extrabold leading-[1.05] tracking-[-.03em] tabular-nums ${title} ${fade}`} style={{ ...archivo, fontSize: "clamp(1.8rem,2.6vw,2.3rem)" }}>
+                      {fromPrice(p.key)}
+                    </span>
                   </span>
                   <span className={`inline-flex items-center gap-1.5 text-[13px] font-semibold ${label} ${fade}`}>
                     Voir le détail <span aria-hidden>↓</span>
@@ -448,27 +388,26 @@ export function ServicesSection() {
           className={`flex flex-col items-center ${wide ? "" : "mt-6 border-t border-white/10 pt-12"}`}
           style={{ gap: "clamp(24px,3vw,36px)" }}
         >
-          <span className="text-[15px] font-medium text-[rgba(244,244,242,.45)]">Aussi disponible</span>
+          <span className="text-[15px] font-medium text-[#a0a0a0]">Aussi disponible</span>
           <div ref={extrasBox} className="grid w-full max-w-[960px] gap-2" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))" }}>
             {EXTRAS.map((e, i) => (
               <button
                 key={e.key}
                 data-extra
                 onClick={() => choose(e.key)}
-                className={`flex flex-col items-center gap-2 rounded-[20px] bg-transparent px-4 py-5 text-center transition-colors duration-500 hover:bg-[rgba(255,90,20,.06)] hover:text-white focus-visible:text-white ${
-                  extraLit === i ? "text-white" : "text-[rgba(244,244,242,.4)]"
+                className={`flex flex-col items-center gap-2 rounded-[20px] bg-transparent px-4 py-5 text-center transition-colors duration-500 hover:bg-[rgba(255,59,0,.06)] hover:text-white focus-visible:text-white ${
+                  extraLit === i ? "text-white" : "text-[#a0a0a0]"
                 }`}
               >
                 <span className="font-bold leading-none tracking-[-.03em]" style={{ ...archivo, fontSize: "clamp(1.4rem,2.2vw,1.8rem)" }}>
                   {e.name}
                 </span>
-                <span className="text-[14px] font-medium text-[#FF8A3D]">{SERVICES[e.key].price.toLowerCase()}</span>
+                <span className="text-[14px] font-medium text-abcs-red">{SERVICES[e.key].price.toLowerCase()}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <Faq />
       </div>
 
       <DetailSheet

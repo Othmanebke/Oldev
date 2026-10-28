@@ -139,7 +139,7 @@ export default function Preloader() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 15% at 50% 48%,rgba(240,253,250,.85) 0%,rgba(249,115,22,.85) 45%,rgba(249,115,22,0) 100%),radial-gradient(95% 30% at 50% 48%,rgba(249,115,22,.3) 0%,rgba(249,115,22,0) 70%)",
+              "radial-gradient(60% 15% at 50% 48%,rgba(240,253,250,.85) 0%,rgba(255,59,0,.85) 45%,rgba(255,59,0,0) 100%),radial-gradient(95% 30% at 50% 48%,rgba(255,59,0,.3) 0%,rgba(255,59,0,0) 70%)",
             filter: "blur(18px)",
           }}
         />

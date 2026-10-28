@@ -50,7 +50,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
       <JsonLd data={serviceJsonLd({ key: page.key, name: page.h1, description: page.metaDescription, path })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Services", path: "/#services" }, { name: page.name, path }])} />
       <SeoHeader />
-      <main className="footer-gap flex flex-col bg-[#f4f4f2] text-[#111]">
+      <main className="flex flex-col bg-black text-[#f4f4f2]">
         <SeoHero
           crumbs={[{ name: "Services", href: "/#services" }, { name: page.name }]}
           title={page.h1}
@@ -69,9 +69,9 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           <H2>Pensé pour vous</H2>
           <div className="grid gap-8 min-[900px]:grid-cols-3 min-[900px]:gap-6">
             {page.audience.map((a) => (
-              <article key={a.title} className="flex flex-col gap-2.5 border-t border-[#111] pt-5">
-                <h3 className="m-0 text-[17px] font-semibold leading-[1.4]">{a.title}</h3>
-                <p className="m-0 text-[15px] leading-[1.6] text-[#555] text-pretty">{a.text}</p>
+              <article key={a.title} className="flex flex-col gap-2.5 border-t border-white/15 pt-5">
+                <h3 className="m-0 text-[19px] font-semibold leading-[1.35] tracking-[-.02em] text-white" style={{ fontFamily: "var(--font-archivo-flex), sans-serif" }}>{a.title}</h3>
+                <p className="m-0 text-[16px] leading-[1.6] text-[#b5b5b5] text-pretty max-sm:text-[15px]">{a.text}</p>
               </article>
             ))}
           </div>
@@ -81,11 +81,11 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           <h2 className="sr-only">Tarif</h2>
           <div className="grid gap-12 min-[1000px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] min-[1000px]:gap-16">
             <div className="flex flex-col gap-4">
-              <p className="m-0 text-[15px] text-[#f4f4f2]/65">{onQuote(page.key) ? "Un prix adapté à votre projet" : "De la formule de base à toutes les options"}</p>
+              <p className="m-0 text-[15px] text-[#b5b5b5]">{onQuote(page.key) ? "Un prix adapté à votre projet" : "De la formule de base à toutes les options"}</p>
               <p className="m-0 whitespace-nowrap leading-[.95]" style={{ ...display, fontSize: "clamp(3rem,6.4vw,5.6rem)", textWrap: "nowrap" }}>
                 {priceRange(page.key)}
               </p>
-              <p className="m-0 text-[15px] text-[#f4f4f2]/65">
+              <p className="m-0 text-[15px] text-[#b5b5b5]">
                 {plan.delay} · {plan.revisions} de révisions · prix fixé au devis
               </p>
               <div className="mt-3 flex max-w-[420px] items-center gap-3 rounded-2xl bg-white/[.04] px-3.5 py-3">
@@ -97,20 +97,20 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
                 </span>
                 <span className="flex flex-col gap-px">
                   <span className="text-[14px] font-bold text-[#f4f4f2]">Maintenance 1 an offerte</span>
-                  <span className="text-[13px] text-[#f4f4f2]/60">Mises à jour, sauvegardes, correctifs</span>
+                  <span className="text-[13px] text-[#a0a0a0]">Mises à jour, sauvegardes, correctifs</span>
                 </span>
               </div>
               <CallButton
                 label="Choisir cette offre ↗"
                 service={page.key}
-                className="mt-3 self-start rounded-full bg-abcs-red px-6 py-3.5 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#f4f4f2] hover:text-[#111]"
+                className="btn-glass-primary mt-3 self-start"
               />
             </div>
             <div className="flex flex-col gap-3">
-              <h3 className="m-0 text-[13px] font-medium text-[#f4f4f2]/60">Inclus dans la formule de base</h3>
+              <h3 className="m-0 text-[13px] font-medium text-[#a0a0a0]">Inclus dans la formule de base</h3>
               <ul className="m-0 flex list-none flex-col p-0">
                 {plan.included.map((it) => (
-                  <li key={it} className="flex gap-3 border-t border-[rgba(244,244,242,.12)] py-3.5 text-[16px] leading-[1.5] last:border-b">
+                  <li key={it} className="flex gap-3 border-t border-white/10 py-3.5 text-[16px] leading-[1.5] last:border-b">
                     <span aria-hidden className="font-bold text-abcs-red">✓</span>
                     {it}
                   </li>
@@ -141,9 +141,9 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
               <Link
                 key={o.href}
                 href={o.href}
-                className="group flex flex-col gap-3 rounded-2xl border border-[rgba(17,17,17,.12)] p-6 transition-colors duration-300 hover:border-[#111]"
+                className="group flex flex-col gap-3 rounded-2xl border border-white/10 p-6 transition-colors duration-300 hover:border-abcs-red hover:bg-white/[.03]"
               >
-                <span className="text-[14px] text-[#666]">{o.eyebrow}</span>
+                <span className="text-[14px] text-[#a0a0a0]">{o.eyebrow}</span>
                 <span className="text-[20px] leading-[1.15]" style={{ ...display, fontWeight: 700, letterSpacing: "-.02em" }}>{o.title}</span>
                 <span aria-hidden className="mt-auto pt-2 text-[18px] text-abcs-red transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </Link>

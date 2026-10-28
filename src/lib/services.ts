@@ -94,7 +94,7 @@ export const PLANS: {
 ];
 
 export const FAQ = [
-  { q: "Comment est fixé le prix ?", a: "Pour le site vitrine, le prix de départ correspond à la formule de base. Pour le sur-mesure et WordPress, tout dépend de votre projet : le prix est établi sur devis. Il évolue selon les options choisies (animations, pages supplémentaires, fonctionnalités…), comme une voiture avec des options. Vous recevez un devis détaillé après notre premier échange : une fois signé, le prix ne bouge plus." },
+  { q: "Comment est fixé le prix ?", a: "Chaque offre affiche un prix d’appel qui correspond à la formule de base : un prix d’appel est indiqué, le prix final est fixé au devis selon votre projet. Il évolue selon les options choisies (animations, pages supplémentaires, fonctionnalités…), comme une voiture avec des options. Vous recevez un devis détaillé après notre premier échange : une fois signé, le prix ne bouge plus." },
   { q: "L’hébergement est-il inclus ?", a: "Non, mais je m’en occupe : je vous conseille une offre adaptée et je fais la mise en ligne." },
   { q: "Puis-je payer en plusieurs fois ?", a: "Oui : en une seule fois ou en plusieurs fois, jusqu’à 3 versements." },
   { q: "Le site m’appartient-il ?", a: "Oui, entièrement. Code, contenus et accès vous sont transmis à la livraison." },
@@ -114,3 +114,17 @@ export function getBudgets(serviceLabel: string): string[] {
     Object.values(SERVICES).find((s) => serviceLabel.includes(s.label) || s.label.includes(serviceLabel));
   return entry?.budgets ?? ["300€", "500–1 000€", "+ de 1 000€"];
 }
+
+// TODO: ajuster les prix d'appel affichés sur la page d'accueil (en euros).
+export const PRICE_FROM: Partial<Record<ServiceKey, number>> = {
+  vitrine: 300,
+  webapp: 800, // TODO: confirmer
+  wordpress: 1200, // TODO: confirmer
+};
+
+/** "1 200 €" — the entry price of an offer, or its plain price when it has none. */
+export const fromPrice = (key: ServiceKey) =>
+  PRICE_FROM[key] != null ? `${PRICE_FROM[key]!.toLocaleString("fr-FR")} €` : SERVICES[key].price;
+
+/** "À partir de 1 200 €" */
+export const fromLabel = (key: ServiceKey) => (PRICE_FROM[key] != null ? `À partir de ${fromPrice(key)}` : SERVICES[key].price);
