@@ -47,7 +47,7 @@ const archivo = { fontFamily: "var(--font-archivo-flex), sans-serif" } as const;
 
 /**
  * Site footer, shared by every page: one liquid glass panel (call to action,
- * navigation, contact, networks) over orange bars rising with the scroll (`--f`),
+ * navigation, offers, networks) over orange bars rising with the scroll (`--f`),
  * then the copyright line.
  */
 export default function Footer() {
@@ -155,7 +155,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="grid content-start gap-x-6 gap-y-8 pt-1.5" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(110px,1fr))" }}>
+          <div className="grid grid-cols-[repeat(2,minmax(130px,auto))] content-start gap-x-[clamp(32px,6vw,96px)] gap-y-8 pt-1.5 min-[760px]:justify-self-end">
             <nav aria-label="Navigation" className="flex min-w-0 flex-col gap-3.5">
               <span className={colTitle} style={archivo}>Navigation</span>
               {NAV.map((n) => (
@@ -172,24 +172,6 @@ export default function Footer() {
                 </Link>
               ))}
             </nav>
-            <div className="flex min-w-0 flex-col gap-3.5">
-              <span className={colTitle} style={archivo}>Contact</span>
-              <button onClick={() => openModal()} className={`${link} text-left`}>
-                Réserver un appel
-              </button>
-              <a href={`mailto:${EMAIL}`} className={link}>
-                M&apos;écrire
-              </a>
-              <span className="text-[15px] text-[#a0a0a0]">Seine-et-Marne</span>
-            </div>
-            <div className="flex min-w-0 flex-col gap-3.5">
-              <span className={colTitle} style={archivo}>Réseaux</span>
-              {NETWORKS.map((s) => (
-                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className={link}>
-                  {s.label}
-                </a>
-              ))}
-            </div>
           </div>
         </div>
 
