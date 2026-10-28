@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useContactModal } from "@/components/ContactModalProvider";
 import SectionHeading from "@/components/sections/SectionHeading";
+import StaggeredText from "@/components/fx/StaggeredText";
 import { archivo, gutter, section } from "@/components/sections/layout";
 import { useMedia } from "@/lib/useMedia";
 
@@ -21,7 +22,10 @@ const smooth = (a: number, b: number, v: number) => {
 /**
  * How it works. Desktop: a 280vh section with a sticky screen; each step shows
  * alone in the middle (big outlined number and glow behind it), then the three
- * glide to their place in a row and the CTA fades in. Phones / reduced motion: a plain list.
+ * glide to their place in a row and the CTA fades in. Each step's title (letter
+ * by letter) and text (word by word) stagger in whenever the step shows, so the
+ * three replay together at the end. Phones: a list, each step staggering in when
+ * it scrolls into view. Reduced motion: shown as is.
  */
 export default function HowItWorksSection() {
   const { openModal } = useContactModal();
@@ -29,6 +33,29 @@ export default function HowItWorksSection() {
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
   const story = wide && !reduced;
   const root = useRef<HTMLElement>(null);
+  // Steps whose text is shown (staggered in on each switch to true)
+  const [litState, setLit] = useState([false, false, false]);
+  const lit = reduced ? [true, true, true] : litState;
+
+  // Phones: each step once it is well in view
+  useEffect(() => {
+    const el = root.current;
+    if (story || reduced || !el) return;
+    const steps = Array.from(el.querySelectorAll<HTMLElement>("[data-step]"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const i = steps.indexOf(e.target as HTMLElement);
+          setLit((l) => (l[i] ? l : l.map((v, k) => v || k === i)));
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: "0px 0px -18% 0px" }
+    );
+    steps.forEach((s) => io.observe(s));
+    return () => io.disconnect();
+  }, [story, reduced]);
 
   useEffect(() => {
     const el = root.current;
@@ -49,7 +76,7 @@ export default function HowItWorksSection() {
     };
     measure();
 
-    let cur = 0, raf = 0, last = performance.now();
+    let cur = 0, raf = 0, last = performance.now(), mask = -1;
     const target = () => {
       const r = el.getBoundingClientRect();
       return clamp01(-r.top / Math.max(1, r.height - window.innerHeight));
@@ -57,6 +84,7 @@ export default function HowItWorksSection() {
     cur = target();
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
+      let m = 0;
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
       cur += (target() - cur) * (1 - Math.exp(-dt * 9));
@@ -67,6 +95,7 @@ export default function HowItWorksSection() {
         const v = i === 2 ? smooth(0, 0.25, t) : smooth(0, 0.25, t) * (1 - smooth(0.75, 1, t));
         const o = Math.max(v, q);
         s.style.opacity = o.toFixed(3);
+        if (o > 0.35) m |= 1 << i;
         s.style.transform = `translate3d(${(dx[i] * (1 - q)).toFixed(1)}px,${((1 - o) * 40).toFixed(1)}px,0) scale(${(1.22 - 0.22 * q).toFixed(3)})`;
       });
       const d = smooth(0, 0.04, cur) * (1 - q);
@@ -76,6 +105,10 @@ export default function HowItWorksSection() {
         dot.style.width = i === active ? "28px" : "12px";
         dot.style.backgroundColor = i === active ? "#FF3B00" : "rgba(255,255,255,.18)";
       });
+      if (m !== mask) {
+        mask = m;
+        setLit([0, 1, 2].map((i) => !!(m & (1 << i))));
+      }
       cta.style.opacity = smooth(0.86, 0.98, cur).toFixed(3);
       cta.style.pointerEvents = cur > 0.9 ? "auto" : "none";
     };
@@ -131,20 +164,23 @@ export default function HowItWorksSection() {
             <li
               key={s.n}
               data-step
-              {...(!story && { "data-reveal": "" })}
               className="flex min-w-0 flex-1 flex-col gap-4 will-change-transform"
-              style={story ? { opacity: 0 } : { "--i": i } as CSSProperties}
+              style={story ? { opacity: 0 } : undefined}
             >
               <div className="flex items-center justify-between gap-3 pt-2">
                 <span className="font-mono text-[13px] tracking-[.14em] text-[#8f8f8f]">{s.n}</span>
-                <span className="inline-flex min-h-[30px] items-center whitespace-nowrap rounded-full bg-white/[.06] px-[13px] text-[13px] font-medium text-[#e6e6e6] shadow-[inset_0_1px_0_rgba(255,255,255,.14),inset_0_0_0_.5px_rgba(255,255,255,.1)] backdrop-blur-[16px]">
+                <span
+                  style={{ opacity: lit[i] ? 1 : 0, transition: lit[i] ? "opacity .6s .5s" : "opacity .2s" }}
+                  className="inline-flex min-h-[30px] items-center whitespace-nowrap rounded-full bg-white/[.06] px-[13px] text-[13px] font-medium text-[#e6e6e6] shadow-[inset_0_1px_0_rgba(255,255,255,.14),inset_0_0_0_.5px_rgba(255,255,255,.1)] backdrop-blur-[16px]">
                   {s.time}
                 </span>
               </div>
               <h3 className="m-0 font-semibold leading-[1.05] tracking-[-.03em] text-white" style={{ ...archivo, fontSize: "clamp(24px,2.4vw,32px)" }}>
-                {s.title}
+                <StaggeredText text={s.title} by="letter" play={lit[i]} step={0.035} />
               </h3>
-              <p className="m-0 max-w-[340px] text-[16px] leading-[1.6] text-[#b5b5b5] text-pretty max-sm:text-[15px]">{s.text}</p>
+              <p className="m-0 max-w-[340px] text-[16px] leading-[1.6] text-[#b5b5b5] text-pretty max-sm:text-[15px]">
+                <StaggeredText text={s.text} by="word" play={lit[i]} delay={0.25} step={0.04} />
+              </p>
             </li>
           ))}
         </ol>
