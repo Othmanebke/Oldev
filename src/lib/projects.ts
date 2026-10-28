@@ -68,7 +68,7 @@ export const PROJECTS: Project[] = [
     tagline: "Marque de maquillage : collection, rituel en trois gestes, avis clientes et réservation de séances beauté." },
   { id: "renova", name: "Renova", category: "Rénovation · Next.js", sector: "Rénovation", tag: "nextjs", stack: NEXT, image: "/portfolio/renova.webp",
     tagline: "Entreprise de rénovation d’intérieur : méthode, avantages, réalisations et demande de devis en ligne." },
-  { id: "wonder", name: "Wonder Club", category: "Barbier · React", sector: "Barbier", tag: "nextjs", stack: ["React", "Tailwind"], image: "/portfolio/wonder.webp",
+  { id: "wonder", name: "Wonder Club", category: "Barbier · React", sector: "Barbier", tag: "nextjs", stack: ["React", "Tailwind"], image: "/portfolio/wonder.webp", fullImage: "/portfolio/web/wonder.webp",
     tagline: "Salon de coiffure et barbier : prestations et tarifs, galerie de coupes, infos pratiques et réservation de créneau." },
   { id: "brows", name: "Brows Creative", category: "E-commerce · WordPress", sector: "Salon de beauté", tag: "wordpress", stack: ["WordPress", "WooCommerce", "Elementor"], image: "/portfolio/brows.webp", fullImage: "/portfolio/web/brows.webp",
     tagline: "Boutique WooCommerce pour salon de beauté : catalogue soins, réservations en ligne et boutique intégrée." },

@@ -168,14 +168,17 @@ function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpe
       >
         {items.map((p, i) => (
           <article key={p.id} className="flex flex-none snap-start flex-col" style={{ width: "min(84vw,940px,calc((100vh - 280px) * 1.6 + 32px))" }}>
-            <button onClick={() => onOpen(i)} aria-label={`Voir le site ${p.name} en entier`} className="group flex flex-col text-left">
+            <button onClick={() => onOpen(i)} aria-label={`Voir le site ${p.name} en entier`} className="group flex h-full flex-col text-left">
               <span className="flex flex-col gap-2 px-1 pt-2" style={{ paddingBottom: "clamp(16px,2vw,22px)" }}>
                 <span role="heading" aria-level={3} className="font-bold leading-[1.02] tracking-[-.035em] text-white" style={{ ...archivo, fontSize: "clamp(26px,2.8vw,40px)" }}>
                   {p.name}
                 </span>
                 <span className="max-w-[560px] text-[15px] leading-[1.5] text-[#b5b5b5] text-pretty max-sm:text-[14px]">{p.tagline}</span>
               </span>
-              <ProjectMedia project={p} priority={i === 0} />
+              {/* Bottom of the card: images stay aligned whatever the length of the tagline */}
+              <span className="mt-auto block">
+                <ProjectMedia project={p} priority={i === 0} />
+              </span>
             </button>
           </article>
         ))}
