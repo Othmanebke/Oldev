@@ -77,31 +77,51 @@ function ProjectMedia({ project, priority }: { project: Project; priority?: bool
   );
 }
 
+/** Inner padding of the full-width rail, so its first card lines up with the content (max 1280px). */
+const edge = `max(${gutter}, calc(50vw - 640px))`;
+
 const chevron =
   "grid size-10 flex-none place-items-center rounded-full text-[#a0a0a0] transition-colors duration-200 hover:text-abcs-red disabled:pointer-events-none disabled:opacity-30";
 
 /**
- * One tab's projects side by side. The wheel scrolls the rail sideways while it
- * can, then the page again; phones swipe it natively. A click opens the full page.
+ * One tab's projects side by side, edge to edge. The wheel keeps scrolling the
+ * page; the rail moves with a trackpad, a swipe, a mouse drag, the dots or the
+ * chevrons. A click (not a drag) opens the full page.
  */
 function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpen: (i: number) => void }) {
   const track = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
 
-  useEffect(() => {
-    const t = track.current;
-    if (!t) return;
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-      const max = t.scrollWidth - t.clientWidth;
-      if ((e.deltaY > 0 && t.scrollLeft >= max - 1) || (e.deltaY < 0 && t.scrollLeft <= 0)) return;
-      e.preventDefault();
-      e.stopPropagation();
-      t.scrollLeft += e.deltaY;
-    };
-    t.addEventListener("wheel", onWheel, { passive: false });
-    return () => t.removeEventListener("wheel", onWheel);
-  }, []);
+  // Mouse drag (touch scrolls natively). Snap is off while dragging, and a drag doesn't count as a click.
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    drag.current = { x: e.clientX, left: e.currentTarget.scrollLeft, moved: false };
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    if (!d) return;
+    const dx = e.clientX - d.x;
+    if (!d.moved && Math.abs(dx) < 6) return;
+    if (!d.moved) {
+      d.moved = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      e.currentTarget.style.scrollSnapType = "none";
+      e.currentTarget.style.cursor = "grabbing";
+    }
+    e.currentTarget.scrollLeft = d.left - dx;
+  };
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    if (!d) return;
+    const t = e.currentTarget;
+    t.style.cursor = "";
+    if (d.moved) {
+      // Back to snapping, landing on the nearest project
+      t.style.scrollSnapType = "";
+      setTimeout(() => (drag.current = null));
+    } else drag.current = null;
+  };
 
   const onScroll = () => {
     const t = track.current;
@@ -120,8 +140,8 @@ function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpe
   };
 
   return (
-    <div className="flex flex-col gap-[clamp(16px,2.4vh,24px)]" style={{ margin: `0 calc(-1 * ${gutter})` }} role="region" aria-roledescription="carrousel" aria-label={label}>
-      <div className="flex items-baseline justify-between gap-4" style={{ padding: `0 ${gutter}` }}>
+    <div className="flex flex-col gap-[clamp(16px,2.4vh,24px)]" style={{ marginInline: "calc(50% - 50vw)" }} role="region" aria-roledescription="carrousel" aria-label={label}>
+      <div className="flex items-baseline justify-between gap-4" style={{ paddingInline: edge }}>
         <span className="font-semibold tracking-[-.02em] text-[#f4f4f2]" style={{ ...archivo, fontSize: "clamp(20px,2vw,26px)" }}>
           {label}
         </span>
@@ -132,9 +152,19 @@ function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpe
       <div
         ref={track}
         onScroll={onScroll}
-        data-lenis-prevent-touch
-        className="no-scrollbar flex snap-x snap-mandatory gap-[clamp(14px,1.6vw,22px)] overflow-x-auto overflow-y-hidden overscroll-x-contain"
-        style={{ padding: `4px ${gutter} 8px`, scrollPaddingInline: gutter }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClickCapture={(e) => {
+          if (drag.current?.moved) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+        onDragStart={(e) => e.preventDefault()}
+        className="no-scrollbar flex cursor-grab snap-x snap-mandatory gap-[clamp(14px,1.6vw,22px)] overflow-x-auto overflow-y-hidden overscroll-x-contain select-none"
+        style={{ paddingBlock: "4px 8px", paddingInline: edge, scrollPaddingInline: edge }}
       >
         {items.map((p, i) => (
           <article key={p.id} className="flex flex-none snap-start flex-col" style={{ width: "min(84vw,940px,calc((100vh - 280px) * 1.6 + 32px))" }}>
@@ -151,7 +181,7 @@ function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpe
         ))}
       </div>
       {/* ‹ • • ● • • › */}
-      <div className="flex items-center justify-center gap-1" style={{ padding: `0 ${gutter}` }}>
+      <div className="flex items-center justify-center gap-1" style={{ paddingInline: edge }}>
         <button onClick={() => goTo(current - 1)} disabled={current === 0} aria-label="Projet précédent" className={chevron}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
             <path d="M15 18l-6-6 6-6" />
