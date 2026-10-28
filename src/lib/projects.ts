@@ -20,7 +20,7 @@ export type Project = {
 /** `lead` = projects shown first in that tab, in this order. */
 export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string[] }[] = [
   { tag: "all",       label: "Tous" },
-  { tag: "html",      label: "Vitrine",    lead: ["moreau", "fontaney", "sorel", "burga", "griddle", "volta", "petale", "djcley"] },
+  { tag: "html",      label: "Vitrine",    lead: ["moreau", "velia", "fontaney", "sorel", "burga", "griddle", "volta", "petale", "djcley"] },
   { tag: "nextjs",    label: "Sur-mesure", lead: ["nocta", "aero", "hora", "wecars", "kinetik", "dental", "fauteo", "wonder", "renova", "moon", "baseclub"] },
   { tag: "wordpress", label: "WordPress",  lead: ["brows"] },
 ];
@@ -36,6 +36,8 @@ export const PROJECTS: Project[] = [
     tagline: "Location de voitures d’exception : recherche par lieu et dates, flotte premium et réservation en quelques clics." },
   { id: "moreau", name: "Léna Moreau", category: "Photographe · HTML", sector: "Photographe", tag: "html", stack: HTML, ...shots("moreau"),
     tagline: "Portfolio d’une photographe portrait et mode : direction artistique forte, séries éditoriales et prise de contact." },
+  { id: "velia", name: "Velia", category: "Cosmétique · HTML", sector: "Soins de la peau", tag: "html", stack: HTML, ...shots("velia"),
+    tagline: "Marque de soins visage : sérums et crèmes, rituel en trois gestes selon votre type de peau, avis clientes et FAQ." },
   { id: "wecars", name: "WeCars", category: "Location auto · Next.js", sector: "Location de voitures", tag: "nextjs", stack: NEXT, ...shots("wecars"),
     tagline: "Plateforme de location de voitures de sport : catalogue, disponibilités en temps réel et réservation en ligne." },
   { id: "hora", name: "Hora", category: "Horlogerie · Next.js", sector: "Horlogerie de luxe", tag: "nextjs", stack: NEXT, ...shots("hora", false),
