@@ -77,8 +77,8 @@ function ProjectMedia({ project, priority }: { project: Project; priority?: bool
   );
 }
 
-const arrow =
-  "grid size-12 place-items-center rounded-full border border-white/[.16] bg-white/[.04] text-white transition-colors duration-200 hover:border-abcs-red hover:bg-abcs-red";
+const chevron =
+  "grid size-10 flex-none place-items-center rounded-full text-[#a0a0a0] transition-colors duration-200 hover:text-abcs-red disabled:pointer-events-none disabled:opacity-30";
 
 /**
  * One tab's projects side by side. The wheel scrolls the rail sideways while it
@@ -86,7 +86,6 @@ const arrow =
  */
 function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpen: (i: number) => void }) {
   const track = useRef<HTMLDivElement>(null);
-  const bar = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -109,13 +108,15 @@ function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpe
     if (!t) return;
     const max = t.scrollWidth - t.clientWidth;
     const p = max > 0 ? t.scrollLeft / max : 0;
-    if (bar.current) bar.current.style.width = `${Math.max(1 / items.length, p) * 100}%`;
     setCurrent(Math.round(p * (items.length - 1)));
   };
-  const step = (d: number) => {
+  /** Scrolls the rail so that project `i` comes first. */
+  const goTo = (i: number) => {
     const t = track.current;
-    const card = t?.querySelector("article");
-    if (t && card) t.scrollBy({ left: d * (card.clientWidth + 18), behavior: "smooth" });
+    const cards = t?.querySelectorAll("article");
+    if (!t || !cards?.length) return;
+    const k = Math.max(0, Math.min(items.length - 1, i));
+    t.scrollTo({ left: cards[k].offsetLeft - cards[0].offsetLeft, behavior: "smooth" });
   };
 
   return (
@@ -149,23 +150,27 @@ function Rail({ items, label, onOpen }: { items: Project[]; label: string; onOpe
           </article>
         ))}
       </div>
-      <div className="flex items-center gap-4" style={{ padding: `0 ${gutter}` }}>
-        <div className="h-[3px] max-w-[320px] flex-1 overflow-hidden rounded-full bg-white/[.12]">
-          <div ref={bar} className="h-full rounded-full bg-abcs-red transition-[width] duration-200" style={{ width: `${100 / items.length}%` }} />
+      {/* ‹ • • ● • • › */}
+      <div className="flex items-center justify-center gap-1" style={{ padding: `0 ${gutter}` }}>
+        <button onClick={() => goTo(current - 1)} disabled={current === 0} aria-label="Projet précédent" className={chevron}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <div className="flex items-center">
+          {items.map((p, i) => (
+            <button key={p.id} onClick={() => goTo(i)} aria-label={`Voir ${p.name}`} aria-current={i === current} className="group grid h-8 place-items-center px-[5px] max-[400px]:px-1">
+              <span
+                className={`block h-1.5 rounded-full transition-all duration-300 ${i === current ? "w-6 bg-abcs-red" : "w-1.5 bg-white/25 group-hover:bg-white/60"}`}
+              />
+            </button>
+          ))}
         </div>
-        <span className="text-[14px] text-[#a0a0a0] max-sm:hidden">Glissez vers la droite →</span>
-        <div className="ml-auto flex gap-2">
-          <button onClick={() => step(-1)} aria-label="Projet précédent" className={arrow}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <button onClick={() => step(1)} aria-label="Projet suivant" className={arrow}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
-        </div>
+        <button onClick={() => goTo(current + 1)} disabled={current === items.length - 1} aria-label="Projet suivant" className={chevron}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
       </div>
     </div>
   );
