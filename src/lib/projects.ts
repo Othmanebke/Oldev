@@ -4,244 +4,93 @@ export type Project = {
   id: string;
   name: string;
   category: string;
+  /** Short sector shown with the name (« Restaurant », « Coach sportif »…). */
+  sector: string;
   tag: ProjectTag;
   tagline: string;
   stack: string[];
   image: string;
-  /** Full-page capture (menu to footer, 1440 px wide) auto-scrolled in the preview popup, e.g. `/portfolio/web/{id}.jpg`; falls back to `image`. */
+  /** Full-page capture (menu to footer) auto-scrolled in the preview popup; falls back to `image`. */
   fullImage?: string;
+  /** Looping MP4 played on hover (desktop) / when visible (phones). TODO: add the reels in public/reels/. */
+  video?: string;
   concept?: boolean;
 };
 
-/** `lead` = projects shown first in that tab's carousel, in this order. */
+/** `lead` = projects shown first in that tab, in this order. */
 export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string[] }[] = [
   { tag: "all",       label: "Tous" },
-  { tag: "html",      label: "Vitrine",    lead: ["eclat", "connect", "infini", "mosa"] },
-  { tag: "nextjs",    label: "Sur-mesure", lead: ["dental", "kinetik", "moon", "renova", "wonder", "parfumerie"] },
+  { tag: "html",      label: "Vitrine",    lead: ["moreau", "fontaney", "sorel", "burga", "griddle", "volta", "petale", "djcley"] },
+  { tag: "nextjs",    label: "Sur-mesure", lead: ["nocta", "aero", "hora", "wecars", "kinetik", "dental", "fauteo", "wonder", "renova", "moon", "baseclub"] },
   { tag: "wordpress", label: "WordPress",  lead: ["brows"] },
 ];
 
+const HTML = ["HTML", "CSS", "JavaScript"];
+const NEXT = ["Next.js", "React", "Tailwind"];
+const WP = ["WordPress", "Responsive", "SEO"];
+/** New projects: hero capture in /portfolio, full page (menu to footer) in /portfolio/web. */
+const shots = (id: string, full = true) => ({ image: `/portfolio/${id}.webp`, ...(full && { fullImage: `/portfolio/web/${id}.webp` }) });
+
 export const PROJECTS: Project[] = [
-  {
-    id: "forma",
-    name: "Forma Immobilier",
-    category: "Agence immo · Next.js",
-    tag: "nextjs",
-    tagline: "Agence immobilière avec moteur de recherche avancé, fiches biens, prise de rendez-vous et espace propriétaire sécurisé.",
-    stack: ["Next.js", "Tailwind", "React"],
-    image: "/portfolio/forma.webp",
-  },
-  {
-    id: "parfumerie",
-    name: "Maison Parfumerie",
-    category: "E-commerce · Next.js",
-    tag: "nextjs",
-    tagline: "Boutique e-commerce haut de gamme : catalogue, panier, paiement Stripe et interface d’administration.",
-    stack: ["Next.js", "React", "Tailwind"],
-    image: "/portfolio/parfumerie.webp",
-  },
-  {
-    id: "aivana",
-    name: "Aivana SaaS",
-    category: "Dashboard IA · Next.js",
-    tag: "nextjs",
-    tagline: "Tableau de bord SaaS avec analyses prédictives, automatisation IA et rapports personnalisés.",
-    stack: ["Next.js", "Tailwind", "OpenAI"],
-    image: "/portfolio/aivana.webp",
-    concept: true,
-  },
-  {
-    id: "brows",
-    name: "Brows Creative",
-    category: "E-commerce · WordPress",
-    tag: "wordpress",
-    tagline: "Boutique WooCommerce pour salon de beauté : catalogue soins, réservations en ligne et boutique intégrée.",
-    stack: ["WordPress", "WooCommerce", "Elementor"],
-    image: "/portfolio/brows.webp",
-  },
-  {
-    id: "ajc",
-    name: "AJC Ingénierie",
-    category: "Formation · WordPress",
-    tag: "wordpress",
-    tagline: "Site d’un organisme de formation certifié Qualiopi : catalogue de formations, dispositifs de financement et espaces entreprise / candidat.",
-    stack: ["WordPress", "Responsive", "SEO"],
-    image: "/portfolio/ajc.webp",
-  },
-  {
-    id: "papillon-dor",
-    name: "Papillon d’Or",
-    category: "Transport adapté · WordPress",
-    tag: "wordpress",
-    tagline: "Site vitrine pour un service de transport de personnes à mobilité réduite : missions, engagements et contact disponible 7j/7.",
-    stack: ["WordPress", "Responsive", "SEO"],
-    image: "/portfolio/papillon-dor.webp",
-  },
-  {
-    id: "auxitrol",
-    name: "Auxitrol Weston",
-    category: "Industrie · WordPress",
-    tag: "wordpress",
-    tagline: "Site corporate d’un fabricant international de capteurs aéronautiques : catalogue produits, marchés, carrières et support.",
-    stack: ["WordPress", "Responsive", "SEO"],
-    image: "/portfolio/auxitrol.webp",
-  },
-  {
-    id: "tennis-bry",
-    name: "Tennis Club Bry",
-    category: "Club sportif · WordPress",
-    tag: "wordpress",
-    tagline: "Site du Tennis Club de Bry-sur-Marne : installations, adhésions, enseignement, actualités du club et réservation de courts.",
-    stack: ["WordPress", "Responsive", "SEO"],
-    image: "/portfolio/tennis-bry.webp",
-  },
-  {
-    id: "cfi",
-    name: "CFI Groupe",
-    category: "Intégrateur IT · WordPress",
-    tag: "wordpress",
-    tagline: "Site corporate d’un intégrateur de solutions numériques : éducation, retail, santé, smart office, cybersécurité et IA.",
-    stack: ["WordPress", "Responsive", "SEO"],
-    image: "/portfolio/cfi.webp",
-  },
-  {
-    id: "elior",
-    name: "Elior",
-    category: "Restauration · WordPress",
-    tag: "wordpress",
-    tagline: "Site d’un leader de la restauration collective : offres, engagements responsables, recrutement et actualités.",
-    stack: ["WordPress", "Responsive", "SEO"],
-    image: "/portfolio/elior.webp",
-  },
-  {
-    id: "idemia",
-    name: "IDEMIA",
-    category: "Tech & sécurité · WordPress",
-    tag: "wordpress",
-    tagline: "Site d’un groupe international de l’identité et de la sécurité numérique : solutions, entités, carrières et actualités.",
-    stack: ["WordPress", "Responsive", "SEO"],
-    image: "/portfolio/idemia.webp",
-  },
-  {
-    id: "verdure",
-    name: "Maison Verdure",
-    category: "Site vitrine · HTML",
-    tag: "html",
-    tagline: "Site vitrine pour une boulangerie artisanale : menu interactif, histoire de la maison et commandes en ligne.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/verdure.webp",
-  },
-  {
-    id: "luxecars",
-    name: "LuxeCars",
-    category: "Location · React",
-    tag: "nextjs",
-    tagline: "Plateforme premium de location de voitures de luxe : catalogue filtrable, réservation instantanée et paiement sécurisé.",
-    stack: ["React", "Vite", "Tailwind"],
-    image: "/portfolio/luxecars.webp",
-  },
-  {
-    id: "sora",
-    name: "Sora Thai",
-    category: "Restaurant · HTML",
-    tag: "html",
-    tagline: "Site élégant pour restaurant thaïlandais : carte animée, galerie immersive et module de réservation en ligne.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/sora.webp",
-  },
-  {
-    id: "eclat",
-    name: "Éclat",
-    category: "Institut beauté · HTML",
-    tag: "html",
-    tagline: "Site d’un institut du regard à Paris : prestations, conseils, boutique en ligne et réservation, dans une direction artistique éditoriale.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/eclat.webp",
-  },
-  {
-    id: "ajt",
-    name: "AJT Blog",
-    category: "Blog · Next.js",
-    tag: "nextjs",
-    tagline: "Blog moderne avec système de catégories, recherche plein texte, commentaires et tableau de bord auteur.",
-    stack: ["React", "Next.js", "Tailwind"],
-    image: "/portfolio/ajt-blog.webp",
-  },
-  {
-    id: "dental",
-    name: "Dental Clinic",
-    category: "Santé · Next.js",
-    tag: "nextjs",
-    tagline: "Site d’un chirurgien-dentiste implantologue : soins, solutions d’implants, diagnostic en ligne et prise de rendez-vous.",
-    stack: ["Next.js", "React", "Tailwind"],
-    image: "/portfolio/dental.webp",
-  },
-  {
-    id: "kinetik",
-    name: "Kinetik",
-    category: "Salle de sport · Next.js",
-    tag: "nextjs",
-    tagline: "Site d’un training club : espaces, coachs, programmes d’entraînement et réservation de séances.",
-    stack: ["Next.js", "React", "Tailwind"],
-    image: "/portfolio/kinetik.webp",
-  },
-  {
-    id: "moon",
-    name: "Moon",
-    category: "Beauté · React",
-    tag: "nextjs",
-    tagline: "Marque de maquillage : collection, rituel en trois gestes, avis clientes et réservation de séances beauté.",
-    stack: ["React", "Vite", "Tailwind"],
-    image: "/portfolio/moon.webp",
-  },
-  {
-    id: "renova",
-    name: "Renova",
-    category: "Rénovation · Next.js",
-    tag: "nextjs",
-    tagline: "Entreprise de rénovation d’intérieur : méthode, avantages, réalisations et demande de devis en ligne.",
-    stack: ["Next.js", "React", "Tailwind"],
-    image: "/portfolio/renova.webp",
-  },
-  {
-    id: "wonder",
-    name: "Wonder Club",
-    category: "Barbier · React",
-    tag: "nextjs",
-    tagline: "Salon de coiffure et barbier : prestations et tarifs, galerie de coupes, infos pratiques et réservation de créneau.",
-    stack: ["React", "Tailwind"],
-    image: "/portfolio/wonder.webp",
-  },
-  {
-    id: "connect",
-    name: "Connect",
-    category: "Produit tech · HTML",
-    tag: "html",
-    tagline: "Page produit pour un casque audio : présentation immersive, coloris, fiche technique et ajout au panier.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/connect.webp",
-  },
-  {
-    id: "infini",
-    name: "Infini",
-    category: "Automobile · HTML",
-    tag: "html",
-    tagline: "Site d’un constructeur de véhicules électriques de luxe : gamme filtrable, recharge, actualités et essais.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/infini.webp",
-  },
-  {
-    id: "mosa",
-    name: "Mosa",
-    category: "Mobilier · HTML",
-    tag: "html",
-    tagline: "Atelier de canapés artisanaux : collections, savoir-faire, sur-mesure et showroom, dans une mise en page éditoriale.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    image: "/portfolio/mosa.webp",
-  },
+  { id: "nocta", name: "Nocta", category: "Location auto · Next.js", sector: "Location de voitures", tag: "nextjs", stack: NEXT, ...shots("nocta"),
+    tagline: "Location de voitures d’exception : recherche par lieu et dates, flotte premium et réservation en quelques clics." },
+  { id: "moreau", name: "Léna Moreau", category: "Photographe · HTML", sector: "Photographe", tag: "html", stack: HTML, ...shots("moreau"),
+    tagline: "Portfolio d’une photographe portrait et mode : direction artistique forte, séries éditoriales et prise de contact." },
+  { id: "wecars", name: "WeCars", category: "Location auto · Next.js", sector: "Location de voitures", tag: "nextjs", stack: NEXT, ...shots("wecars"),
+    tagline: "Plateforme de location de voitures de sport : catalogue, disponibilités en temps réel et réservation en ligne." },
+  { id: "hora", name: "Hora", category: "Horlogerie · Next.js", sector: "Horlogerie de luxe", tag: "nextjs", stack: NEXT, ...shots("hora", false),
+    tagline: "Marketplace de montres de luxe : collection rare, estimation en ligne et espace membre conciergerie." },
+  { id: "aero", name: "Aéro", category: "Aviation privée · Next.js", sector: "Aviation privée", tag: "nextjs", stack: NEXT, ...shots("aero"),
+    tagline: "Réservation de vols privés en Europe : estimation de trajet, flotte d’avions et espace membres." },
+  { id: "sorel", name: "Sorel Avocats", category: "Cabinet d’avocats · HTML", sector: "Cabinet d’avocats", tag: "html", stack: HTML, ...shots("sorel"),
+    tagline: "Site d’un cabinet d’avocats d’affaires : expertises, honoraires transparents, actualités et prise de rendez-vous." },
+  { id: "baseclub", name: "Base Club", category: "Web3 · Next.js", sector: "Web3", tag: "nextjs", stack: NEXT, ...shots("baseclub"),
+    tagline: "Club social Web3 : statistiques membres, tokenomics, airdrop et connexion wallet." },
+  { id: "djcley", name: "DJ Cley", category: "Artiste · HTML", sector: "Artiste DJ", tag: "html", stack: HTML, ...shots("djcley"),
+    tagline: "Site d’un DJ techno et house : dates de tournée, musique, vidéos et formulaire de booking." },
+  { id: "fauteo", name: "Fauteo", category: "Plateforme · Next.js", sector: "Plateforme beauté", tag: "nextjs", stack: NEXT, ...shots("fauteo"),
+    tagline: "Location de postes beauté et bien-être entre salons et indépendants : recherche, réservations et avis." },
+  { id: "fontaney", name: "Guillaume Fontaney", category: "Vidéaste · HTML", sector: "Vidéaste", tag: "html", stack: HTML, ...shots("fontaney"),
+    tagline: "Portfolio d’un vidéaste : œuvres, expositions et chiffres clés dans une mise en page éditoriale." },
+  { id: "volta", name: "Volta", category: "Architecture · HTML", sector: "Architecture", tag: "html", stack: HTML, ...shots("volta"),
+    tagline: "Studio d’architecture : projets en plein écran, savoir-faire et prise de contact." },
+  { id: "petale", name: "Atelier Floral", category: "Fleuriste · HTML", sector: "Fleuriste", tag: "html", stack: HTML, ...shots("petale"),
+    tagline: "Atelier floral à Bordeaux : compositions sur mesure pour mariages et événements, galerie et réservation." },
+  { id: "griddle", name: "Griddle", category: "Restaurant · HTML", sector: "Restaurant", tag: "html", stack: HTML, ...shots("griddle"),
+    tagline: "Smash burgers de Brooklyn : menu, histoire de la maison et commande en ligne." },
+  { id: "burga", name: "Burga", category: "Gastronomie · HTML", sector: "Gastronomie", tag: "html", stack: HTML, ...shots("burga"),
+    tagline: "Restaurant gastronomique à Paris : carte, le chef, expériences et réservation de table." },
+  { id: "dental", name: "Dental Clinic", category: "Santé · Next.js", sector: "Chirurgien-dentiste", tag: "nextjs", stack: NEXT, ...shots("dental"),
+    tagline: "Site d’un chirurgien-dentiste implantologue : soins, solutions d’implants, diagnostic en ligne et prise de rendez-vous." },
+  { id: "kinetik", name: "Kinetik", category: "Salle de sport · Next.js", sector: "Coach sportif", tag: "nextjs", stack: NEXT, ...shots("kinetik"),
+    tagline: "Site d’un training club : espaces, coachs, programmes d’entraînement et réservation de séances." },
+  { id: "moon", name: "Moon", category: "Beauté · React", sector: "Maquillage", tag: "nextjs", stack: ["React", "Vite", "Tailwind"], image: "/portfolio/moon.webp",
+    tagline: "Marque de maquillage : collection, rituel en trois gestes, avis clientes et réservation de séances beauté." },
+  { id: "renova", name: "Renova", category: "Rénovation · Next.js", sector: "Rénovation", tag: "nextjs", stack: NEXT, image: "/portfolio/renova.webp",
+    tagline: "Entreprise de rénovation d’intérieur : méthode, avantages, réalisations et demande de devis en ligne." },
+  { id: "wonder", name: "Wonder Club", category: "Barbier · React", sector: "Barbier", tag: "nextjs", stack: ["React", "Tailwind"], image: "/portfolio/wonder.webp",
+    tagline: "Salon de coiffure et barbier : prestations et tarifs, galerie de coupes, infos pratiques et réservation de créneau." },
+  { id: "brows", name: "Brows Creative", category: "E-commerce · WordPress", sector: "Salon de beauté", tag: "wordpress", stack: ["WordPress", "WooCommerce", "Elementor"], image: "/portfolio/brows.webp",
+    tagline: "Boutique WooCommerce pour salon de beauté : catalogue soins, réservations en ligne et boutique intégrée." },
+  { id: "ajc", name: "AJC Ingénierie", category: "Formation · WordPress", sector: "Organisme de formation", tag: "wordpress", stack: WP, image: "/portfolio/ajc.webp",
+    tagline: "Site d’un organisme de formation certifié Qualiopi : catalogue de formations, dispositifs de financement et espaces entreprise / candidat." },
+  { id: "papillon-dor", name: "Papillon d’Or", category: "Transport adapté · WordPress", sector: "Transport adapté", tag: "wordpress", stack: WP, image: "/portfolio/papillon-dor.webp",
+    tagline: "Site vitrine pour un service de transport de personnes à mobilité réduite : missions, engagements et contact disponible 7j/7." },
+  { id: "auxitrol", name: "Auxitrol Weston", category: "Industrie · WordPress", sector: "Industrie", tag: "wordpress", stack: WP, image: "/portfolio/auxitrol.webp",
+    tagline: "Site corporate d’un fabricant international de capteurs aéronautiques : catalogue produits, marchés, carrières et support." },
+  { id: "tennis-bry", name: "Tennis Club Bry", category: "Club sportif · WordPress", sector: "Club de tennis", tag: "wordpress", stack: WP, image: "/portfolio/tennis-bry.webp",
+    tagline: "Site du Tennis Club de Bry-sur-Marne : installations, adhésions, enseignement, actualités du club et réservation de courts." },
+  { id: "cfi", name: "CFI Groupe", category: "Intégrateur IT · WordPress", sector: "Intégrateur IT", tag: "wordpress", stack: WP, image: "/portfolio/cfi.webp",
+    tagline: "Site corporate d’un intégrateur de solutions numériques : éducation, retail, santé, smart office, cybersécurité et IA." },
+  { id: "elior", name: "Elior", category: "Restauration · WordPress", sector: "Restauration", tag: "wordpress", stack: WP, image: "/portfolio/elior.webp",
+    tagline: "Site d’un leader de la restauration collective : offres, engagements responsables, recrutement et actualités." },
+  { id: "idemia", name: "IDEMIA", category: "Tech & sécurité · WordPress", sector: "Sécurité numérique", tag: "wordpress", stack: WP, image: "/portfolio/idemia.webp",
+    tagline: "Site d’un groupe international de l’identité et de la sécurité numérique : solutions, entités, carrières et actualités." },
 ];
 
-/** Projects of one tab, in carousel order (the tab's `lead` projects first). */
+export const projectById = (id: string) => PROJECTS.find((p) => p.id === id)!;
+
+/** Projects of one tab, in order (the tab's `lead` projects first). */
 export function projectsForTag(tag: ProjectTag) {
   const lead = PROJECT_FILTERS.find((f) => f.tag === tag)?.lead ?? [];
   const rank = (p: Project) => (lead.includes(p.id) ? lead.indexOf(p.id) : lead.length);
