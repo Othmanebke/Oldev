@@ -15,13 +15,15 @@ export type Project = {
   /** Looping MP4 played on hover (desktop) / when visible (phones). TODO: add the reels in public/reels/. */
   video?: string;
   concept?: boolean;
+  /** Only in the "Tous" mockup rows, not in its tab nor on /realisations. */
+  hidden?: boolean;
 };
 
 /** `lead` = projects shown first in that tab, in this order. */
 export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string[] }[] = [
   { tag: "all",       label: "Tous" },
-  { tag: "html",      label: "Vitrine",    lead: ["moreau", "velia", "fontaney", "sorel", "burga", "griddle", "volta", "petale", "djcley"] },
-  { tag: "nextjs",    label: "Sur-mesure", lead: ["nocta", "aero", "hora", "wecars", "kinetik", "dental", "fauteo", "wonder", "renova", "moon", "baseclub"] },
+  { tag: "html",      label: "Vitrine",    lead: ["moreau", "velia", "olea", "fontaney", "sorel", "burga", "griddle", "volta", "petale", "djcley"] },
+  { tag: "nextjs",    label: "Sur-mesure", lead: ["nocta", "aero", "volea", "sillage", "wecars", "kinetik", "dental", "fauteo", "wonder", "renova", "baseclub"] },
   { tag: "wordpress", label: "WordPress",  lead: ["brows"] },
 ];
 
@@ -38,9 +40,15 @@ export const PROJECTS: Project[] = [
     tagline: "Portfolio d’une photographe portrait et mode : direction artistique forte, séries éditoriales et prise de contact." },
   { id: "velia", name: "Velia", category: "Cosmétique · HTML", sector: "Soins de la peau", tag: "html", stack: HTML, ...shots("velia"),
     tagline: "Marque de soins visage : sérums et crèmes, rituel en trois gestes selon votre type de peau, avis clientes et FAQ." },
+  { id: "olea", name: "Olea", category: "Hôtel · HTML", sector: "Hôtel", tag: "html", stack: HTML, ...shots("olea"),
+    tagline: "Hôtel de douze suites face à la mer : chambres et tarifs, attentions sur demande, galerie de la baie et réservation." },
+  { id: "volea", name: "Volea", category: "Club de padel · Next.js", sector: "Club de padel", tag: "nextjs", stack: NEXT, ...shots("volea"),
+    tagline: "Club de padel à Paris : terrains libres en direct, matchmaking par niveau, formules, application et réservation en 10 secondes." },
+  { id: "sillage", name: "Sillage", category: "Location de yachts · Next.js", sector: "Location de yachts", tag: "nextjs", stack: NEXT, ...shots("sillage"),
+    tagline: "Location de yachts avec équipage sur la Riviera : recherche par port et date, flotte, escales et réservation." },
   { id: "wecars", name: "WeCars", category: "Location auto · Next.js", sector: "Location de voitures", tag: "nextjs", stack: NEXT, ...shots("wecars"),
     tagline: "Plateforme de location de voitures de sport : catalogue, disponibilités en temps réel et réservation en ligne." },
-  { id: "hora", name: "Hora", category: "Horlogerie · Next.js", sector: "Horlogerie de luxe", tag: "nextjs", stack: NEXT, ...shots("hora", false),
+  { id: "hora", name: "Hora", category: "Horlogerie · Next.js", sector: "Horlogerie de luxe", tag: "nextjs", stack: NEXT, ...shots("hora", false), hidden: true,
     tagline: "Marketplace de montres de luxe : collection rare, estimation en ligne et espace membre conciergerie." },
   { id: "aero", name: "Aéro", category: "Aviation privée · Next.js", sector: "Aviation privée", tag: "nextjs", stack: NEXT, ...shots("aero"),
     tagline: "Réservation de vols privés en Europe : estimation de trajet, flotte d’avions et espace membres." },
@@ -66,8 +74,6 @@ export const PROJECTS: Project[] = [
     tagline: "Site d’un chirurgien-dentiste implantologue : soins, solutions d’implants, diagnostic en ligne et prise de rendez-vous." },
   { id: "kinetik", name: "Kinetik", category: "Salle de sport · Next.js", sector: "Coach sportif", tag: "nextjs", stack: NEXT, ...shots("kinetik"),
     tagline: "Site d’un training club : espaces, coachs, programmes d’entraînement et réservation de séances." },
-  { id: "moon", name: "Moon", category: "Beauté · React", sector: "Maquillage", tag: "nextjs", stack: ["React", "Vite", "Tailwind"], image: "/portfolio/moon.webp",
-    tagline: "Marque de maquillage : collection, rituel en trois gestes, avis clientes et réservation de séances beauté." },
   { id: "renova", name: "Renova", category: "Rénovation · Next.js", sector: "Rénovation", tag: "nextjs", stack: NEXT, image: "/portfolio/renova.webp",
     tagline: "Entreprise de rénovation d’intérieur : méthode, avantages, réalisations et demande de devis en ligne." },
   { id: "wonder", name: "Wonder Club", category: "Barbier · React", sector: "Barbier", tag: "nextjs", stack: ["React", "Tailwind"], image: "/portfolio/wonder.webp", fullImage: "/portfolio/web/wonder.webp",
@@ -96,5 +102,5 @@ export const projectById = (id: string) => PROJECTS.find((p) => p.id === id)!;
 export function projectsForTag(tag: ProjectTag) {
   const lead = PROJECT_FILTERS.find((f) => f.tag === tag)?.lead ?? [];
   const rank = (p: Project) => (lead.includes(p.id) ? lead.indexOf(p.id) : lead.length);
-  return PROJECTS.filter((p) => p.tag === tag).sort((a, b) => rank(a) - rank(b));
+  return PROJECTS.filter((p) => p.tag === tag && !p.hidden).sort((a, b) => rank(a) - rank(b));
 }

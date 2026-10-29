@@ -228,7 +228,7 @@ export default function WorkSection() {
           >
             {PROJECT_FILTERS.map((f) => {
               const on = f.tag === filter;
-              const count = f.tag === "all" ? PROJECTS.length : PROJECTS.filter((p) => p.tag === f.tag).length;
+              const count = f.tag === "all" ? PROJECTS.length : projectsForTag(f.tag).length;
               return (
                 <button
                   key={f.tag}
