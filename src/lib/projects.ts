@@ -22,7 +22,7 @@ export type Project = {
 /** `lead` = projects shown first in that tab, in this order. */
 export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: string[] }[] = [
   { tag: "all",       label: "Tous" },
-  { tag: "html",      label: "Vitrine",    lead: ["moreau", "velia", "olea", "fontaney", "sorel", "burga", "griddle", "volta", "petale", "djcley"] },
+  { tag: "html",      label: "Vitrine",    lead: ["moreau", "velia", "olea", "lumen", "fontaney", "sorel", "burga", "griddle", "volta", "petale", "djcley"] },
   { tag: "nextjs",    label: "Sur-mesure", lead: ["nocta", "aero", "volea", "sillage", "wecars", "kinetik", "dental", "fauteo", "wonder", "renova", "baseclub"] },
   { tag: "wordpress", label: "WordPress",  lead: ["brows"] },
 ];
@@ -42,6 +42,8 @@ export const PROJECTS: Project[] = [
     tagline: "Marque de soins visage : sérums et crèmes, rituel en trois gestes selon votre type de peau, avis clientes et FAQ." },
   { id: "olea", name: "Olea", category: "Hôtel · HTML", sector: "Hôtel", tag: "html", stack: HTML, ...shots("olea"),
     tagline: "Hôtel de douze suites face à la mer : chambres et tarifs, attentions sur demande, galerie de la baie et réservation." },
+  { id: "lumen", name: "Musée Lumen", category: "Musée · HTML", sector: "Musée", tag: "html", stack: HTML, ...shots("lumen"),
+    tagline: "Musée d’art antique : les maîtres de la sculpture, expositions, horaires et billetterie en ligne avec aperçu du billet." },
   { id: "volea", name: "Volea", category: "Club de padel · Next.js", sector: "Club de padel", tag: "nextjs", stack: NEXT, ...shots("volea"),
     tagline: "Club de padel à Paris : terrains libres en direct, matchmaking par niveau, formules, application et réservation en 10 secondes." },
   { id: "sillage", name: "Sillage", category: "Location de yachts · Next.js", sector: "Location de yachts", tag: "nextjs", stack: NEXT, ...shots("sillage"),
