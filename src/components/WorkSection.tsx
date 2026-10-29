@@ -15,8 +15,8 @@ const shot = (id: string) => projectById(id).image;
 
 /** "Tous": two rows of client sites mixed with hero concepts (public/defil-travaux). */
 const ROW_A = [shot("wecars"), defil(3), shot("hora"), defil(1), shot("aero"), shot("moreau"), shot("kinetik"), defil(5), shot("dental"), shot("sorel")];
-const ROW_B = [shot("fontaney"), defil(7), shot("wonder"), shot("fauteo"), shot("nocta"), defil(9), shot("djcley"), shot("burga"), shot("griddle")];
-const ROWS_LIST = ["wecars", "hora", "aero", "moreau", "kinetik", "dental", "sorel", "fontaney", "wonder", "fauteo", "nocta", "djcley", "burga", "griddle"].map(projectById);
+const ROW_B = [shot("olea"), defil(7), shot("volea"), shot("fauteo"), shot("nocta"), defil(9), shot("sillage"), shot("lumen"), shot("griddle")];
+const ROWS_LIST = ["wecars", "hora", "aero", "moreau", "kinetik", "dental", "sorel", "olea", "volea", "fauteo", "nocta", "sillage", "lumen", "griddle"].map(projectById);
 
 /** Image, with the project's reel on top when it has one (hover on desktop, visible on phones). */
 function ProjectMedia({ project, priority }: { project: Project; priority?: boolean }) {
