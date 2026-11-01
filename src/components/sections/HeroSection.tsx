@@ -95,10 +95,10 @@ export default function HeroSection() {
             style={{ fontFamily: archivo, fontSize: "clamp(22px,2vw,30px)", textShadow: "0 2px 20px rgba(0,0,0,.6)", marginBottom: "clamp(150px,40vh,460px)" }}
           >
             <span className="flex flex-wrap justify-center pr-[2.4em] max-[400px]:pr-[1.2em]">
-              <Typed text="Chaque ligne, codée à la main." start={0.4} step={0.055} />
+              <Typed text="Chaque ligne, codée à la main." start={0.3} step={0.025} />
             </span>
             <span className="flex flex-wrap justify-center pl-[2.4em] max-[400px]:pl-[1.2em]">
-              <Typed text="Chaque site, pensé pour vendre" start={1.775} step={0.055} />
+              <Typed text="Chaque site, pensé pour vendre" start={0.95} step={0.025} />
             </span>
           </p>
 
@@ -107,16 +107,16 @@ export default function HeroSection() {
             style={{ fontSize: "clamp(22px,2vw,30px)", textShadow: "0 2px 24px rgba(0,0,0,.7)" }}
           >
             <span className="flex flex-wrap justify-center">
-              <Typed text="Développeur web freelance" start={3.4} step={0.04} />
+              <Typed text="Développeur web freelance" start={1.75} step={0.02} />
             </span>
             <span className="sr-only"> Othmane Bouakline, O&apos;LDEV, Seine-et-Marne. Chaque ligne codée à la main, chaque site pensé pour vendre.</span>
           </h1>
           <p className="m-0 flex flex-wrap justify-center font-medium text-[#d0d0d0]" style={{ fontSize: "clamp(16px,1.3vw,19px)", textShadow: "0 2px 16px rgba(0,0,0,.8)" }}>
-            <Typed text="Des sites qui donnent envie" start={4.55} step={0.03} />
+            <Typed text="Des sites qui donnent envie" start={2.3} step={0.015} />
           </p>
 
-          <div className="mt-5 flex flex-wrap justify-center gap-3" style={fade(5.56)}>
-            <button onClick={() => openModal()} className="btn-glass-primary" style={{ "--sweep-delay": delay(6.36) } as CSSProperties}>
+          <div className="mt-5 flex flex-wrap justify-center gap-3" style={fade(2.8)}>
+            <button onClick={() => openModal()} className="btn-glass-primary" style={{ "--sweep-delay": delay(3.6) } as CSSProperties}>
               Devis gratuit <span aria-hidden className="text-[14px] opacity-90">↗</span>
             </button>
             <a
