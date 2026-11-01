@@ -17,8 +17,9 @@ type Props = {
 };
 
 /**
- * Browser-like popup showing a project's full-page capture, scrolling by itself
- * (top → bottom → top, with a short pause at each end). No manual scroll.
+ * Browser-like popup showing a project's reel (autoplay, loop) or else its
+ * full-page capture, scrolling by itself (top → bottom → top, with a short
+ * pause at each end). No manual scroll.
  * Esc / click outside / ✕ close it, ←/→ switch project, focus stays inside.
  */
 export default function ProjectPreview({ projects, index, onChange }: Props) {
@@ -160,19 +161,33 @@ export default function ProjectPreview({ projects, index, onChange }: Props) {
           </div>
         </div>
 
-        {/* Capture, scrolled by the animation only */}
+        {/* Reel when the project has one, else the capture scrolled by the animation only */}
         <div ref={box} className="relative min-h-0 flex-1 overflow-hidden bg-[#111]">
-          <Image
-            key={project.id}
-            ref={img}
-            src={project.fullImage ?? project.image}
-            alt={`Capture du site ${project.name}`}
-            width={1440}
-            height={1800}
-            sizes="(max-width: 1160px) 100vw, 1120px"
-            onLoad={play}
-            className="absolute left-0 top-0 block h-auto w-full will-change-transform"
-          />
+          {project.video ? (
+            <video
+              key={project.id}
+              src={project.video}
+              poster={project.image}
+              aria-label={`Vidéo du site ${project.name}`}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 size-full object-contain"
+            />
+          ) : (
+            <Image
+              key={project.id}
+              ref={img}
+              src={project.fullImage ?? project.image}
+              alt={`Capture du site ${project.name}`}
+              width={1440}
+              height={1800}
+              sizes="(max-width: 1160px) 100vw, 1120px"
+              onLoad={play}
+              className="absolute left-0 top-0 block h-auto w-full will-change-transform"
+            />
+          )}
         </div>
       </div>
     </div>,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import GrainyRow from "@/components/fx/GrainyRow";
@@ -18,23 +18,8 @@ const ROW_A = [shot("wecars"), defil(3), shot("hora"), defil(1), shot("aero"), s
 const ROW_B = [shot("olea"), defil(7), shot("volea"), shot("fauteo"), shot("nocta"), defil(9), shot("sillage"), shot("lumen"), shot("griddle")];
 const ROWS_LIST = ["wecars", "hora", "aero", "moreau", "kinetik", "dental", "sorel", "olea", "volea", "fauteo", "nocta", "sillage", "lumen", "griddle"].map(projectById);
 
-/** Image, with the project's reel autoplaying on top when it has one (while the card is on screen). */
+/** Hero capture of the project (its reel plays in the preview popup). */
 function ProjectMedia({ project, priority }: { project: Project; priority?: boolean }) {
-  const video = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const [broken, setBroken] = useState(false);
-
-  useEffect(() => {
-    const v = video.current;
-    if (!v || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const io = new IntersectionObserver(
-      ([e]) => (e.isIntersecting ? v.play().then(() => setPlaying(true)).catch(() => {}) : v.pause()),
-      { threshold: 0.25 },
-    );
-    io.observe(v);
-    return () => io.disconnect();
-  }, []);
-
   return (
     <div className="relative aspect-video overflow-hidden rounded-[22px] bg-[#111]">
       <Image
@@ -45,19 +30,6 @@ function ProjectMedia({ project, priority }: { project: Project; priority?: bool
         sizes="(max-width: 768px) 86vw, 940px"
         className="object-cover object-top transition-transform duration-[1.1s] ease-out-expo group-hover:scale-[1.04]"
       />
-      {project.video && !broken && (
-        <video
-          ref={video}
-          src={project.video}
-          poster={project.image}
-          muted
-          playsInline
-          loop
-          preload="metadata"
-          onError={() => setBroken(true)}
-          className={`absolute inset-0 size-full object-cover object-top transition-opacity duration-500 ${playing ? "opacity-100" : "opacity-0"}`}
-        />
-      )}
       <span className="absolute bottom-4 right-4 rounded-full bg-[rgba(10,10,10,.72)] px-3.5 py-2 text-[13px] font-semibold text-white opacity-0 backdrop-blur-[8px] transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 max-[899px]:opacity-100">
         Voir le site ↗
       </span>

@@ -12,7 +12,7 @@ export type Project = {
   image: string;
   /** Full-page capture (menu to footer) auto-scrolled in the preview popup; falls back to `image`. */
   fullImage?: string;
-  /** Looping MP4 (public/reels) autoplayed in place of the image while the card is on screen. */
+  /** Looping MP4 (public/reels) autoplayed in the preview popup in place of the scrolling `fullImage`. */
   video?: string;
   concept?: boolean;
   /** Only in the "Tous" mockup rows, not in its tab nor on /realisations. */
