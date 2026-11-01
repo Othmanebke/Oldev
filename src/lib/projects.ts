@@ -12,7 +12,7 @@ export type Project = {
   image: string;
   /** Full-page capture (menu to footer) auto-scrolled in the preview popup; falls back to `image`. */
   fullImage?: string;
-  /** Looping MP4 played on hover (desktop) / when visible (phones). TODO: add the reels in public/reels/. */
+  /** Looping MP4 (public/reels) autoplayed in place of the image while the card is on screen. */
   video?: string;
   concept?: boolean;
   /** Only in the "Tous" mockup rows, not in its tab nor on /realisations. */
@@ -30,8 +30,14 @@ export const PROJECT_FILTERS: { tag: ProjectTag | "all"; label: string; lead?: s
 const HTML = ["HTML", "CSS", "JavaScript"];
 const NEXT = ["Next.js", "React", "Tailwind"];
 const WP = ["WordPress", "Responsive", "SEO"];
-/** New projects: hero capture in /portfolio, full page (menu to footer) in /portfolio/web. */
-const shots = (id: string, full = true) => ({ image: `/portfolio/${id}.webp`, ...(full && { fullImage: `/portfolio/web/${id}.webp` }) });
+/** Projects with a screen recording in /reels. */
+const REELS = ["nocta", "moreau", "velia", "olea", "lumen", "volea", "aero", "volta"];
+/** New projects: hero capture in /portfolio, full page (menu to footer) in /portfolio/web, reel in /reels. */
+const shots = (id: string, full = true) => ({
+  image: `/portfolio/${id}.webp`,
+  ...(full && { fullImage: `/portfolio/web/${id}.webp` }),
+  ...(REELS.includes(id) && { video: `/reels/${id}.mp4` }),
+});
 
 export const PROJECTS: Project[] = [
   { id: "nocta", name: "Nocta", category: "Location auto · Next.js", sector: "Location de voitures", tag: "nextjs", stack: NEXT, ...shots("nocta"),

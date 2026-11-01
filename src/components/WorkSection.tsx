@@ -18,7 +18,7 @@ const ROW_A = [shot("wecars"), defil(3), shot("hora"), defil(1), shot("aero"), s
 const ROW_B = [shot("olea"), defil(7), shot("volea"), shot("fauteo"), shot("nocta"), defil(9), shot("sillage"), shot("lumen"), shot("griddle")];
 const ROWS_LIST = ["wecars", "hora", "aero", "moreau", "kinetik", "dental", "sorel", "olea", "volea", "fauteo", "nocta", "sillage", "lumen", "griddle"].map(projectById);
 
-/** Image, with the project's reel on top when it has one (hover on desktop, visible on phones). */
+/** Image, with the project's reel autoplaying on top when it has one (while the card is on screen). */
 function ProjectMedia({ project, priority }: { project: Project; priority?: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -27,22 +27,10 @@ function ProjectMedia({ project, priority }: { project: Project; priority?: bool
   useEffect(() => {
     const v = video.current;
     if (!v || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const box = v.parentElement!;
-    const play = () => v.play().then(() => setPlaying(true)).catch(() => {});
-    const stop = () => {
-      v.pause();
-      v.currentTime = 0;
-      setPlaying(false);
-    };
-    if (window.matchMedia("(hover: hover)").matches) {
-      box.addEventListener("pointerenter", play);
-      box.addEventListener("pointerleave", stop);
-      return () => {
-        box.removeEventListener("pointerenter", play);
-        box.removeEventListener("pointerleave", stop);
-      };
-    }
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? play() : stop()), { threshold: 0.6 });
+    const io = new IntersectionObserver(
+      ([e]) => (e.isIntersecting ? v.play().then(() => setPlaying(true)).catch(() => {}) : v.pause()),
+      { threshold: 0.25 },
+    );
     io.observe(v);
     return () => io.disconnect();
   }, []);
@@ -65,7 +53,7 @@ function ProjectMedia({ project, priority }: { project: Project; priority?: bool
           muted
           playsInline
           loop
-          preload="none"
+          preload="metadata"
           onError={() => setBroken(true)}
           className={`absolute inset-0 size-full object-cover object-top transition-opacity duration-500 ${playing ? "opacity-100" : "opacity-0"}`}
         />
