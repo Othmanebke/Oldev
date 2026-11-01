@@ -31,12 +31,16 @@ const HTML = ["HTML", "CSS", "JavaScript"];
 const NEXT = ["Next.js", "React", "Tailwind"];
 const WP = ["WordPress", "Responsive", "SEO"];
 /** Projects with a screen recording in /reels. */
-const REELS = ["nocta", "moreau", "velia", "olea", "lumen", "volea", "aero", "volta"];
+const REELS = [
+  "nocta", "moreau", "velia", "olea", "lumen", "volea", "aero", "volta", "sillage", "wecars", "kinetik", "dental",
+  "fauteo", "wonder", "renova", "fontaney", "sorel", "burga", "griddle", "djcley",
+];
+const reel = (id: string) => (REELS.includes(id) ? { video: `/reels/${id}.mp4` } : {});
 /** New projects: hero capture in /portfolio, full page (menu to footer) in /portfolio/web, reel in /reels. */
 const shots = (id: string, full = true) => ({
   image: `/portfolio/${id}.webp`,
   ...(full && { fullImage: `/portfolio/web/${id}.webp` }),
-  ...(REELS.includes(id) && { video: `/reels/${id}.mp4` }),
+  ...reel(id),
 });
 
 export const PROJECTS: Project[] = [
@@ -82,9 +86,9 @@ export const PROJECTS: Project[] = [
     tagline: "Site d’un chirurgien-dentiste implantologue : soins, solutions d’implants, diagnostic en ligne et prise de rendez-vous." },
   { id: "kinetik", name: "Kinetik", category: "Salle de sport · Next.js", sector: "Coach sportif", tag: "nextjs", stack: NEXT, ...shots("kinetik"),
     tagline: "Site d’un training club : espaces, coachs, programmes d’entraînement et réservation de séances." },
-  { id: "renova", name: "Renova", category: "Rénovation · Next.js", sector: "Rénovation", tag: "nextjs", stack: NEXT, image: "/portfolio/renova.webp",
+  { id: "renova", name: "Renova", category: "Rénovation · Next.js", sector: "Rénovation", tag: "nextjs", stack: NEXT, image: "/portfolio/renova.webp", ...reel("renova"),
     tagline: "Entreprise de rénovation d’intérieur : méthode, avantages, réalisations et demande de devis en ligne." },
-  { id: "wonder", name: "Wonder Club", category: "Barbier · React", sector: "Barbier", tag: "nextjs", stack: ["React", "Tailwind"], image: "/portfolio/wonder.webp", fullImage: "/portfolio/web/wonder.webp",
+  { id: "wonder", name: "Wonder Club", category: "Barbier · React", sector: "Barbier", tag: "nextjs", stack: ["React", "Tailwind"], image: "/portfolio/wonder.webp", fullImage: "/portfolio/web/wonder.webp", ...reel("wonder"),
     tagline: "Salon de coiffure et barbier : prestations et tarifs, galerie de coupes, infos pratiques et réservation de créneau." },
   { id: "brows", name: "Brows Creative", category: "E-commerce · WordPress", sector: "Salon de beauté", tag: "wordpress", stack: ["WordPress", "WooCommerce", "Elementor"], image: "/portfolio/brows.webp", fullImage: "/portfolio/web/brows.webp",
     tagline: "Boutique WooCommerce pour salon de beauté : catalogue soins, réservations en ligne et boutique intégrée." },
