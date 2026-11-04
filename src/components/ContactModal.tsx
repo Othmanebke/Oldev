@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SERVICES, SERVICE_GROUPS, getBudgets, priceRange } from "@/lib/services";
+import { BUDGETS, SERVICES, SERVICE_GROUPS, priceRange } from "@/lib/services";
 import type { ContactFormData } from "@/components/ContactModalProvider";
 
 const inputClass =
@@ -28,24 +28,17 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
 
   if (initialData !== prevInitialData) {
     setPrevInitialData(initialData);
-    const selectedType = initialData?.type ?? "";
-    const budgets = selectedType ? getBudgets(selectedType) : [];
-    // An explicit "" (from the assistant) leaves the budget for the visitor to pick
-    const defaultBudget = initialData?.budget ?? budgets[0] ?? "";
-
     setForm({
       name: initialData?.name ?? "",
       email: initialData?.email ?? "",
       phone: initialData?.phone ?? "",
-      type: selectedType,
-      budget: defaultBudget,
+      type: initialData?.type ?? "",
+      // Pre-selected from the chosen offer; "" leaves it for the visitor to pick
+      budget: initialData?.budget ?? "",
       message: initialData?.message ?? "",
     });
     setSent(false);
   }
-
-  const budgetOptions = form.type ? getBudgets(form.type) : [];
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -53,7 +46,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (budgetOptions.length > 0 && !form.budget) {
+    if (!form.budget) {
       setError("Choisissez une fourchette de budget.");
       return;
     }
@@ -140,7 +133,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                     Message reçu<span className="text-abcs-red">.</span>
                   </h3>
                   <p className="m-0 max-w-[420px] text-[16px] leading-[1.6] text-white/60">
-                    Merci ! Je vous réponds sous 48 h maximum pour parler de votre projet en détail.
+                    Merci ! Je vous réponds sous 24 h pour parler de votre projet en détail.
                   </p>
                   <button
                     onClick={handleClose}
@@ -168,17 +161,13 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                       <input type="tel" name="phone" autoComplete="tel" value={form.phone} onChange={handleChange} placeholder="06 XX XX XX XX" className={inputClass} />
                     </label>
                     <label className="flex flex-col gap-2">
-                      <span className={labelClass}>Type de projet *</span>
+                      <span className={labelClass}>Service souhaité *</span>
                       <span className="relative">
                         <select
                           required
                           name="type"
                           value={form.type}
-                          onChange={(e) => {
-                            const newType = e.target.value;
-                            const newBudgets = newType ? getBudgets(newType) : [];
-                            setForm({ ...form, type: newType, budget: newBudgets[0] || "" });
-                          }}
+                          onChange={handleChange}
                           className={`${inputClass} appearance-none truncate pr-8 [&_optgroup]:bg-[#141414] [&_option]:bg-[#141414] ${form.type ? "" : "text-white/35"}`}
                         >
                           <option value="">Choisir…</option>
@@ -186,7 +175,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                             <optgroup key={g.label} label={g.label}>
                               {g.keys.map((k) => (
                                 <option key={k} value={SERVICES[k].label} className="text-[#f4f4f2]">
-                                  {SERVICES[k].label} — {priceRange(k)}
+                                  {k === "autre" ? SERVICES[k].label : `${SERVICES[k].label} — ${priceRange(k)}`}
                                 </option>
                               ))}
                             </optgroup>
@@ -199,42 +188,29 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                     </label>
                   </div>
 
-                  <AnimatePresence mode="wait">
-                    {form.type && budgetOptions.length > 0 && (
-                      <motion.div
-                        key={form.type}
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                        transition={{ duration: 0.2 }}
-                        role="radiogroup"
-                        aria-label="Budget"
-                        className="flex flex-col gap-3"
-                      >
-                        <span className={labelClass}>Budget *</span>
-                        <div className="flex flex-wrap gap-2">
-                          {budgetOptions.map((b) => {
-                            const on = form.budget === b;
-                            return (
-                              <button
-                                key={b}
-                                type="button"
-                                role="radio"
-                                aria-checked={on}
-                                onClick={() => setForm({ ...form, budget: b })}
-                                className={`h-10 rounded-full border px-4 text-[14px] font-bold transition-colors duration-150 ${
-                                  on ? "border-abcs-red bg-abcs-red text-white" : "border-white/15 bg-white/[.03] text-white/80 hover:border-white/40 hover:text-white"
-                                }`}
-                              >
-                                {b}
-                              </button>
-                            );
-                          })}
-                        </div>
-                        <input type="hidden" name="budget" value={form.budget} required />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <div role="radiogroup" aria-label="Budget" className="flex flex-col gap-3">
+                    <span className={labelClass}>Budget *</span>
+                    <div className="flex flex-wrap gap-2">
+                      {BUDGETS.map((b) => {
+                        const on = form.budget === b;
+                        return (
+                          <button
+                            key={b}
+                            type="button"
+                            role="radio"
+                            aria-checked={on}
+                            onClick={() => setForm({ ...form, budget: b })}
+                            className={`h-10 rounded-full border px-4 text-[14px] font-bold transition-colors duration-150 ${
+                              on ? "border-abcs-red bg-abcs-red text-white" : "border-white/15 bg-white/[.03] text-white/80 hover:border-white/40 hover:text-white"
+                            }`}
+                          >
+                            {b}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <input type="hidden" name="budget" value={form.budget} required />
+                  </div>
 
                   <label className="flex flex-col gap-2">
                     <span className={labelClass}>Message *</span>
@@ -282,7 +258,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                     </a>
                     <span className="flex items-center gap-2 text-white/45">
                       <span aria-hidden className="size-1.5 rounded-full bg-abcs-green" />
-                      Réponse sous 48 h · partout en France
+                      Devis gratuit en 24 h · partout en France
                     </span>
                   </div>
                 </form>

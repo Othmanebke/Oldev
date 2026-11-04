@@ -13,13 +13,13 @@ const GREETING: Msg = { role: "assistant", text: "Bonjour ! Je suis l'assistant 
 const SUGGESTS = ["Combien coûte un site vitrine ?", "Le site m'appartient-il ?", "Comment se passe un projet ?", "Je n'y connais rien, c'est grave ?"];
 const PROJECTS: { key: ServiceKey; label: string }[] = [
   { key: "vitrine", label: "Site vitrine" },
-  { key: "webapp", label: "Site sur-mesure" },
+  { key: "webapp", label: "Site sur mesure" },
   { key: "wordpress", label: "WordPress" },
   { key: "refonte", label: "Refonte" },
-  { key: "branding_canva", label: "Logo & flyer" },
-  { key: "chatbot_ia", label: "Chatbot IA" },
+  { key: "pack", label: "Logo & flyer" },
+  { key: "chatbot_ia", label: "Chatbot" },
 ];
-const FALLBACK: Msg = { role: "assistant", text: `Je n'arrive pas à répondre pour l'instant. Écrivez à ${EMAIL} : réponse sous 48 h, ou remplissez le formulaire.`, form: "" };
+const FALLBACK: Msg = { role: "assistant", text: `Je n'arrive pas à répondre pour l'instant. Écrivez à ${EMAIL} : réponse sous 24 h, ou remplissez le formulaire.`, form: "" };
 
 const chip = "h-8 rounded-full bg-[#1F1C19] px-3 text-[13px] transition-colors hover:bg-[#2A2622]";
 
@@ -95,7 +95,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
         />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="text-[14px] font-semibold">Assistant O&apos;LDEV</span>
-          <span className="truncate text-[12px] text-[rgba(244,241,236,.5)]">Répond tout de suite · Othmane sous 48 h</span>
+          <span className="truncate text-[12px] text-[rgba(244,241,236,.5)]">Répond tout de suite · Othmane sous 24 h</span>
         </div>
         <button onClick={() => toForm()} className="h-8 flex-none rounded-full bg-[#F4F1EC] px-3 text-[12px] font-semibold text-[#0A0908] transition-colors hover:bg-abcs-red hover:text-white">
           Formulaire
@@ -123,7 +123,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
                 {m.prefill?.name || m.prefill?.email
                   ? "Choisir mon budget et envoyer"
                   : m.form
-                    ? `Remplir le formulaire · ${PROJECTS.find((p) => p.key === m.form)?.label ?? "devis"}`
+                    ? `Remplir le formulaire · ${SERVICES[m.form].label}`
                     : "Ouvrir le formulaire"} ↗
               </button>
             )}

@@ -24,7 +24,7 @@ export type ServicePage = {
 /** Same for every offer: how a project runs, from first call to launch. */
 export const STEPS = [
   { title: "Appel découverte", text: "15 minutes au téléphone pour comprendre votre activité, vos objectifs et votre budget. Gratuit, sans engagement." },
-  { title: "Devis détaillé", text: "Un prix ferme, un délai et la liste de ce qui est inclus. Vous savez exactement ce que vous payez." },
+  { title: "Devis gratuit", text: "Sous 24 h : un prix ferme, un délai et la liste de ce qui est inclus. Vous savez exactement ce que vous payez." },
   { title: "Design", text: "Une maquette de votre site, que l’on ajuste ensemble avant de passer au développement." },
   { title: "Développement", text: "Je construis le site, responsive et optimisé pour Google, avec des tours de révision prévus au devis." },
   { title: "Mise en ligne", text: "Je m’occupe de la mise en ligne, du référencement de base et je vous transmets tous les accès." },
@@ -36,12 +36,12 @@ export const SERVICE_PAGES: ServicePage[] = [
     key: "vitrine",
     metaTitle: "Création de site vitrine pour artisans et indépendants",
     metaDescription:
-      "Création de site vitrine responsive de 300 à 600 € selon les options : formulaire de contact, SEO de base, Google Maps et mise en ligne en 1 à 2 semaines. Développeur web freelance en Seine-et-Marne.",
+      "Création de site vitrine one page dès 300 € : jusqu’à 5 sections, formulaire de contact, SEO de base, mise en ligne et 1 an de maintenance offert. Développeur web freelance en Seine-et-Marne.",
     name: "Site vitrine",
     h1: "Création de site vitrine",
     intro: [
       "Un site vitrine, c’est votre carte de visite sur Google : il présente votre activité, rassure vos futurs clients et leur donne un moyen simple de vous contacter.",
-      "Je crée des sites vitrines rapides et responsives pour les artisans, commerçants et indépendants, livrés en 1 à 2 semaines, de 300 à 600 € selon les options.",
+      "Je crée des sites vitrines rapides et responsives pour les artisans, commerçants et indépendants, livrés en 1 à 2 semaines, dès 300 € (jusqu’à 800 € selon votre projet).",
     ],
     audience: [
       { title: "Artisans & commerçants", text: "Présentez vos prestations, vos horaires et votre zone d’intervention, avec un accès direct à l’itinéraire Google Maps." },
@@ -50,7 +50,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     ],
     tag: "html",
     faq: [
-      { q: "Combien coûte un site vitrine ?", a: "De 300 à 600 €. La formule de base à 300 € comprend un site one-page responsive, un formulaire de contact, le SEO de base et la mise en ligne. Le prix monte selon les options : identité visuelle, animations, page de chargement, sections supplémentaires, rédaction des textes." },
+      { q: "Combien coûte un site vitrine ?", a: "Dès 300 €, jusqu’à 800 € selon votre projet. Le site vitrine one page comprend 1 page jusqu’à 5 sections, un formulaire de contact, le SEO de base, la mise en ligne et 1 an de maintenance offert. Le prix exact est fixé dans le devis gratuit, envoyé en 24 h." },
       { q: "En combien de temps mon site est-il en ligne ?", a: "Comptez 1 à 2 semaines entre la validation du devis et la mise en ligne, avec 2 tours de révision inclus." },
       { q: "Mon site sera-t-il visible sur Google ?", a: "Oui : le SEO de base est inclus (balises, structure, vitesse, sitemap) ainsi que l’intégration Google Maps. Je peux aussi vous aider à créer votre fiche Google Business Profile." },
     ],
@@ -60,12 +60,12 @@ export const SERVICE_PAGES: ServicePage[] = [
     key: "webapp",
     metaTitle: "Site web sur-mesure Next.js / React",
     metaDescription:
-      "Site web sur-mesure en Next.js / React, sur devis : design exclusif multi-pages, score Lighthouse 90+, SEO technique avancé et 1 an de maintenance offert.",
+      "Site web sur mesure en Next.js / React, de 1 200 à 5 000 € selon devis : codé de zéro, ultra-performant, fonctionnalités spécifiques (espace client, réservation…) et 1 an de maintenance offert.",
     name: "Site sur-mesure Next.js",
     h1: "Site web sur-mesure en Next.js",
     intro: [
       "Pour les PME et startups qui veulent un site qui sort du lot : un design exclusif, des pages qui s’affichent instantanément et un référencement technique soigné.",
-      "Je développe vos sites et applications web avec Next.js et React, les technologies utilisées par les plus grandes marques du web, avec un tarif établi sur devis selon votre projet.",
+      "Je développe vos sites et applications web avec Next.js et React, les technologies utilisées par les plus grandes marques du web, de 1 200 à 5 000 € selon devis.",
     ],
     audience: [
       { title: "PME", text: "Un site multi-pages à votre image, pensé pour convertir et facile à faire évoluer avec votre entreprise." },
@@ -75,7 +75,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     tag: "nextjs",
     faq: [
       { q: "Pourquoi choisir Next.js plutôt que WordPress ?", a: "Next.js offre des performances et une sécurité supérieures, et une liberté totale sur le design et les fonctionnalités. WordPress reste idéal si vous voulez modifier vous-même tous vos contenus." },
-      { q: "Combien coûte un site sur-mesure ?", a: "Le tarif est établi sur devis, selon votre projet. La formule de base comprend un site multi-pages au design exclusif. Le prix évolue selon les options : pages supplémentaires, animations avancées, espace client, paiement en ligne, intégrations, chatbot IA. Vous recevez un devis détaillé après notre premier échange." },
+      { q: "Combien coûte un site sur mesure ?", a: "De 1 200 à 5 000 € selon devis. Le site est codé de zéro, ultra-performant, avec les fonctionnalités spécifiques dont vous avez besoin (espace client, réservation…). Le prix exact dépend de votre projet et figure dans le devis gratuit, envoyé en 24 h." },
       { q: "Quel est le délai de réalisation ?", a: "En général 3 à 4 semaines, avec 3 tours de révision et 1 an de maintenance offert après la mise en ligne." },
     ],
   },
@@ -84,12 +84,12 @@ export const SERVICE_PAGES: ServicePage[] = [
     key: "wordpress",
     metaTitle: "Création de site WordPress et boutique WooCommerce",
     metaDescription:
-      "Création de site WordPress clé en main, sur devis : jusqu’à 5 pages administrables, thème à votre image, blog, SEO de base et formation incluse. Boutique WooCommerce en option.",
+      "Création de site WordPress multi-pages de 800 à 3 000 € selon devis : vous modifiez vos contenus vous-même, prise en main incluse et 1 an de maintenance offert.",
     name: "Site WordPress",
     h1: "Création de site WordPress",
     intro: [
       "Un site WordPress clé en main que vous gérez vous-même : textes, photos, articles de blog et produits, sans toucher une ligne de code.",
-      "Je crée des sites WordPress et des boutiques WooCommerce pour les entreprises, associations et e-commerçants, sur devis selon votre projet, avec une formation à l’administration incluse.",
+      "Je crée des sites WordPress et des boutiques WooCommerce pour les entreprises, associations et e-commerçants, de 800 à 3 000 € selon devis, avec la prise en main incluse.",
     ],
     audience: [
       { title: "E-commerce", text: "Une boutique WooCommerce avec catalogue, panier et paiement en ligne sécurisé." },
@@ -98,9 +98,9 @@ export const SERVICE_PAGES: ServicePage[] = [
     ],
     tag: "wordpress",
     faq: [
-      { q: "Pourrai-je modifier mon site moi-même ?", a: "Oui, c’est tout l’intérêt de WordPress : le site est 100 % administrable et une formation d’une heure à l’administration est incluse." },
+      { q: "Pourrai-je modifier mon site moi-même ?", a: "Oui, c’est tout l’intérêt de WordPress : vous modifiez vos contenus vous-même, et la prise en main est incluse." },
       { q: "Pouvez-vous créer une boutique en ligne ?", a: "Oui, en option, avec WooCommerce : catalogue produits, panier, paiement en ligne et gestion des commandes." },
-      { q: "Combien coûte un site WordPress ?", a: "Le tarif est établi sur devis, selon votre projet, pour un délai de 3 à 5 semaines avec 3 tours de révision. La formule de base comprend jusqu’à 5 pages administrables, un thème personnalisé à votre image, un blog, un formulaire de contact, le SEO de base, la formation et la mise en ligne. Le prix évolue selon les options : boutique WooCommerce, pages supplémentaires, intégration de produits, réservation en ligne, multilingue, design 100 % sur-mesure. Les licences premium éventuelles (thèmes, extensions) ne sont pas incluses." },
+      { q: "Combien coûte un site WordPress ?", a: "De 800 à 3 000 € selon devis, pour un délai de 3 à 5 semaines avec 3 tours de révision. Le site est multi-pages, vous modifiez vos contenus vous-même et la prise en main est incluse, avec 1 an de maintenance offert. Le prix exact dépend de votre projet et figure dans le devis gratuit, envoyé en 24 h." },
     ],
   },
 ];
@@ -116,6 +116,6 @@ export const LOCAL_TOWNS = [
 
 export const LOCAL_FAQ: Faq[] = [
   { q: "Travaillez-vous uniquement en Seine-et-Marne ?", a: "Non : je suis basé à Brie-Comte-Robert et je travaille avec des clients partout en France. Tout peut se faire à distance, par téléphone ou en visio." },
-  { q: "Combien coûte un site internet ?", a: "De 300 à 600 € pour un site vitrine, selon les options choisies ; les sites sur-mesure et WordPress sont sur devis, selon votre projet. Vous recevez un devis détaillé et gratuit après un premier appel : une fois signé, le prix ne bouge plus." },
+  { q: "Combien coûte un site internet ?", a: "Dès 300 € pour un site vitrine one page (jusqu’à 800 €), de 800 à 3 000 € pour un site WordPress et de 1 200 à 5 000 € pour un site sur mesure Next.js, selon devis. La refonte d’un site existant est sur devis. Le devis est gratuit et envoyé en 24 h : une fois signé, le prix ne bouge plus." },
   { q: "Pouvez-vous m’aider à apparaître sur Google ?", a: "Oui : chaque site est optimisé pour le référencement dès sa création, et je peux vous accompagner sur votre fiche Google Business Profile pour apparaître dans les recherches locales." },
 ];

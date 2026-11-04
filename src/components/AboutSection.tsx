@@ -12,7 +12,7 @@ const MANIFESTO = [
   ["Vous", "ne", "me", "connaissez", "pas", "encore,"],
   ["mais", "vos", "clients", "vont", "adorer", "votre", "site."],
 ];
-const LINES = ["Je code chaque site à la main.", "Je réponds en 48 h, pas en 2 semaines.", "Le reste, vous le verrez dans le travail"];
+const LINES = ["Je code chaque site à la main.", "Je réponds en 24 h, pas en 2 semaines.", "Le reste, vous le verrez dans le travail"];
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const archivo: CSSProperties = { fontFamily: "var(--font-archivo-flex), sans-serif", fontWeight: 500, letterSpacing: "-.025em" };

@@ -131,7 +131,7 @@ export default function Footer() {
             <div className="flex flex-col gap-3.5">
               <span className="inline-flex items-center gap-2 text-[15px] font-medium text-abcs-red">
                 <span aria-hidden className="size-[7px] rounded-full bg-abcs-red shadow-[0_0_10px_#FF3B00]" />
-                Réponse sous 48 h
+                Réponse sous 24 h
               </span>
               <h2 className="m-0 font-bold leading-[.95] tracking-[-.045em] text-white text-balance" style={{ ...archivo, fontSize: "clamp(40px,5vw,64px)" }}>
                 On code

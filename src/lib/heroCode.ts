@@ -18,7 +18,7 @@ export const HERO_CODE = [
   "async function envoyerDevis(form) {",
   "  const data = Object.fromEntries(new FormData(form));",
   "  await resend.emails.send({ to: \"othmane@oldev.fr\", subject: \"Nouveau projet\", html: render(data) });",
-  "  return { ok: true, delai: \"48h\" };",
+  "  return { ok: true, delai: \"24h\" };",
   "}",
   "const seo = { title: \"O'LDEV — Développeur web\", description: \"Sites rapides, pensés pour convertir\" };",
   ".hero { display: grid; min-height: 100svh; color: #FF3B00; }",

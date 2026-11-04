@@ -202,7 +202,7 @@ function confirmationHtml(name: string, type: string, budget: string) {
           <td class="px" style="padding:32px 36px 8px;">
             <p style="margin:0;font-family:${FONT};font-size:16px;line-height:1.7;color:rgba(244,244,242,0.75);">
               Salut <strong style="color:${C.paper};">${esc(firstName)}</strong> 👋<br>
-              Ton message est bien arrivé. Je prends connaissance de ton projet et je te réponds personnellement <strong style="color:${C.paper};">sous 48&nbsp;h maximum</strong>.
+              Ton message est bien arrivé. Je prends connaissance de ton projet et je te réponds personnellement <strong style="color:${C.paper};">sous 24&nbsp;h</strong>.
             </p>
           </td>
         </tr>
@@ -234,7 +234,7 @@ function confirmationHtml(name: string, type: string, budget: string) {
             ${label("La suite")}
             <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:12px;">
               ${step(1, "Je lis ton brief et j'analyse ton besoin")}
-              ${step(2, "Je te reviens sous 48&nbsp;h avec une proposition concrète")}
+              ${step(2, "Je te reviens sous 24&nbsp;h avec un devis gratuit")}
               ${step(3, "On démarre et je livre un site qui te ramène des clients", true)}
             </table>
           </td>
@@ -260,7 +260,7 @@ function confirmationHtml(name: string, type: string, budget: string) {
 
   return layout({
     title: "Message reçu",
-    preheader: `Merci ${esc(firstName)}, je te réponds sous 48 h.`,
+    preheader: `Merci ${esc(firstName)}, je te réponds sous 24 h.`,
     kicker: "Message bien reçu",
     heading: `Merci ${esc(firstName)}<span style="color:${C.red};">.</span>`,
     body,
@@ -314,7 +314,7 @@ export async function POST(req: NextRequest) {
     await transporter.sendMail({
       from,
       to: email,
-      subject: `Bien reçu ${name.split(" ")[0]} ! Je te reviens sous 48h 👋`,
+      subject: `Bien reçu ${name.split(" ")[0]} ! Je te reviens sous 24h 👋`,
       html: confirmationHtml(name, type, finalBudget),
     });
 

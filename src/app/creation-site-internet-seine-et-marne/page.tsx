@@ -17,7 +17,7 @@ import { SITE_NAME } from "@/lib/site";
 const PATH = "/creation-site-internet-seine-et-marne";
 const TITLE = "Création de site internet en Seine-et-Marne (77)";
 const DESCRIPTION =
-  "Développeur web freelance à Brie-Comte-Robert : création de sites vitrines, WordPress et sur-mesure pour les entreprises de Seine-et-Marne et d’Île-de-France. Devis gratuit, site vitrine de 300 à 600 €.";
+  "Développeur web freelance à Brie-Comte-Robert : création de sites vitrines, WordPress et sur-mesure pour les entreprises de Seine-et-Marne et d’Île-de-France. Devis gratuit en 24 h, site vitrine dès 300 €.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -40,11 +40,11 @@ export default function LocalPage() {
           title="Création de site internet en Seine-et-Marne"
           intro={[
             "Je suis Othmane Bouakline, développeur web freelance basé à Brie-Comte-Robert. J’accompagne les artisans, commerçants, indépendants et PME de Seine-et-Marne, de l’idée à la mise en ligne.",
-            "5 ans d’expérience (Inetum, Fujitsu, AJC), un Bac+5 en informatique web, un interlocuteur unique et une réponse sous 48 h.",
+            "5 ans d’expérience (Inetum, Fujitsu, AJC), un Bac+5 en informatique web, un interlocuteur unique et un devis gratuit en 24 h.",
           ]}
           stats={[
-            { v: "300 – 600€", l: "le site vitrine" },
-            { v: "48 h", l: "délai de réponse max" },
+            { v: priceRange("vitrine"), l: "le site vitrine" },
+            { v: "24 h", l: "pour votre devis gratuit" },
             { v: "5 ans", l: "d’expérience" },
           ]}
           ctaLabel="Demander un devis gratuit"

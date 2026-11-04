@@ -13,7 +13,7 @@ import { display, H2, Section } from "@/components/seo/ui";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/jsonLd";
 import { projectsForTag } from "@/lib/projects";
 import { getServicePage, SERVICE_PAGES } from "@/lib/seoPages";
-import { FAQ, PLANS, onQuote, priceRange } from "@/lib/services";
+import { FAQ, PLANS, priceRange } from "@/lib/services";
 import { SITE_NAME } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -56,7 +56,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           title={page.h1}
           intro={page.intro}
           stats={[
-            { v: priceRange(page.key), l: onQuote(page.key) ? "selon votre projet" : "selon les options" },
+            { v: priceRange(page.key), l: "selon votre projet" },
             { v: plan.delay, l: "de délai" },
             { v: plan.revisions, l: "de révisions" },
           ]}
@@ -81,12 +81,12 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           <h2 className="sr-only">Tarif</h2>
           <div className="grid gap-12 min-[1000px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] min-[1000px]:gap-16">
             <div className="flex flex-col gap-4">
-              <p className="m-0 text-[15px] text-[#b5b5b5]">{onQuote(page.key) ? "Un prix adapté à votre projet" : "De la formule de base à toutes les options"}</p>
+              <p className="m-0 text-[15px] text-[#b5b5b5]">Un prix adapté à votre projet</p>
               <p className="m-0 whitespace-nowrap leading-[.95]" style={{ ...display, fontSize: "clamp(3rem,6.4vw,5.6rem)", textWrap: "nowrap" }}>
                 {priceRange(page.key)}
               </p>
               <p className="m-0 text-[15px] text-[#b5b5b5]">
-                {plan.delay} · {plan.revisions} de révisions · prix fixé au devis
+                {plan.delay} · {plan.revisions} de révisions · devis gratuit en 24 h
               </p>
               <div className="mt-3 flex max-w-[420px] items-center gap-3 rounded-2xl bg-white/[.04] px-3.5 py-3">
                 <span aria-hidden className="grid size-8 flex-none place-items-center rounded-[10px] bg-abcs-red text-white">
@@ -97,7 +97,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
                 </span>
                 <span className="flex flex-col gap-px">
                   <span className="text-[14px] font-bold text-[#f4f4f2]">Maintenance 1 an offerte</span>
-                  <span className="text-[13px] text-[#a0a0a0]">Mises à jour, sauvegardes, correctifs</span>
+                  <span className="text-[13px] text-[#a0a0a0]">Mises à jour, sécurité, sauvegardes + 1 petite modif/mois</span>
                 </span>
               </div>
               <CallButton
@@ -107,7 +107,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
               />
             </div>
             <div className="flex flex-col gap-3">
-              <h3 className="m-0 text-[13px] font-medium text-[#a0a0a0]">Inclus dans la formule de base</h3>
+              <h3 className="m-0 text-[13px] font-medium text-[#a0a0a0]">Inclus</h3>
               <ul className="m-0 flex list-none flex-col p-0">
                 {plan.included.map((it) => (
                   <li key={it} className="flex gap-3 border-t border-white/10 py-3.5 text-[16px] leading-[1.5] last:border-b">

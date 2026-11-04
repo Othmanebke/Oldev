@@ -5,15 +5,18 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
 import { useContactModal } from "@/components/ContactModalProvider";
-import { PLANS, SERVICES, fromLabel, fromPrice, type ServiceKey } from "@/lib/services";
+import { CONDITIONS, PLANS, SERVICES, budgetFor, fromPrice, priceRange, type ServiceKey } from "@/lib/services";
 import SectionHeading from "@/components/sections/SectionHeading";
 import { archivo, section, sectionInner, sectionPad } from "@/components/sections/layout";
 import { useMedia } from "@/lib/useMedia";
 
-const EXTRAS: { key: ServiceKey; name: string }[] = [
-  { key: "branding_canva", name: "Logo & flyer" },
-  { key: "refonte", name: "Refonte" },
-  { key: "chatbot_ia", name: "Chatbot IA" },
+const EXTRAS: { key: ServiceKey; name: string; note: string }[] = [
+  { key: "logo", name: "Logo", note: "3 retouches · 48 à 72 h" },
+  { key: "flyer", name: "Flyer", note: "3 retouches · 48 à 72 h" },
+  { key: "pack", name: "Pack logo + flyer", note: "10 € d’économie" },
+  { key: "refonte", name: "Refonte", note: "de votre site existant" },
+  { key: "chatbot_auto", name: "Chatbot automatisé", note: "parcours prévus, aucun coût IA" },
+  { key: "chatbot_ia", name: "Chatbot IA", note: "répond à tout, 24 h/24" },
 ];
 
 /** Column copy and detail sheet of each plan, in PLANS order. */
@@ -37,7 +40,7 @@ const OFFERS: { short: string; img: string; kicker: string; lead: string; body: 
     img: "/offres/kinetik.webp",
     kicker: "03 · AUTONOMIE",
     lead: "Un site que vous modifiez vous-même, sans dépendre de personne. Textes, images, articles : tout est administrable.",
-    body: "Je crée un thème personnalisé à votre image, j’installe le blog et le formulaire de contact, puis je vous forme pendant une heure à l’administration pour que vous soyez autonome dès la mise en ligne.",
+    body: "Un site multi-pages à votre image, que vous gérez vous-même : la prise en main est incluse pour que vous soyez autonome dès la mise en ligne. Le prix dépend de votre projet : on le fixe ensemble au devis.",
   },
 ];
 
@@ -95,10 +98,11 @@ function DetailSheet({ index, onClose, onChoose }: { index: number | null; onClo
   const p = PLANS[last];
   const o = OFFERS[last];
   const infos = [
-    ["Prix", fromLabel(p.key)],
+    ["Prix", priceRange(p.key)],
     ["Délai", p.delay.replace("sem.", "semaines")],
     ["Révisions", p.revisions],
     ["Maintenance", "1 an offerte"],
+    ["Paiement", "À la livraison, 1× ou 3×"],
   ];
 
   return createPortal(
@@ -168,6 +172,19 @@ function DetailSheet({ index, onClose, onChoose }: { index: number | null; onClo
                   ))}
                 </ul>
               </div>
+              <div className="flex flex-col gap-[18px]">
+                <h3 className="m-0 font-semibold tracking-[-.03em]" style={{ ...archivo, fontSize: "clamp(1.5rem,2.4vw,2rem)" }}>
+                  Non inclus
+                </h3>
+                <ul className="m-0 grid list-none gap-x-8 gap-y-3.5 p-0 text-[17px] leading-[1.45] text-[rgba(17,17,17,.62)]" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))" }}>
+                  {p.excluded.map((it) => (
+                    <li key={it} className="flex items-start gap-3">
+                      <span aria-hidden className="mt-px grid size-[22px] flex-none place-items-center rounded-full bg-[rgba(17,17,17,.06)] text-[13px] font-bold">–</span>
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
             <div
               className="flex flex-wrap items-center justify-between gap-5 rounded-[28px] bg-[rgba(255,59,0,.08)] shadow-[inset_0_0_0_1px_rgba(255,59,0,.25)]"
@@ -175,7 +192,7 @@ function DetailSheet({ index, onClose, onChoose }: { index: number | null; onClo
             >
               <div className="flex flex-col gap-1.5">
                 <span className="font-semibold tracking-[-.03em]" style={{ ...archivo, fontSize: "clamp(1.4rem,2.2vw,1.8rem)" }}>On en parle ?</span>
-                <span className="text-[15px] text-[rgba(17,17,17,.6)]">Réponse sous 48 h, devis gratuit.</span>
+                <span className="text-[15px] text-[rgba(17,17,17,.6)]">Devis gratuit en 24 h.</span>
               </div>
               <button
                 onClick={() => onChoose(p.key)}
@@ -198,7 +215,7 @@ function DetailSheet({ index, onClose, onChoose }: { index: number | null; onClo
 export function ServicesSection() {
   const { openModal } = useContactModal();
   // Every offer opens the contact form, pre-filled with the service and its budget range
-  const choose = (key: ServiceKey) => openModal({ type: SERVICES[key].label, budget: SERVICES[key].budgets[0] });
+  const choose = (key: ServiceKey) => openModal({ type: SERVICES[key].label, budget: budgetFor(key) });
 
   const wide = useMedia("(min-width: 900px)");
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
@@ -291,7 +308,7 @@ export function ServicesSection() {
 
   const quote = (
     <>
-      <span className="text-[15px] text-[#b5b5b5]">Maintenance 1 an offerte sur chaque offre</span>
+      <span className="text-[15px] text-[#b5b5b5]">1 an de maintenance offert sur tous les sites · devis gratuit en 24 h</span>
       <button
         onClick={() => openModal()}
         className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[.04] px-[18px] py-[11px] text-[14px] font-bold text-white transition-colors duration-[250ms] hover:border-abcs-red hover:bg-abcs-red"
@@ -389,7 +406,7 @@ export function ServicesSection() {
           style={{ gap: "clamp(24px,3vw,36px)" }}
         >
           <span className="text-[15px] font-medium text-[#a0a0a0]">Aussi disponible</span>
-          <div ref={extrasBox} className="grid w-full max-w-[960px] gap-2" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))" }}>
+          <div ref={extrasBox} className="grid w-full max-w-[960px] gap-2" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))" }}>
             {EXTRAS.map((e, i) => (
               <button
                 key={e.key}
@@ -402,8 +419,31 @@ export function ServicesSection() {
                 <span className="font-bold leading-none tracking-[-.03em]" style={{ ...archivo, fontSize: "clamp(1.4rem,2.2vw,1.8rem)" }}>
                   {e.name}
                 </span>
-                <span className="text-[14px] font-medium text-abcs-red">{SERVICES[e.key].price.toLowerCase()}</span>
+                <span className="text-[14px] font-medium text-abcs-red">{priceRange(e.key).toLowerCase()}</span>
+                <span className="text-[13px] text-[#8f8f8f]">{e.note}</span>
               </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Conditions of the flyers, one column per family */}
+        <div data-reveal className="mx-auto flex w-full max-w-[1100px] flex-col items-center" style={{ gap: "clamp(24px,3vw,36px)" }}>
+          <span className="text-[15px] font-medium text-[#a0a0a0]">Bon à savoir</span>
+          <div className="grid w-full gap-x-10 gap-y-10" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))" }}>
+            {CONDITIONS.map((c) => (
+              <div key={c.title} className="flex flex-col gap-3">
+                <h3 className="m-0 border-b border-white/10 pb-3 font-semibold tracking-[-.02em] text-white" style={{ ...archivo, fontSize: "clamp(1.1rem,1.5vw,1.3rem)" }}>
+                  {c.title}
+                </h3>
+                <ul className="m-0 flex list-none flex-col gap-2.5 p-0 text-[14px] leading-[1.5] text-[#a0a0a0]">
+                  {c.items.map((it) => (
+                    <li key={it} className="flex gap-2.5">
+                      <span aria-hidden className="text-abcs-red">·</span>
+                      <span className="text-pretty">{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>
