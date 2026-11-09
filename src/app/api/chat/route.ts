@@ -8,7 +8,7 @@ const FORM_KEYS = Object.keys(SERVICES) as ServiceKey[];
 /** Knowledge base built from the site data, so prices and offers stay in sync with the pages. */
 const OFFERS = PLANS.map((p) => {
   const price = p.key === "vitrine" ? "dès 300 € (jusqu'à 800 €)" : `${priceRange(p.key)} selon devis`;
-  return `- ${p.name} : ${price}, pour ${p.for}, délai ${p.delay}, ${p.revisions} de retouches. Inclus : ${p.included.join(", ")}. Non inclus : ${p.excluded.join(", ")}.`;
+  return `- ${p.name} : ${price}, pour ${p.for}, délai ${p.delay}, ${p.revisions} de révisions. Inclus : ${p.included.join(", ")}. Non inclus : ${p.excluded.join(", ")}.`;
 }).join("\n");
 const GRAPHICS = (["logo", "flyer", "pack"] as const).map((k) => `${SERVICES[k].label} : ${priceRange(k)}`).join(" ; ");
 const TERMS = CONDITIONS.map((c) => `${c.title} : ${c.items.join(" ")}`).join("\n");
@@ -41,7 +41,7 @@ ${QA}
 
 # Façon de travailler (pour rassurer)
 - Premier échange gratuit et sans engagement, devis gratuit en 24 h : une fois signé, le prix ne bouge plus.
-- Les tours de retouches sont inclus, et le client suit l'avancement tout au long du projet.
+- Les tours de révisions sont inclus, et le client suit l'avancement tout au long du projet.
 - Un seul interlocuteur du début à la fin : Othmane.
 - Sites rapides et responsive (mobile compris), référencement de base inclus, fiche Google Maps.
 - Le site, le code, les contenus et les accès appartiennent au client.

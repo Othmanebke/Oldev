@@ -9,8 +9,8 @@ import { useMedia } from "@/lib/useMedia";
 
 const STEPS = [
   { n: "01", time: "30 min", title: "Analyse", text: "Un appel pour comprendre votre activité, vos clients et ce que le site doit vous rapporter." },
-  { n: "02", time: "1 semaine", title: "Maquette", text: "Je dessine un design unique à votre image. Vous validez avant la moindre ligne de code." },
-  { n: "03", time: "2 à 4 semaines", title: "Mise en ligne", text: "Site codé à la main, rapide et optimisé pour Google, livré clé en main et prêt à vendre." },
+  { n: "02", time: "Quelques jours", title: "Maquette", text: "Je dessine un design unique à votre image. Vous validez avant la moindre ligne de code." },
+  { n: "03", time: "1 à 5 semaines", title: "Mise en ligne", text: "Site codé à la main, rapide et optimisé pour Google, livré clé en main et prêt à vendre." },
 ];
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -67,11 +67,12 @@ export default function HowItWorksSection() {
     const ol = el.querySelector<HTMLElement>("ol")!;
 
     // Offset from each step's place in the row to the middle, measured once (and on resize)
-    let dx: number[] = [];
+    let dx: number[] = [], drawn = false;
     const measure = () => {
       steps.forEach((s) => (s.style.transform = "none"));
       const mid = ol.clientWidth / 2;
       dx = steps.map((s) => mid - (s.offsetLeft + s.offsetWidth / 2));
+      drawn = false;
     };
     measure();
 
@@ -86,7 +87,11 @@ export default function HowItWorksSection() {
       let m = 0;
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
+      const prev = cur;
       cur += (target() - cur) * (1 - Math.exp(-dt * 9));
+      // Nothing moved since the last frame: skip the style writes
+      if (drawn && Math.abs(cur - prev) < 1e-4) return;
+      drawn = true;
       const q = smooth(0.64, 0.9, cur);
       const active = Math.min(2, Math.floor(cur / 0.2));
       steps.forEach((s, i) => {

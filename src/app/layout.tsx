@@ -3,7 +3,6 @@ import { Inter, Archivo_Black, Archivo } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
 import Navbar from "@/components/Navbar";
-import CustomCursor from "@/components/CustomCursor";
 import ContactModalProvider from "@/components/ContactModalProvider";
 import CookieBanner from "@/components/CookieBanner";
 import { OWNER, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
@@ -94,7 +93,6 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-black text-black">
           <ContactModalProvider>
-            <CustomCursor />
             <CookieBanner />
             <LenisProvider>
               <Navbar />

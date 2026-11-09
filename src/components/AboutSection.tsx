@@ -102,12 +102,17 @@ export function AboutSection() {
       if (!raf) raf = requestAnimationFrame(update);
     };
 
+    let lastQ = "";
     const draw = () => {
       praf = requestAnimationFrame(draw);
       const cv = canvas.current;
       // Smoothed progress, also drives the three lines (--q)
       pqS += (pq - pqS) * 0.09;
-      me.current?.style.setProperty("--q", pqS.toFixed(3));
+      const qs = pqS.toFixed(3);
+      if (qs !== lastQ) {
+        lastQ = qs;
+        me.current?.style.setProperty("--q", qs);
+      }
       if (!data || !cv || !inView) return;
       const dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, hh = cv.clientHeight;
       if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) {

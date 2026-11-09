@@ -28,12 +28,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Native cursor hidden only while the custom cursor is mounted (fine pointers) */
-html.has-custom-cursor,
-html.has-custom-cursor * {
-  cursor: none;
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;

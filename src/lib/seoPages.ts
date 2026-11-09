@@ -23,7 +23,7 @@ export type ServicePage = {
 
 /** Same for every offer: how a project runs, from first call to launch. */
 export const STEPS = [
-  { title: "Appel découverte", text: "15 minutes au téléphone pour comprendre votre activité, vos objectifs et votre budget. Gratuit, sans engagement." },
+  { title: "Appel découverte", text: "30 minutes au téléphone pour comprendre votre activité, vos objectifs et votre budget. Gratuit, sans engagement." },
   { title: "Devis gratuit", text: "Sous 24 h : un prix ferme, un délai et la liste de ce qui est inclus. Vous savez exactement ce que vous payez." },
   { title: "Design", text: "Une maquette de votre site, que l’on ajuste ensemble avant de passer au développement." },
   { title: "Développement", text: "Je construis le site, responsive et optimisé pour Google, avec des tours de révision prévus au devis." },
