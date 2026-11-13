@@ -81,7 +81,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
   return (
     <div
       role="dialog"
-      aria-label="Assistant O'LDEV"
+      aria-label="Assistant othledev"
       inert={!open}
       className={`fixed bottom-[calc(clamp(14px,2.4vh,24px)+68px)] left-1/2 z-[101] flex h-[min(540px,calc(100dvh-140px))] w-[min(400px,calc(100vw-24px))] origin-bottom flex-col overflow-hidden rounded-[24px] bg-[rgba(20,18,16,.92)] text-[#F4F1EC] shadow-[0_30px_80px_-20px_rgba(0,0,0,.8),inset_0_0_0_1px_rgba(244,241,236,.08)] backdrop-blur-[18px] transition-[translate,scale,opacity] duration-500 ease-[cubic-bezier(.32,.72,0,1)] ${
         open ? "pointer-events-auto -translate-x-1/2 translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-x-1/2 translate-y-6 scale-[.96] opacity-0"

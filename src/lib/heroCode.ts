@@ -20,7 +20,7 @@ export const HERO_CODE = [
   "  await resend.emails.send({ to: \"contact@othledev.com\", subject: \"Nouveau projet\", html: render(data) });",
   "  return { ok: true, delai: \"24h\" };",
   "}",
-  "const seo = { title: \"O'LDEV — Développeur web\", description: \"Sites rapides, pensés pour convertir\" };",
+  "const seo = { title: \"othledev — Développeur web\", description: \"Sites rapides, pensés pour convertir\" };",
   ".hero { display: grid; min-height: 100svh; color: #FF3B00; }",
   "@media (max-width: 640px) { .hero h1 { font-size: 2.4rem; } }",
   "$ npm run build   ✓ Compiled successfully in 1.2s",

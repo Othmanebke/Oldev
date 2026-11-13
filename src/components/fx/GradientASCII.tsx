@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 
-// GradientASCII — React Bits, adapted for O'LDEV (codeText: the glyphs spell lines of code)
+// GradientASCII — React Bits, adapted for othledev (codeText: the glyphs spell lines of code)
 const MAX_COLORS = 8;
 const MAX_CLICKS = 4;
 const MAX_TRAIL = 24;

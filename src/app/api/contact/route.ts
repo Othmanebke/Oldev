@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import { SITE_URL } from "@/lib/site";
 
 const OWNER_EMAIL = "othmane.bouakline.pro@gmail.com";
-const SENDER_NAME = "O'ldev";
+const SENDER_NAME = "othledev";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -91,7 +91,7 @@ function layout(opts: { title: string; preheader: string; kicker: string; headin
           <td class="px" style="padding:24px 36px;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td style="font-family:${HEAD};font-size:24px;font-weight:900;color:${C.paper};letter-spacing:0.5px;text-transform:uppercase;">O'LDEV</td>
+                <td style="font-family:${HEAD};font-size:24px;font-weight:900;color:${C.paper};letter-spacing:0.5px;text-transform:uppercase;">OTHLEDEV</td>
                 <td align="right">
                   <span style="display:inline-block;background:#ffffff;border-radius:999px;padding:6px 8px 6px 14px;font-family:${FONT};font-size:11px;font-weight:700;color:${C.card};letter-spacing:1.5px;text-transform:uppercase;line-height:16px;">Dispo&nbsp;<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${C.green};vertical-align:-3px;">&nbsp;</span></span>
                 </td>

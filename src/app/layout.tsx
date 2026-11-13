@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     "WooCommerce",
     "refonte site web",
     "Othmane Bouakline",
-    "O'ldev",
+    "othledev",
   ],
   alternates: { canonical: "/" },
   openGraph: {

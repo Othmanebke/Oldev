@@ -2,20 +2,20 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import SeoHeader from "@/components/seo/SeoHeader";
 import { container, display, H2 } from "@/components/seo/ui";
-import { EMAIL, SITE_URL } from "@/lib/site";
+import { EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
-  description: "Mentions légales et politique de confidentialité du site O'ldev (Othmane Bouakline, développeur web freelance).",
+  description: "Mentions légales et politique de confidentialité du site othledev (Othmane Bouakline, développeur web freelance).",
   alternates: { canonical: "/legal" },
-  openGraph: { type: "website", locale: "fr_FR", siteName: "O'ldev", url: "/legal", title: "Mentions légales | O'ldev" },
+  openGraph: { type: "website", locale: "fr_FR", siteName: SITE_NAME, url: "/legal", title: `Mentions légales | ${SITE_NAME}` },
 };
 
 const TABLES = [
   {
     t: "Éditeur du site",
     rows: [
-      ["Nom du site", "O'ldev"],
+      ["Nom du site", SITE_NAME],
       ["Adresse du site", SITE_URL.replace(/^https?:\/\//, "")],
       ["Responsable de la publication", "Othmane Bouakline"],
       ["Statut", "Auto-entrepreneur"],
@@ -36,7 +36,7 @@ const TABLES = [
 const TEXTS = [
   {
     t: "Propriété intellectuelle",
-    p: "L’ensemble des contenus (textes, images, logos, graphismes, code source) est la propriété exclusive d’O’ldev (Othmane Bouakline). Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.",
+    p: "L’ensemble des contenus (textes, images, logos, graphismes, code source) est la propriété exclusive d’othledev (Othmane Bouakline). Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est interdite.",
   },
   {
     t: "Cookies",
@@ -44,7 +44,7 @@ const TEXTS = [
   },
   {
     t: "Limitation de responsabilité",
-    p: "O’ldev s’efforce d’assurer l’exactitude des informations publiées. Concernant les liens externes, O’ldev n’est pas responsable du contenu des sites tiers.",
+    p: "othledev s’efforce d’assurer l’exactitude des informations publiées. Concernant les liens externes, othledev n’est pas responsable du contenu des sites tiers.",
   },
   { t: "Loi applicable", p: "Le présent site est soumis au droit français. En cas de litige, les tribunaux français seront seuls compétents." },
 ];

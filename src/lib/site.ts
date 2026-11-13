@@ -2,11 +2,11 @@
 
 export const SITE_URL = "https://www.othledev.com";
 
-export const SITE_NAME = "O'ldev";
+export const SITE_NAME = "othledev";
 export const OWNER = "Othmane Bouakline";
 export const EMAIL = "othmane.bouakline.pro@gmail.com";
 
-export const SITE_TITLE = "Développeur web freelance à Brie-Comte-Robert | O'ldev";
+export const SITE_TITLE = "Développeur web freelance à Brie-Comte-Robert | othledev";
 export const SITE_DESCRIPTION =
   "Développeur web freelance à Brie-Comte-Robert (77). Sites vitrines, WordPress et Next.js pour artisans et PME en Seine-et-Marne. Devis gratuit sous 24 h.";
 

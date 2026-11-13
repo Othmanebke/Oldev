@@ -8,7 +8,7 @@ export type Faq = { q: string; a: string };
 export type ServicePage = {
   slug: string;
   key: ServiceKey;
-  /** <title> — the template adds " | O'ldev". */
+  /** <title> — the template adds " | othledev". */
   metaTitle: string;
   metaDescription: string;
   /** Short name for links and breadcrumbs. */

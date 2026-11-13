@@ -14,7 +14,7 @@ export default function SeoHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[.08] bg-black/80 backdrop-blur-[16px] backdrop-saturate-[170%]">
       <div className={`${container} flex h-16 items-center justify-between gap-6`}>
-        <Link href="/" aria-label="O'LDEV — accueil" className="text-[#f4f4f2]">
+        <Link href="/" aria-label="othledev — accueil" className="text-[#f4f4f2]">
           <Logo className="h-5" />
         </Link>
         <nav aria-label="Pages" className="hidden items-center gap-6 min-[1040px]:flex">

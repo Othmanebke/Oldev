@@ -22,7 +22,7 @@ export function LogoMark({ className = "", label = true, id, ref }: { className?
       fill="currentColor"
       fillRule="evenodd"
       className={`block w-auto ${className}`}
-      {...(label ? { role: "img", "aria-label": "O'LDEV" } : { "aria-hidden": true })}
+      {...(label ? { role: "img", "aria-label": "othledev" } : { "aria-hidden": true })}
     >
       <path d="M29 0H193L222 29V174L193 203H29L0 174V29Z M58 58V145H164V58Z" />
     </svg>

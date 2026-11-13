@@ -125,7 +125,7 @@ export default function Footer() {
           style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,340px),1fr))", gap: "clamp(40px,5vw,72px)", padding: "clamp(32px,5vw,72px) clamp(24px,5vw,72px) clamp(28px,4vw,48px)" }}
         >
           <div className="flex flex-col items-start" style={{ gap: "clamp(20px,2.4vw,28px)" }}>
-            <Link href="/" aria-label="Accueil O'LDEV" className="text-white">
+            <Link href="/" aria-label="Accueil othledev" className="text-white">
               <Logo className="h-6" />
             </Link>
             <div className="flex flex-col gap-3.5">
