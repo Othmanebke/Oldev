@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import SeoHeader from "@/components/seo/SeoHeader";
 import { container, display, H2 } from "@/components/seo/ui";
+import { pageMetadata } from "@/lib/metadata";
 import { EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Mentions légales",
   description: "Mentions légales et politique de confidentialité du site othledev (Othmane Bouakline, développeur web freelance).",
-  alternates: { canonical: "/legal" },
-  openGraph: { type: "website", locale: "fr_FR", siteName: SITE_NAME, url: "/legal", title: `Mentions légales | ${SITE_NAME}` },
-};
+  path: "/legal",
+});
 
 const TABLES = [
   {

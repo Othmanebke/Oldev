@@ -10,11 +10,11 @@ import SeoHeader from "@/components/seo/SeoHeader";
 import SeoHero from "@/components/seo/SeoHero";
 import Steps from "@/components/seo/Steps";
 import { display, H2, Section } from "@/components/seo/ui";
+import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/jsonLd";
 import { projectsForTag } from "@/lib/projects";
 import { getServicePage, SERVICE_PAGES } from "@/lib/seoPages";
 import { FAQ, PLANS, priceRange } from "@/lib/services";
-import { SITE_NAME } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -26,12 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/services/[slug]">
   const page = getServicePage((await params).slug);
   if (!page) return {};
   const path = `/services/${page.slug}`;
-  return {
-    title: page.metaTitle,
-    description: page.metaDescription,
-    alternates: { canonical: path },
-    openGraph: { type: "website", locale: "fr_FR", siteName: SITE_NAME, url: path, title: `${page.metaTitle} | ${SITE_NAME}`, description: page.metaDescription },
-  };
+  return pageMetadata({ title: page.metaTitle, description: page.metaDescription, path });
 }
 
 export default async function ServicePage({ params }: PageProps<"/services/[slug]">) {

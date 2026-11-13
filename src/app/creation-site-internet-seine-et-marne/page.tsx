@@ -8,23 +8,18 @@ import SeoHeader from "@/components/seo/SeoHeader";
 import SeoHero from "@/components/seo/SeoHero";
 import Steps from "@/components/seo/Steps";
 import { display, H2, Section } from "@/components/seo/ui";
+import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbJsonLd } from "@/lib/jsonLd";
 import { PROJECTS } from "@/lib/projects";
 import { LOCAL_FAQ, LOCAL_TOWNS, SERVICE_PAGES } from "@/lib/seoPages";
 import { priceRange } from "@/lib/services";
-import { SITE_NAME } from "@/lib/site";
 
 const PATH = "/creation-site-internet-seine-et-marne";
 const TITLE = "Développeur web freelance en Seine-et-Marne (77)";
 const DESCRIPTION =
   "Développeur web en Seine-et-Marne, basé à Brie-Comte-Robert. Sites vitrines, WordPress et Next.js pour artisans, commerces et PME. Devis gratuit sous 24 h.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: PATH },
-  openGraph: { type: "website", locale: "fr_FR", siteName: SITE_NAME, url: PATH, title: `${TITLE} | ${SITE_NAME}`, description: DESCRIPTION },
-};
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: PATH });
 
 /** Client work from each stack. */
 const SHOWCASE = ["cfi", "elior", "idemia", "tennis-bry", "papillon-dor", "brows"];

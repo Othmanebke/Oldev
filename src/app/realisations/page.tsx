@@ -5,20 +5,15 @@ import Footer from "@/components/Footer";
 import SeoHeader from "@/components/seo/SeoHeader";
 import SeoHero from "@/components/seo/SeoHero";
 import { Section } from "@/components/seo/ui";
+import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbJsonLd } from "@/lib/jsonLd";
 import { PROJECT_FILTERS, projectsForTag, type ProjectTag } from "@/lib/projects";
-import { SITE_NAME } from "@/lib/site";
 
 const TITLE = "Réalisations : sites vitrines, WordPress et Next.js";
 const DESCRIPTION =
   "Portfolio d’Othmane Bouakline, développeur web freelance : sites vitrines, sites WordPress et WooCommerce, applications Next.js / React pour des entreprises, commerces et indépendants.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: "/realisations" },
-  openGraph: { type: "website", locale: "fr_FR", siteName: SITE_NAME, url: "/realisations", title: `${TITLE} | ${SITE_NAME}`, description: DESCRIPTION },
-};
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/realisations" });
 
 export default function RealisationsPage() {
   // Same order as the home tabs: React / Next.js, WordPress, HTML
