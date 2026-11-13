@@ -1,28 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import ChatPanel from "@/components/ChatPanel";
+import NavMenu from "@/components/NavMenu";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { useScrollToSection } from "@/lib/useScrollToSection";
-import { PAGES } from "@/lib/pages";
-
-const LINKS = [
-  { label: "Projets", id: "portfolio" },
-  { label: "Méthode", id: "methode" },
-  { label: "Tarifs", id: "services" },
-  { label: "Avis", id: "avis" },
-  { label: "FAQ", id: "faq" },
-  { label: "À propos", id: "about" },
-];
 
 const round = "grid size-11 flex-none place-items-center rounded-full text-[#F4F1EC] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white max-[359px]:size-10";
 
 /**
  * Floating bottom bar (every page): menu, AI chat, contact form, WhatsApp, Instagram.
  * Hidden over the home hero; shows once the work section reaches 60 % of the viewport.
- * Opening a panel closes the other one.
+ * Opening a panel closes the other one. The menu is a light panel from the left (NavMenu).
  */
 export default function Navbar() {
   const pathname = usePathname();
@@ -71,46 +61,6 @@ export default function Navbar() {
           visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-[100px] opacity-0"
         }`}
       >
-        {/* Menu panel */}
-        <div
-          id="nav-menu"
-          inert={!menu}
-          className={`absolute bottom-[62px] left-0 flex min-w-[210px] origin-bottom-left flex-col rounded-[18px] bg-[rgba(20,18,16,.9)] p-1.5 shadow-[0_20px_50px_-14px_rgba(0,0,0,.8),inset_0_0_0_1px_rgba(244,241,236,.08)] backdrop-blur-[16px] transition-[translate,opacity] duration-[450ms] ease-out-expo ${
-            menu ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
-          }`}
-        >
-          <nav aria-label="Navigation principale" className="flex flex-col">
-            {LINKS.map((l) => (
-              <Link
-                key={l.id}
-                href={`/#${l.id}`}
-                onClick={go(l.id)}
-                className="flex h-[42px] items-center rounded-xl px-4 text-[14px] font-semibold text-[#F4F1EC] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-          <span aria-hidden className="mx-4 my-1.5 h-px bg-[rgba(244,241,236,.08)]" />
-          <nav aria-label="Pages" className="flex flex-col">
-            {PAGES.map((p) => {
-              const on = pathname === p.href;
-              return (
-                <Link
-                  key={p.href}
-                  href={p.href}
-                  aria-current={on ? "page" : undefined}
-                  onClick={() => setMenu(false)}
-                  className={`flex h-[34px] items-center gap-2 rounded-xl px-4 text-[13px] transition-colors hover:bg-[rgba(244,241,236,.06)] hover:text-abcs-red ${on ? "text-[#F4F1EC]" : "text-[#a0a0a0]"}`}
-                >
-                  {on && <span aria-hidden className="size-1.5 rounded-full bg-abcs-red" />}
-                  {p.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
         <div className="flex items-center gap-1.5 rounded-full bg-[rgba(20,18,16,.6)] p-1.5 shadow-[0_14px_40px_-12px_rgba(0,0,0,.7),inset_0_0_0_1px_rgba(244,241,236,.08)] backdrop-blur-[16px]">
           <button
             onClick={() => {
@@ -165,6 +115,15 @@ export default function Navbar() {
         </div>
       </div>
 
+      <NavMenu
+        open={menu}
+        onClose={() => setMenu(false)}
+        onSection={go}
+        onContact={() => {
+          setMenu(false);
+          openModal();
+        }}
+      />
       <ChatPanel open={chat && visible} onClose={closeChat} />
     </>
   );
