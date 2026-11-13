@@ -81,7 +81,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
   return (
     <div
       role="dialog"
-      aria-label="Assistant othledev"
+      aria-label="Assistant Othmane"
       inert={!open}
       className={`fixed bottom-[calc(clamp(14px,2.4vh,24px)+68px)] left-1/2 z-[101] flex h-[min(540px,calc(100dvh-140px))] w-[min(400px,calc(100vw-24px))] origin-bottom flex-col overflow-hidden rounded-[24px] bg-[rgba(20,18,16,.92)] text-[#F4F1EC] shadow-[0_30px_80px_-20px_rgba(0,0,0,.8),inset_0_0_0_1px_rgba(244,241,236,.08)] backdrop-blur-[18px] transition-[translate,scale,opacity] duration-500 ease-[cubic-bezier(.32,.72,0,1)] ${
         open ? "pointer-events-auto -translate-x-1/2 translate-y-0 scale-100 opacity-100" : "pointer-events-none -translate-x-1/2 translate-y-6 scale-[.96] opacity-0"
@@ -94,7 +94,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
           style={{ background: "radial-gradient(circle at 34% 28%,#FFE1CF 0%,#FF8A4C 25%,#FF3B00 55%,#5A1400 95%)" }}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="text-[14px] font-semibold">Assistant othledev</span>
+          <span className="text-[14px] font-semibold">Assistant Othmane</span>
           <span className="truncate text-[12px] text-[rgba(244,241,236,.5)]">Répond tout de suite · Othmane sous 24 h</span>
         </div>
         <button onClick={() => toForm()} className="h-8 flex-none rounded-full bg-[#F4F1EC] px-3 text-[12px] font-semibold text-[#0A0908] transition-colors hover:bg-abcs-red hover:text-white">
