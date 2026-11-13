@@ -2,6 +2,9 @@
 
 export const SITE_URL = "https://www.othledev.com";
 
+/** Last content update, shown to search engines in the sitemap: change it when the pages change. */
+export const LAST_UPDATED = "2026-11-13";
+
 export const SITE_NAME = "othledev";
 export const OWNER = "Othmane Bouakline";
 export const EMAIL = "othmane.bouakline.pro@gmail.com";
