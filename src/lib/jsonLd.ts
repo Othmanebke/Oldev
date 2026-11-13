@@ -1,5 +1,5 @@
 import { SERVICES, type ServiceKey } from "@/lib/services";
-import { EMAIL, LOCATION, OWNER, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SOCIALS } from "@/lib/site";
+import { EMAIL, LOCATION, OWNER, PHONE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SOCIALS } from "@/lib/site";
 
 const OFFERS: ServiceKey[] = ["vitrine", "wordpress", "webapp", "refonte", "logo", "flyer", "pack", "chatbot_auto", "chatbot_ia"];
 
@@ -19,6 +19,7 @@ export function homeJsonLd() {
         image: `${SITE_URL}/opengraph-image.png`,
         jobTitle: "Développeur web freelance",
         email: `mailto:${EMAIL}`,
+        telephone: PHONE,
         sameAs: SOCIALS.map((s) => s.href),
         knowsAbout: ["Next.js", "React", "TypeScript", "WordPress", "WooCommerce", "Tailwind CSS", "Node.js", "SEO", "ServiceNow"],
         worksFor: { "@id": business },
@@ -32,6 +33,7 @@ export function homeJsonLd() {
         image: `${SITE_URL}/opengraph-image.png`,
         logo: `${SITE_URL}/icon.png`,
         email: EMAIL,
+        telephone: PHONE,
         founder: { "@id": person },
         address: {
           "@type": "PostalAddress",

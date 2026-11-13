@@ -5,6 +5,8 @@ export const SITE_URL = "https://www.othledev.com";
 export const SITE_NAME = "othledev";
 export const OWNER = "Othmane Bouakline";
 export const EMAIL = "othmane.bouakline.pro@gmail.com";
+/** International format, as published on the site (footer, contact form, legal notice). */
+export const PHONE = "+33 6 60 80 53 37";
 
 export const SITE_TITLE = "Développeur web freelance à Brie-Comte-Robert | othledev";
 export const SITE_DESCRIPTION =
