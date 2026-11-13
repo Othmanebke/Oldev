@@ -214,7 +214,7 @@ export default function Footer() {
       </div>
 
       <p className="relative z-[1] m-0 mt-[clamp(20px,2.4vw,28px)] text-center text-[14px] font-medium text-white" style={{ textShadow: "0 1px 8px rgba(0,0,0,.7),0 0 2px rgba(0,0,0,.6)" }}>
-        © 2026 O&apos;LDEV · Tous droits réservés
+        © 2027 oth<span className="text-abcs-red">le</span>dev · Tous droits réservés
       </p>
     </footer>
   );

@@ -94,7 +94,7 @@ export default function ChatPanel({ open, onClose }: { open: boolean; onClose: (
           style={{ background: "radial-gradient(circle at 34% 28%,#FFE1CF 0%,#FF8A4C 25%,#FF3B00 55%,#5A1400 95%)" }}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="text-[14px] font-semibold">Assistant O&apos;LDEV</span>
+          <span className="text-[14px] font-semibold">Assistant othledev</span>
           <span className="truncate text-[12px] text-[rgba(244,241,236,.5)]">Répond tout de suite · Othmane sous 24 h</span>
         </div>
         <button onClick={() => toForm()} className="h-8 flex-none rounded-full bg-[#F4F1EC] px-3 text-[12px] font-semibold text-[#0A0908] transition-colors hover:bg-abcs-red hover:text-white">

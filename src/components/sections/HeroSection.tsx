@@ -109,7 +109,7 @@ export default function HeroSection() {
             <span className="flex flex-wrap justify-center">
               <Typed text="Développeur web freelance à Brie-Comte-Robert" start={1.75} step={0.02} />
             </span>
-            <span className="sr-only"> Othmane Bouakline, O&apos;LDEV, Seine-et-Marne. Chaque ligne codée à la main, chaque site pensé pour vendre.</span>
+            <span className="sr-only"> Othmane Bouakline, othledev, Seine-et-Marne. Chaque ligne codée à la main, chaque site pensé pour vendre.</span>
           </h1>
           <p className="m-0 flex flex-wrap justify-center font-medium text-[#d0d0d0]" style={{ fontSize: "clamp(16px,1.3vw,19px)", textShadow: "0 2px 16px rgba(0,0,0,.8)" }}>
             <Typed text="Des sites qui donnent envie" start={2.3} step={0.015} />
