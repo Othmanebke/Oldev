@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { EMAIL, LOCATION } from "@/lib/site";
+import { EMAIL, LOCATION, SITE_URL } from "@/lib/site";
 import { CONDITIONS, FAQ, PLANS, SERVICES, priceRange, type ServiceKey } from "@/lib/services";
 import { PROJECTS } from "@/lib/projects";
 
@@ -16,7 +16,7 @@ const QA = FAQ.map((f) => `- ${f.q} ${f.a}`).join("\n");
 const WORK = PROJECTS.filter((p) => !p.concept).slice(0, 8).map((p) => `${p.name} (${p.category})`).join(", ");
 
 /** Site assistant (bottom bar → IA), on Groq's free tier. The key stays server-side: GROQ_API_KEY in .env.local / Vercel. */
-const CHAT_CTX = `Tu es l'assistant du site d'O'LDEV, l'activité d'Othmane Bouakline, développeur web freelance basé à ${LOCATION.city} (Seine-et-Marne, 77), qui travaille avec des clients partout en France (à distance, ou en rendez-vous en Île-de-France).
+const CHAT_CTX = `Tu es l'assistant du site d'O'LDEV, l'activité d'Othmane Bouakline, développeur web freelance basé à ${LOCATION.city} (Seine-et-Marne, 77), qui travaille avec des clients partout en France (à distance, ou en rendez-vous en Île-de-France). Adresse du site : ${SITE_URL}.
 
 # Tarifs officiels (les seuls prix à donner)
 Positionnement : des prix accessibles, sans sacrifier la qualité.

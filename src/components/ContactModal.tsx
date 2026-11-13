@@ -6,8 +6,8 @@ import { BUDGETS, SERVICES, SERVICE_GROUPS, priceRange } from "@/lib/services";
 import type { ContactFormData } from "@/components/ContactModalProvider";
 
 const inputClass =
-  "h-11 w-full rounded-none border-0 border-b border-white/15 bg-transparent px-0 text-[16px] text-[#f4f4f2] outline-none transition-colors duration-200 placeholder:text-white/30 hover:border-white/35 focus:border-abcs-red";
-const labelClass = "text-[13px] font-medium text-white/60";
+  "h-11 w-full rounded-none border-0 border-b border-black/15 bg-transparent px-0 text-[16px] text-[#111] outline-none transition-colors duration-200 placeholder:text-black/30 hover:border-black/40 focus:border-abcs-red";
+const labelClass = "text-[13px] font-medium text-black/55";
 const archivo = { fontFamily: "var(--font-archivo-flex), sans-serif" } as const;
 
 const EMPTY_FORM = { name: "", email: "", phone: "", type: "", budget: "", message: "" };
@@ -101,10 +101,10 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-xl flex-col overflow-y-auto overscroll-contain bg-black text-[#f4f4f2] shadow-[-30px_0_80px_rgba(0,0,0,.6)] sm:rounded-l-[28px] sm:border-l sm:border-white/10"
+            className="fixed bottom-0 right-0 top-0 z-[101] flex w-full max-w-xl flex-col overflow-y-auto overscroll-contain bg-white text-[#111] shadow-[-30px_0_80px_rgba(0,0,0,.35)] sm:rounded-l-[28px]"
           >
             {/* Header */}
-            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/[.08] bg-black/90 px-[clamp(20px,5vw,40px)] py-6 backdrop-blur-[12px]">
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-black/[.08] bg-white/90 px-[clamp(20px,5vw,40px)] py-6 backdrop-blur-[12px]">
               <div className="flex flex-col gap-2">
                 <span className="text-[12px] font-semibold tracking-[.14em] text-abcs-red">DÉMARRER UN PROJET</span>
                 <h2 id="contact-title" className="m-0 font-semibold leading-[1.1] tracking-[-.025em]" style={{ ...archivo, fontSize: "clamp(26px,3vw,34px)" }}>
@@ -114,7 +114,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
               <button
                 onClick={handleClose}
                 aria-label="Fermer"
-                className="grid size-10 flex-none place-items-center rounded-full bg-[#1F1C19] text-[15px] transition-colors duration-200 hover:bg-abcs-red"
+                className="grid size-10 flex-none place-items-center rounded-full bg-[#f0f0ee] text-[15px] transition-colors duration-200 hover:bg-abcs-red hover:text-white"
               >
                 ✕
               </button>
@@ -132,12 +132,12 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                   <h3 className="m-0 font-semibold leading-[1.1] tracking-[-.025em]" style={{ ...archivo, fontSize: "clamp(28px,3.4vw,40px)" }}>
                     Message reçu<span className="text-abcs-red">.</span>
                   </h3>
-                  <p className="m-0 max-w-[420px] text-[16px] leading-[1.6] text-white/60">
+                  <p className="m-0 max-w-[420px] text-[16px] leading-[1.6] text-black/60">
                     Merci ! Je vous réponds sous 24 h pour parler de votre projet en détail.
                   </p>
                   <button
                     onClick={handleClose}
-                    className="mt-2 inline-flex h-12 items-center gap-2.5 rounded-full border border-white/20 px-6 text-[15px] font-bold transition-colors duration-200 hover:border-abcs-red hover:bg-abcs-red"
+                    className="mt-2 inline-flex h-12 items-center gap-2.5 rounded-full border border-black/20 px-6 text-[15px] font-bold transition-colors duration-200 hover:border-abcs-red hover:bg-abcs-red hover:text-white"
                   >
                     Fermer <span aria-hidden>→</span>
                   </button>
@@ -168,20 +168,20 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                           name="type"
                           value={form.type}
                           onChange={handleChange}
-                          className={`${inputClass} appearance-none truncate pr-8 [&_optgroup]:bg-[#141414] [&_option]:bg-[#141414] ${form.type ? "" : "text-white/35"}`}
+                          className={`${inputClass} appearance-none truncate pr-8 [&_optgroup]:bg-white [&_option]:bg-white ${form.type ? "" : "text-black/35"}`}
                         >
                           <option value="">Choisir…</option>
                           {SERVICE_GROUPS.map((g) => (
                             <optgroup key={g.label} label={g.label}>
                               {g.keys.map((k) => (
-                                <option key={k} value={SERVICES[k].label} className="text-[#f4f4f2]">
+                                <option key={k} value={SERVICES[k].label} className="text-[#111]">
                                   {k === "autre" ? SERVICES[k].label : `${SERVICES[k].label} — ${priceRange(k)}`}
                                 </option>
                               ))}
                             </optgroup>
                           ))}
                         </select>
-                        <svg aria-hidden viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-white/50">
+                        <svg aria-hidden viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-black/45">
                           <path d="M6 9l6 6 6-6" />
                         </svg>
                       </span>
@@ -201,7 +201,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                             aria-checked={on}
                             onClick={() => setForm({ ...form, budget: b })}
                             className={`h-10 rounded-full border px-4 text-[14px] font-bold transition-colors duration-150 ${
-                              on ? "border-abcs-red bg-abcs-red text-white" : "border-white/15 bg-white/[.03] text-white/80 hover:border-white/40 hover:text-white"
+                              on ? "border-abcs-red bg-abcs-red text-white" : "border-black/15 bg-black/[.03] text-black/75 hover:border-black/40 hover:text-black"
                             }`}
                           >
                             {b}
@@ -226,7 +226,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                   </label>
 
                   {error && (
-                    <div role="alert" className="rounded-2xl bg-[rgba(255,59,0,.08)] px-4 py-3 text-[14px] font-semibold text-[#FF6a3d] shadow-[inset_0_0_0_1px_rgba(255,59,0,.25)]">
+                    <div role="alert" className="rounded-2xl bg-[rgba(255,59,0,.08)] px-4 py-3 text-[14px] font-semibold text-[#d93200] shadow-[inset_0_0_0_1px_rgba(255,59,0,.25)]">
                       {error}
                     </div>
                   )}
@@ -234,7 +234,7 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group flex h-14 w-full items-center justify-center gap-3 rounded-full bg-abcs-red text-[15px] font-bold text-white transition-colors duration-[250ms] hover:bg-[#f4f4f2] hover:text-[#111] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="group flex h-14 w-full items-center justify-center gap-3 rounded-full bg-abcs-red text-[15px] font-bold text-white transition-colors duration-[250ms] hover:bg-[#111] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {loading ? (
                       <>
@@ -249,14 +249,14 @@ export default function ContactModal({ isOpen, onClose, initialData }: Props) {
                     )}
                   </button>
 
-                  <div className="flex flex-col gap-2.5 border-t border-white/[.08] pt-6 text-[14px]">
-                    <a href="mailto:othmane.bouakline.pro@gmail.com" className="w-fit break-all text-white/70 transition-colors hover:text-abcs-red">
+                  <div className="flex flex-col gap-2.5 border-t border-black/[.08] pt-6 text-[14px]">
+                    <a href="mailto:othmane.bouakline.pro@gmail.com" className="w-fit break-all text-black/70 transition-colors hover:text-abcs-red">
                       othmane.bouakline.pro@gmail.com
                     </a>
-                    <a href="tel:+33660805337" className="w-fit text-white/70 transition-colors hover:text-abcs-red">
+                    <a href="tel:+33660805337" className="w-fit text-black/70 transition-colors hover:text-abcs-red">
                       06 60 80 53 37
                     </a>
-                    <span className="flex items-center gap-2 text-white/45">
+                    <span className="flex items-center gap-2 text-black/45">
                       <span aria-hidden className="size-1.5 rounded-full bg-abcs-green" />
                       Devis gratuit en 24 h · partout en France
                     </span>

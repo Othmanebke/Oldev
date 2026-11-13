@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import SeoHeader from "@/components/seo/SeoHeader";
 import { container, display, H2 } from "@/components/seo/ui";
-import { EMAIL } from "@/lib/site";
+import { EMAIL, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -16,6 +16,7 @@ const TABLES = [
     t: "Éditeur du site",
     rows: [
       ["Nom du site", "O'ldev"],
+      ["Adresse du site", SITE_URL.replace(/^https?:\/\//, "")],
       ["Responsable de la publication", "Othmane Bouakline"],
       ["Statut", "Auto-entrepreneur"],
       ["Email", EMAIL],
