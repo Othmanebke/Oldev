@@ -19,8 +19,9 @@ export const LOGO_PATHS = LETTERS.map(([x, d]) => ({ x, d }));
 export default function Logo({ className = "" }: { className?: string }) {
   return (
     <svg viewBox={LOGO_VIEWBOX} fill="currentColor" fillRule="evenodd" role="img" aria-label="othledev" className={`block w-auto ${className}`}>
-      {LOGO_PATHS.map(({ x, d }) => (
-        <path key={x} transform={`translate(${x} 0)`} d={d} />
+      {LOGO_PATHS.map(({ x, d }, i) => (
+        // "LE" (4th and 5th letters) in the brand orange
+        <path key={x} transform={`translate(${x} 0)`} d={d} {...(i === 3 || i === 4 ? { fill: "var(--color-abcs-red)" } : {})} />
       ))}
     </svg>
   );
