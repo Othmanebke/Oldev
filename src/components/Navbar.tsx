@@ -2,10 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import ChatPanel from "@/components/ChatPanel";
+import dynamic from "next/dynamic";
 import NavMenu from "@/components/NavMenu";
 import { useContactModal } from "@/components/ContactModalProvider";
 import { useScrollToSection } from "@/lib/useScrollToSection";
+
+// Loaded when the AI button is first hovered, focused or pressed, not with every page
+const ChatPanel = dynamic(() => import("@/components/ChatPanel"), { ssr: false });
 
 const round = "grid size-11 flex-none place-items-center rounded-full text-[#F4F1EC] transition-colors duration-[250ms] hover:bg-abcs-red hover:text-white max-[359px]:size-10";
 
@@ -21,6 +24,8 @@ export default function Navbar() {
   const [pastHero, setPastHero] = useState(false);
   const [menu, setMenu] = useState(false);
   const [chat, setChat] = useState(false);
+  // Mounted (closed) on first intent, so it is ready to animate in on click; then kept for its conversation
+  const [chatLoaded, setChatLoaded] = useState(false);
   const closeChat = useCallback(() => setChat(false), []);
   const visible = pastHero || menu || chat;
 
@@ -78,7 +83,11 @@ export default function Navbar() {
             </span>
           </button>
           <button
+            onPointerEnter={() => setChatLoaded(true)}
+            onPointerDown={() => setChatLoaded(true)}
+            onFocus={() => setChatLoaded(true)}
             onClick={() => {
+              setChatLoaded(true);
               setChat((v) => !v);
               setMenu(false);
             }}
@@ -124,7 +133,7 @@ export default function Navbar() {
           openModal();
         }}
       />
-      <ChatPanel open={chat && visible} onClose={closeChat} />
+      {chatLoaded && <ChatPanel open={chat && visible} onClose={closeChat} />}
     </>
   );
 }
