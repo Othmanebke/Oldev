@@ -20,7 +20,7 @@ function Typed({ text, start, step }: { text: string; start: number; step: numbe
   const first = words.map((_, w) => words.slice(0, w).reduce((s, x) => s + Array.from(x).length + 1, 0));
   return words.map((word, w) => (
     <span key={w} className="inline-flex whitespace-nowrap">
-      {w > 0 && <span aria-hidden className="inline-block w-[.26em]" />}
+      {w > 0 && <span className="inline-block w-[.26em]">{" "}</span>}
       {Array.from(word).map((ch, i) => (
         <span key={i} className="inline-block" style={{ animation: `h-ch .08s linear ${delay(start + (first[w] + i) * step)} both` }}>
           {ch}
@@ -96,7 +96,7 @@ export default function HeroSection() {
           >
             <span className="flex flex-wrap justify-center pr-[2.4em] max-[400px]:pr-[1.2em]">
               <Typed text="Chaque ligne, codée à la main." start={0.3} step={0.025} />
-            </span>
+            </span>{" "}
             <span className="flex flex-wrap justify-center pl-[2.4em] max-[400px]:pl-[1.2em]">
               <Typed text="Chaque site, pensé pour vendre" start={0.95} step={0.025} />
             </span>
@@ -109,7 +109,6 @@ export default function HeroSection() {
             <span className="flex flex-wrap justify-center">
               <Typed text="Développeur web freelance à Brie-Comte-Robert" start={1.75} step={0.02} />
             </span>
-            <span className="sr-only"> Othmane Bouakline, othledev, Seine-et-Marne. Chaque ligne codée à la main, chaque site pensé pour vendre.</span>
           </h1>
           <p className="m-0 flex flex-wrap justify-center font-medium text-[#d0d0d0]" style={{ fontSize: "clamp(16px,1.3vw,19px)", textShadow: "0 2px 16px rgba(0,0,0,.8)" }}>
             <Typed text="Des sites qui donnent envie" start={2.3} step={0.015} />
