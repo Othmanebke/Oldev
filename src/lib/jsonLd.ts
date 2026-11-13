@@ -42,6 +42,7 @@ export function homeJsonLd() {
         },
         areaServed: [
           { "@type": "Country", name: "France" },
+          { "@type": "AdministrativeArea", name: "Seine-et-Marne" },
           { "@type": "AdministrativeArea", name: LOCATION.region },
         ],
         currenciesAccepted: "EUR",
@@ -95,6 +96,7 @@ export function serviceJsonLd({ key, name, description, path }: { key: ServiceKe
     provider: { "@id": `${SITE_URL}/#business` },
     areaServed: [
       { "@type": "Country", name: "France" },
+      { "@type": "AdministrativeArea", name: "Seine-et-Marne" },
       { "@type": "AdministrativeArea", name: LOCATION.region },
     ],
     ...(min !== undefined && {
