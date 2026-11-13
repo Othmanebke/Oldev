@@ -11,7 +11,7 @@ import SeoHero from "@/components/seo/SeoHero";
 import Steps from "@/components/seo/Steps";
 import { display, H2, Section } from "@/components/seo/ui";
 import { pageMetadata } from "@/lib/metadata";
-import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/jsonLd";
+import { breadcrumbJsonLd, faqJsonLd, serviceJsonLd } from "@/lib/jsonLd";
 import { projectsForTag } from "@/lib/projects";
 import { getServicePage, SERVICE_PAGES } from "@/lib/seoPages";
 import { FAQ, PLANS, priceRange } from "@/lib/services";
@@ -44,6 +44,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
     <>
       <JsonLd data={serviceJsonLd({ key: page.key, name: page.h1, description: page.metaDescription, path })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Services", path: "/#services" }, { name: page.name, path }])} />
+      <JsonLd data={faqJsonLd([...page.faq, ...FAQ])} />
       <SeoHeader />
       <main className="flex flex-col bg-black text-[#f4f4f2]">
         <SeoHero

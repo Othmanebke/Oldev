@@ -106,3 +106,16 @@ export function serviceJsonLd({ key, name, description, path }: { key: ServiceKe
     }),
   };
 }
+
+/** schema.org FAQPage built from the questions shown on the page, word for word. */
+export function faqJsonLd(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
+}

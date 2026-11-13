@@ -9,7 +9,7 @@ import SeoHero from "@/components/seo/SeoHero";
 import Steps from "@/components/seo/Steps";
 import { display, H2, Section } from "@/components/seo/ui";
 import { pageMetadata } from "@/lib/metadata";
-import { breadcrumbJsonLd } from "@/lib/jsonLd";
+import { breadcrumbJsonLd, faqJsonLd } from "@/lib/jsonLd";
 import { PROJECTS } from "@/lib/projects";
 import { LOCAL_FAQ, LOCAL_TOWNS, SERVICE_PAGES } from "@/lib/seoPages";
 import { priceRange } from "@/lib/services";
@@ -28,6 +28,7 @@ export default function LocalPage() {
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Seine-et-Marne", path: PATH }])} />
+      <JsonLd data={faqJsonLd(LOCAL_FAQ)} />
       <SeoHeader />
       <main className="flex flex-col bg-black text-[#f4f4f2]">
         <SeoHero
