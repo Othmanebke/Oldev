@@ -18,7 +18,9 @@ const EASE = "cubic-bezier(.22,1,.36,1)";
 
 /**
  * Text that staggers in by letter or word (rise + blur + fade), driven by `play`.
- * Words never break inside; screen readers get the plain text. Reduced motion
+ * Words never break inside. The plain text (sr-only) is the only real text: the
+ * animated glyphs are drawn by CSS (`.st-u::before { content: attr(data-t) }`),
+ * so search engines and screen readers read the text once. Reduced motion
  * shows it as is (the global rule cuts the transitions).
  */
 export default function StaggeredText({ text, by = "word", play, delay = 0, step = 0.035, className = "", style }: Props) {
@@ -29,7 +31,8 @@ export default function StaggeredText({ text, by = "word", play, delay = 0, step
     return (
       <span
         key={key}
-        className="inline-block will-change-[transform,opacity,filter]"
+        data-t={content}
+        className="st-u inline-block will-change-[transform,opacity,filter]"
         style={{
           opacity: play ? 1 : 0,
           transform: play ? "none" : "translateY(.45em)",
@@ -37,9 +40,7 @@ export default function StaggeredText({ text, by = "word", play, delay = 0, step
           transition: play ? `opacity .6s ${EASE}, transform .8s ${EASE}, filter .6s ${EASE}` : "opacity .2s, transform 0s .2s, filter 0s .2s",
           transitionDelay: play ? `${(delay + i * step).toFixed(3)}s` : "0s",
         }}
-      >
-        {content}
-      </span>
+      />
     );
   };
 

@@ -169,3 +169,8 @@ main > [data-stack]::after {
     display: none;
   }
 }
+
+/* StaggeredText: animated glyphs drawn from data-t, kept out of the page text (no duplicate for search engines) */
+.st-u::before {
+  content: attr(data-t);
+}
