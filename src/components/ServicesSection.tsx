@@ -20,10 +20,11 @@ const EXTRAS: { key: ServiceKey; name: string; note: string }[] = [
 ];
 
 /** Column copy and detail sheet of each plan, in PLANS order. */
-const OFFERS: { short: string; img: string; kicker: string; lead: string; body: string }[] = [
+const OFFERS: { short: string; img: string; alt: string; kicker: string; lead: string; body: string }[] = [
   {
     short: "Vitrine",
     img: "/offres/moreau.webp",
+    alt: "Capture du site Léna Moreau, exemple de site vitrine",
     kicker: "01 · LANCEMENT",
     lead: "Une présence en ligne claire, rapide et pensée pour convertir. Tout ce qu’il faut pour être trouvé et contacté.",
     body: "Idéal pour un artisan, un commerce ou un indépendant qui veut une page soignée sans complexité : votre activité, vos services, vos coordonnées et un formulaire qui arrive directement dans votre boîte mail.",
@@ -31,6 +32,7 @@ const OFFERS: { short: string; img: string; kicker: string; lead: string; body: 
   {
     short: "Sur-mesure",
     img: "/offres/wecars.webp",
+    alt: "Capture du site WeCars, exemple de site sur-mesure",
     kicker: "02 · CROISSANCE — LE PLUS CHOISI",
     lead: "Un design exclusif, conçu de zéro pour votre marque. Rien de générique, tout est pensé pour vous démarquer.",
     body: "Développé en Next.js / React pour des performances maximales (Lighthouse 90+), avec des animations sur-mesure et un SEO technique avancé. Le prix dépend du nombre de pages et des fonctionnalités : on le fixe ensemble au devis.",
@@ -38,6 +40,7 @@ const OFFERS: { short: string; img: string; kicker: string; lead: string; body: 
   {
     short: "WordPress",
     img: "/offres/kinetik.webp",
+    alt: "Capture du site Kinetik, exemple de site WordPress",
     kicker: "03 · AUTONOMIE",
     lead: "Un site que vous modifiez vous-même, sans dépendre de personne. Textes, images, articles : tout est administrable.",
     body: "Un site multi-pages à votre image, que vous gérez vous-même : la prise en main est incluse pour que vous soyez autonome dès la mise en ligne. Le prix dépend de votre projet : on le fixe ensemble au devis.",
@@ -141,7 +144,7 @@ function DetailSheet({ index, onClose, onChoose }: { index: number | null; onClo
           <div className="mx-auto flex max-w-[880px] flex-col" style={{ gap: "clamp(40px,6vw,72px)" }}>
             <div className="flex flex-col" style={{ gap: "clamp(32px,5vw,56px)" }}>
               <div className="relative aspect-[1898/868] overflow-hidden rounded-[28px] border border-[rgba(17,17,17,.08)] bg-[#eee]">
-                <Image src={o.img} alt="" fill sizes="(max-width: 960px) 100vw, 880px" className="object-cover object-top" />
+                <Image src={o.img} alt={o.alt} fill sizes="(max-width: 960px) 100vw, 880px" className="object-cover object-top" />
               </div>
               <div className="flex max-w-[620px] flex-col gap-5">
                 <span className="text-[13px] font-bold tracking-[.14em] text-abcs-red-text">{o.kicker}</span>

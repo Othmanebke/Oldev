@@ -24,7 +24,7 @@ function ProjectMedia({ project, priority }: { project: Project; priority?: bool
     <div className="relative aspect-video overflow-hidden rounded-[22px] bg-[#111]">
       <Image
         src={project.image}
-        alt={project.name}
+        alt={`Capture du site ${project.name}`}
         fill
         priority={priority}
         sizes="(max-width: 768px) 86vw, 940px"

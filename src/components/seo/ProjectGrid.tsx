@@ -70,7 +70,7 @@ export default function ProjectGrid({ title, projects, filters, link }: Props) {
               <span className="relative block aspect-[16/10] w-full overflow-hidden rounded-[18px] bg-[#111] shadow-[inset_0_0_0_1px_rgba(255,255,255,.06)]">
                 <Image
                   src={p.image}
-                  alt=""
+                  alt={`Capture du site ${p.name}`}
                   fill
                   sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 380px"
                   className="object-cover object-top transition-transform duration-700 ease-out-expo group-hover:scale-[1.04]"
