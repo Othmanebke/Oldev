@@ -9,9 +9,9 @@ import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbJsonLd } from "@/lib/jsonLd";
 import { PROJECT_FILTERS, projectsForTag, type ProjectTag } from "@/lib/projects";
 
-const TITLE = "Réalisations : sites vitrines, WordPress et Next.js";
+const TITLE = "Réalisations : sites vitrines, WordPress, Next.js";
 const DESCRIPTION =
-  "Portfolio d’Othmane Bouakline, développeur web freelance : sites vitrines, sites WordPress et WooCommerce, applications Next.js / React pour des entreprises, commerces et indépendants.";
+  "Portfolio d’Othmane Bouakline, développeur web freelance en Seine-et-Marne : sites vitrines, WordPress, WooCommerce et Next.js pour PME et indépendants.";
 
 export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/realisations" });
 

@@ -34,9 +34,9 @@ export const SERVICE_PAGES: ServicePage[] = [
   {
     slug: "site-vitrine",
     key: "vitrine",
-    metaTitle: "Création de site vitrine pour artisans et indépendants",
+    metaTitle: "Site vitrine pour artisans et indépendants",
     metaDescription:
-      "Création de site vitrine one page dès 300 € : jusqu’à 5 sections, formulaire de contact, SEO de base, mise en ligne et 1 an de maintenance offert. Développeur web freelance en Seine-et-Marne.",
+      "Site vitrine one page dès 300 € : jusqu’à 5 sections, formulaire de contact, SEO de base et 1 an de maintenance offert. Développeur web en Seine-et-Marne.",
     name: "Site vitrine",
     h1: "Création de site vitrine",
     intro: [
@@ -58,9 +58,9 @@ export const SERVICE_PAGES: ServicePage[] = [
   {
     slug: "site-sur-mesure-nextjs",
     key: "webapp",
-    metaTitle: "Site web sur-mesure Next.js / React",
+    metaTitle: "Création de site sur-mesure Next.js / React",
     metaDescription:
-      "Site web sur mesure en Next.js / React, de 1 200 à 5 000 € selon devis : codé de zéro, ultra-performant, fonctionnalités spécifiques (espace client, réservation…) et 1 an de maintenance offert.",
+      "Site sur mesure en Next.js / React, de 1 200 à 5 000 € selon devis : codé de zéro, ultra-performant, espace client ou réservation, 1 an de maintenance offert.",
     name: "Site sur-mesure Next.js",
     h1: "Site web sur-mesure en Next.js",
     intro: [
@@ -82,7 +82,7 @@ export const SERVICE_PAGES: ServicePage[] = [
   {
     slug: "site-wordpress",
     key: "wordpress",
-    metaTitle: "Création de site WordPress et boutique WooCommerce",
+    metaTitle: "Création de site WordPress et WooCommerce",
     metaDescription:
       "Création de site WordPress multi-pages de 800 à 3 000 € selon devis : vous modifiez vos contenus vous-même, prise en main incluse et 1 an de maintenance offert.",
     name: "Site WordPress",
