@@ -174,3 +174,11 @@ main > [data-stack]::after {
 .st-u::before {
   content: attr(data-t);
 }
+
+/* Keyboard focus: orange ring on links and buttons, only with the keyboard (:focus-visible), never on mouse click */
+@layer base {
+  :where(a, button, summary, [role="button"], [role="radio"], [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--color-abcs-red);
+    outline-offset: 3px;
+  }
+}
