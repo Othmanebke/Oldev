@@ -134,7 +134,7 @@ export default function Footer() {
                 Réponse sous 24 h
               </span>
               <h2 className="m-0 font-bold leading-[.95] tracking-[-.045em] text-white text-balance" style={{ ...archivo, fontSize: "clamp(40px,5vw,64px)" }}>
-                On code
+                On code{" "}
                 <br />
                 ensemble&nbsp;?
               </h2>
@@ -213,8 +213,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <p className="relative z-[1] m-0 mt-[clamp(20px,2.4vw,28px)] text-center text-[14px] font-medium text-white" style={{ textShadow: "0 1px 8px rgba(0,0,0,.7),0 0 2px rgba(0,0,0,.6)" }}>
-        © 2027 oth<span className="text-abcs-red">le</span>dev · Tous droits réservés
+      <p suppressHydrationWarning className="relative z-[1] m-0 mt-[clamp(20px,2.4vw,28px)] text-center text-[14px] font-medium text-white" style={{ textShadow: "0 1px 8px rgba(0,0,0,.7),0 0 2px rgba(0,0,0,.6)" }}>
+        © {new Date().getFullYear()} oth<span className="text-abcs-red">le</span>dev · Tous droits réservés
       </p>
     </footer>
   );
